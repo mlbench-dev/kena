@@ -6,15 +6,15 @@ import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_history_model.dart'
     as history;
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart'
     as forecast;
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
-import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/services/user/forecast_service.dart';
-import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -29,7 +29,7 @@ class SelectTodayForecast extends StatefulWidget {
 }
 
 class _SelectTodayForecastState extends State<SelectTodayForecast> {
-  bool _showImage = true;
+  final bool _showImage = true;
   bool _isLoading = true;
   bool isPlanExpanded = false;
   bool isChecked = false;
@@ -306,8 +306,9 @@ class _SelectTodayForecastState extends State<SelectTodayForecast> {
                     ),
                     SizedBox(height: 20.h),
                     MyButton(
-                      label: _isSaving ? 'Saving...' : 'Save',
+                      label: 'Save',
                       onPressed: _isSaving ? null : _onSavePressed,
+                      isLoading: _isSaving,
                     ),
                   ],
                 ),
