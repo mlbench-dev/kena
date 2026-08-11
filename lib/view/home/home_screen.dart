@@ -19,6 +19,7 @@ import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
 import 'package:kena_emotional_journey/services/common/push_notifications_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
+import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
 import 'package:kena_emotional_journey/view/pro_tip/pro_tip_manager.dart';
 import 'package:kena_emotional_journey/view/pro_tip/widget/pro_tips_dialog_box.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   final SessionController _sessionController = SessionController();
   final NotificationsService _notificationsService = NotificationsService();
+  final SubscriptionCacheService _subscriptionCacheService =
+      SubscriptionCacheService();
   StreamSubscription<void>? _foregroundMessageSub;
+  bool _hasPaidSubscription = false;
 
   // Tour keys for onboarding
   final GlobalKey _aspireKey = GlobalKey();
@@ -50,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _fetchUnreadCount();
+    _loadSubscriptionBadgeState();
 
     _foregroundMessageSub = PushNotificationsService.onForegroundMessage.listen(
       (_) => _fetchUnreadCount(),
@@ -65,8 +70,16 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _fetchUnreadCount();
+      _loadSubscriptionBadgeState();
       if (!_isTourActive) _checkProTip();
     }
+  }
+
+  Future<void> _loadSubscriptionBadgeState() async {
+    final hasPaidSubscription = await _subscriptionCacheService
+        .hasPaidSubscription();
+    if (!mounted) return;
+    setState(() => _hasPaidSubscription = hasPaidSubscription);
   }
 
   @override
@@ -211,23 +224,36 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       GestureDetector(
                         onTap: () =>
                             Navigator.pushNamed(context, RoutesName.profile),
-                        child: CircleAvatar(
-                          backgroundColor: context.colors.background,
-                          radius: 22.r,
-                          backgroundImage:
-                              (user?.avatarUrl != null &&
-                                  user!.avatarUrl!.isNotEmpty)
-                              ? CachedNetworkImageProvider(user.avatarUrl!)
-                              : null,
-                          child:
-                              (user?.avatarUrl == null ||
-                                  user!.avatarUrl!.isEmpty)
-                              ? Icon(
-                                  Icons.person,
-                                  color: Colors.grey,
-                                  size: 24.r,
-                                )
-                              : null,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: context.colors.background,
+                              radius: 22.r,
+                              backgroundImage:
+                                  (user?.avatarUrl != null &&
+                                      user!.avatarUrl!.isNotEmpty)
+                                  ? CachedNetworkImageProvider(user.avatarUrl!)
+                                  : null,
+                              child:
+                                  (user?.avatarUrl == null ||
+                                      user!.avatarUrl!.isEmpty)
+                                  ? Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                      size: 24.r,
+                                    )
+                                  : null,
+                            ),
+                            if (_hasPaidSubscription)
+                              Positioned(
+                                top: -5.r,
+                                right: -7.r,
+                                width: 24.r,
+                                height: 24.r,
+                                child: Assets.icons.premium.svg(),
+                              ),
+                          ],
                         ),
                       ),
                       SizedBox(width: 10.w),
