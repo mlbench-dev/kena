@@ -1333,32 +1333,30 @@ class _StopSharingDialogState extends State<_StopSharingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(context),
-            SizedBox(height: 10.h),
-            _buildDescription(context),
-            SizedBox(height: 10.h),
-            _buildMembersSection(context),
-            const Spacer(),
-            MyButton(
-              label: 'Stop Sharing ',
-              isLoading: _isStoppingAll,
-              backgroundColor: const Color(0xFFFF0000),
-              textColor: context.colors.background,
-              // borderColor: context.colors.error,
-              fontWeight: FontWeight.w600,
-              onPressed: _isStoppingAll || _members.isEmpty
-                  ? null
-                  : _stopSharingWithAll,
-            ),
-          ],
-        ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTitle(context),
+          SizedBox(height: 10.h),
+          _buildDescription(context),
+          SizedBox(height: 10.h),
+          _buildMembersSection(context),
+          SizedBox(height: 12.h),
+          MyButton(
+            label: 'Stop Sharing ',
+            isLoading: _isStoppingAll,
+            backgroundColor: const Color(0xFFFF0000),
+            textColor: context.colors.background,
+            // borderColor: context.colors.error,
+            fontWeight: FontWeight.w600,
+            onPressed: _isStoppingAll || _members.isEmpty
+                ? null
+                : _stopSharingWithAll,
+          ),
+        ],
       ),
     );
   }
