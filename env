@@ -1,0 +1,15 @@
+# Local placeholder values — replace with real credentials as needed.
+# Note: none of the VSCode launch configs pass --dart-define=FLAVOR,
+# so bootstrap.dart always loads this file (flavor defaults to "production").
+
+IOS_GOOGLE_CLIENT_ID=239129406623-pnfbr9vjdqdpfd4ik4jklm3lvd1ffm8s.apps.googleusercontent.com
+WEB_GOOGLE_CLIENT_ID=239129406623-k9hqmu6e4opk450jdh76nf0lcp3gvrhb.apps.googleusercontent.com
+# WEB_GOOGLE_CLIENT_ID=239129406623-3cihmgrhu6ch633hckj7hfb4l1jfos7r.apps.googleusercontent.com  # old value — matched an Android-type client (Production-Release), not the Web client type Google Sign-In needs
+
+
+PAYSTACK_PUBLIC_KEY=pk_test_d2791f44be6f71cb8c18deded567497b98f9ecba
+PAYSTACK_SECRET_KEY=sk_test_0c4276982ad7c9029d91e2e081b089352ce9f0be
+PAYSTACK_PLAN_MONTHLY_CODE=PLN_2df7ydez2sb3ppr
+PAYSTACK_PLAN_ANNUAL_CODE=PLN_p61hvxshh10oj5g
+PAYSTACK_CALLBACK_URL=
+PAYSTACK_CURRENCY=KES
