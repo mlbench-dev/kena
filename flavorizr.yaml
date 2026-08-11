@@ -1,0 +1,28 @@
+flavors:
+  development:
+    app:
+      name: "[DEV] kena"
+    android:
+      applicationId: "com.kena.mlb.dev"
+      icon: "assets/icons/logo/play.png"
+    ios:
+      bundleId: "com.kena.mlb.dev"
+      icon: "assets/icons/logo/play.png"
+  staging:
+    app:
+      name: "[STG] kena"
+    android:
+      applicationId: "com.kena.mlb.stg"
+      icon: "assets/icons/logo/play.png"
+    ios:
+      bundleId: "com.kena.mlb.stg"
+      icon: "assets/icons/logo/play.png"
+  production:
+    app:
+      name: "kena"
+    android:
+      applicationId: "com.kena.mlb"
+      icon: "assets/icons/logo/play.png"
+    ios:
+      bundleId: "com.kena.mlb"
+      icon: "assets/icons/logo/play.png"

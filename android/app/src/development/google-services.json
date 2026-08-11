@@ -1,0 +1,190 @@
+{
+  "project_info": {
+    "project_number": "239129406623",
+    "project_id": "kena-dde41",
+    "storage_bucket": "kena-dde41.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239129406623:android:1b22aaaa36d6c994eac6aa",
+        "android_client_info": {
+          "package_name": "com.kena.mlb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239129406623-j8mj8cqs31484r2gamsbuej3iq8p0uj5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb",
+            "certificate_hash": "aaf5cd9c02075dcf2a4be1567127fc10b76fbf63"
+          }
+        },
+        {
+          "client_id": "239129406623-unr9q6citt9m2o70cerf2620duklti9v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb",
+            "certificate_hash": "f646136fe854fd703d79e10fdcfd9d4c3f6f1b2e"
+          }
+        },
+        {
+          "client_id": "239129406623-v79t3r76mna89lr99oake40d97jsechr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb",
+            "certificate_hash": "d10775f2414c23c152f36bd31f5f2f0f55a811a2"
+          }
+        },
+        {
+          "client_id": "239129406623-k9hqmu6e4opk450jdh76nf0lcp3gvrhb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl5lH3flOlmFHFJsWWFGDNmNW7YsvkNc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239129406623-gj0duiicj8r1b1l5uvc9gtclfgp849o6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "239129406623-0msvipur0kcahggcu3b1di9ps4n87575.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kena.mlb.dev"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239129406623:android:56548d925fe19c48eac6aa",
+        "android_client_info": {
+          "package_name": "com.kena.mlb.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239129406623-d7vfmpqei9ch7k6h1rg2112n262cca0t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb.dev",
+            "certificate_hash": "f646136fe854fd703d79e10fdcfd9d4c3f6f1b2e"
+          }
+        },
+        {
+          "client_id": "239129406623-p4vukokoa8ph5jhvl04g7figctokstjd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb.dev",
+            "certificate_hash": "aaf5cd9c02075dcf2a4be1567127fc10b76fbf63"
+          }
+        },
+        {
+          "client_id": "239129406623-stm85uqc78f61hvght63ra5uqqc0tner.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb.dev",
+            "certificate_hash": "d10775f2414c23c152f36bd31f5f2f0f55a811a2"
+          }
+        },
+        {
+          "client_id": "239129406623-k9hqmu6e4opk450jdh76nf0lcp3gvrhb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl5lH3flOlmFHFJsWWFGDNmNW7YsvkNc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239129406623-gj0duiicj8r1b1l5uvc9gtclfgp849o6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "239129406623-0msvipur0kcahggcu3b1di9ps4n87575.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kena.mlb.dev"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239129406623:android:0cecb55c7fb8b079eac6aa",
+        "android_client_info": {
+          "package_name": "com.kena.mlb.stg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "239129406623-7akscftsba9fj8erjle87sjkec4tjagi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb.stg",
+            "certificate_hash": "f646136fe854fd703d79e10fdcfd9d4c3f6f1b2e"
+          }
+        },
+        {
+          "client_id": "239129406623-btq8m23tvqpca5n22taov85k0garu5bp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb.stg",
+            "certificate_hash": "d10775f2414c23c152f36bd31f5f2f0f55a811a2"
+          }
+        },
+        {
+          "client_id": "239129406623-v7lcnva2rus3ptcrkq5tplg22lamglbp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kena.mlb.stg",
+            "certificate_hash": "aaf5cd9c02075dcf2a4be1567127fc10b76fbf63"
+          }
+        },
+        {
+          "client_id": "239129406623-k9hqmu6e4opk450jdh76nf0lcp3gvrhb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl5lH3flOlmFHFJsWWFGDNmNW7YsvkNc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "239129406623-gj0duiicj8r1b1l5uvc9gtclfgp849o6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "239129406623-0msvipur0kcahggcu3b1di9ps4n87575.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kena.mlb.dev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
