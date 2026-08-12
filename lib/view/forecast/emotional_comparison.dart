@@ -416,7 +416,11 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
             fillEmptySlotsTo: 3,
             emptySlotBuilder: (context) => EmptyTileCard(
               onTap: () async {
-                await Navigator.pushNamed(context, RoutesName.endDayReflection);
+                await Navigator.pushNamed(
+                  context,
+                  RoutesName.endDayReflection,
+                  arguments: {'isFromHome': false},
+                );
                 await _loadComparison();
               },
             ),
@@ -657,23 +661,33 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
               color: context.colors.textSecondary.withValues(alpha: 0.3),
             ),
           ),
-          child: Column(
-            children: [
-              for (var i = 0; i < activities.length; i++)
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: i == activities.length - 1 ? 0 : 10.h,
+          child: activities.isEmpty
+              ? Center(
+                  child: Text(
+                    'No activity found',
+                    style: context.typography.body.copyWith(
+                      fontSize: 14.sp,
+                      color: context.colors.textSecondary,
+                    ),
                   ),
-                  child: ActivityTile(
-                    activity: activities[i].name ?? '',
-                    isChecked: activities[i].isCompleted ?? false,
-                    onChanged: (newValue) =>
-                        _onActivityToggled(activities[i], newValue),
-                    onDeleted: () => _onActivityDeleted(activities[i]),
-                  ),
+                )
+              : Column(
+                  children: [
+                    for (var i = 0; i < activities.length; i++)
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: i == activities.length - 1 ? 0 : 10.h,
+                        ),
+                        child: ActivityTile(
+                          activity: activities[i].name ?? '',
+                          isChecked: activities[i].isCompleted ?? false,
+                          onChanged: (newValue) =>
+                              _onActivityToggled(activities[i], newValue),
+                          onDeleted: () => _onActivityDeleted(activities[i]),
+                        ),
+                      ),
+                  ],
                 ),
-            ],
-          ),
         ),
         SizedBox(height: 8.h),
       ],

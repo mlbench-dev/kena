@@ -35,7 +35,7 @@ class TourContent {
       TourStep(
         title: 'Analytics',
         description:
-            'remove the caps on weekly, monthly, all time and anlytics.',
+            'remove the caps on weekly, monthly, all time and analytics.',
       ),
       TourStep(
         title: 'Circle',

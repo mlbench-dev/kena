@@ -1,10 +1,15 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_form_text_field.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/native_liquid_glass_apple_button.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/validations_exception.dart';
@@ -26,6 +31,8 @@ class _UserSignupScreenState extends State<UserSignupScreen> {
   final formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> isFormFilled = ValueNotifier(false);
   bool isLoading = false;
+  bool isAppleLoading = false;
+  bool isGoogleLoading = false;
 
   final _userNameController = TextEditingController();
   final _aliasController = TextEditingController();
@@ -94,6 +101,42 @@ class _UserSignupScreenState extends State<UserSignupScreen> {
   }
 
   final OAuthService _oAuthService = OAuthService();
+
+  Future<void> _handleAppleSignup() async {
+    if (isAppleLoading) return;
+
+    setState(() {
+      isAppleLoading = true;
+    });
+
+    try {
+      await _oAuthService.appleAuth(context);
+    } finally {
+      if (mounted) {
+        setState(() {
+          isAppleLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleGoogleSignup() async {
+    if (isGoogleLoading) return;
+
+    setState(() {
+      isGoogleLoading = true;
+    });
+
+    try {
+      await _oAuthService.googleAuth(context);
+    } finally {
+      if (mounted) {
+        setState(() {
+          isGoogleLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -498,53 +541,119 @@ class _UserSignupScreenState extends State<UserSignupScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(
-                            10.w,
-                          ), // Space between the border and the avatar
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Color(
-                                0xFFd0d0d0,
-                              ), // Set your desired border color here
-                              width: 1.w, // Set your desired border width
+                        if (Platform.isIOS) ...[
+                          // --- Native Liquid Glass "Sign in with Apple" button,
+                          // same circle size as the Google button below ---
+                          SizedBox(
+                            width: 60.w,
+                            height: 60.w,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                IgnorePointer(
+                                  ignoring: isAppleLoading,
+                                  child: NativeLiquidGlassAppleButton(
+                                    width: 60.w,
+                                    height: 60.w,
+                                    onPressed: _handleAppleSignup,
+                                  ),
+                                ),
+                                if (isAppleLoading)
+                                  LoadingWidget(
+                                    size: 18.sp,
+                                    color: context.colors.primary,
+                                  ),
+                              ],
                             ),
                           ),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: GestureDetector(
-                              onTap: () {
-                                _oAuthService.appleAuth(context);
-                              },
-                              child: Assets.icons.apple.svg(),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 25.w),
-                        Container(
-                          padding: EdgeInsets.all(
-                            10.w,
-                          ), // Space between the border and the avatar
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Color(
-                                0xFFd0d0d0,
-                              ), // Set your desired border color here
-                              width: 1.w, // Set your desired border width
-                            ),
-                          ),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: GestureDetector(
-                              onTap: () {
-                                _oAuthService.googleAuth(context);
-                              },
-                              child: Assets.icons.googleIcon.svg(),
-                            ),
-                          ),
-                        ),
+                          SizedBox(width: 25.w),
+                        ],
+                        Platform.isIOS
+                            ? SizedBox(
+                                width: 60.w,
+                                height: 60.w,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.08,
+                                        ),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipOval(
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                        sigmaX: 20,
+                                        sigmaY: 20,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.55,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                            width: 1.w,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: GestureDetector(
+                                            onTap: isGoogleLoading
+                                                ? null
+                                                : _handleGoogleSignup,
+                                            child: isGoogleLoading
+                                                ? LoadingWidget(
+                                                    size: 18.sp,
+                                                    color:
+                                                        context.colors.primary,
+                                                  )
+                                                : SizedBox(
+                                                    width: 22.w,
+                                                    height: 22.w,
+                                                    child: Assets
+                                                        .icons
+                                                        .googleIcon
+                                                        .svg(),
+                                                  ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                padding: EdgeInsets.all(10.w),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFFd0d0d0),
+                                    width: 1.w,
+                                  ),
+                                ),
+                                child: GestureDetector(
+                                  onTap: isGoogleLoading
+                                      ? null
+                                      : _handleGoogleSignup,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    child: isGoogleLoading
+                                        ? LoadingWidget(
+                                            size: 18.sp,
+                                            color: context.colors.primary,
+                                          )
+                                        : Assets.icons.googleIcon.svg(),
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
                     SizedBox(height: 26.h),

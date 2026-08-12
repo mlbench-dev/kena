@@ -667,6 +667,7 @@ class _AspirationalEmotionsState extends State<AspirationalEmotions>
                   ),
                 ),
               ),
+              SizedBox(height: 10.h),
 
               // ── Continue button ───────────────────────────────────────────
               if (_selectedEmotions.isNotEmpty && !_isPanelOpen) ...[

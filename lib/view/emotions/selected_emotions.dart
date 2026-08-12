@@ -1081,17 +1081,22 @@ class DeleteActivityDialogBox extends StatelessWidget {
   final BuildContext parentContext;
   final String activityName;
   final VoidCallback onDeleted;
+  final VoidCallback? onDeleteStart;
+  final VoidCallback? onDeleteEnd;
 
   const DeleteActivityDialogBox({
     super.key,
     required this.parentContext,
     required this.activityName,
     required this.onDeleted,
+    this.onDeleteStart,
+    this.onDeleteEnd,
   });
 
   void _confirmDelete(BuildContext context) {
     // Close dialog, call API, then update UI on success
     Navigator.pop(context);
+    onDeleteStart?.call();
     Future.microtask(() async {
       if (!parentContext.mounted) return;
 
@@ -1110,6 +1115,7 @@ class DeleteActivityDialogBox extends StatelessWidget {
           message: 'Failed to delete activity',
         );
       }
+      onDeleteEnd?.call();
     });
   }
 

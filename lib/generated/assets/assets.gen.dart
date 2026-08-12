@@ -121,12 +121,12 @@ class $AssetsIconsGen {
   SvgGenImage get iconsProductSubscriptions =>
       const SvgGenImage('assets/icons/icons_product-subscriptions.svg');
 
+  /// File path: assets/icons/kena.svg
+  SvgGenImage get kena => const SvgGenImage('assets/icons/kena.svg');
+
   /// File path: assets/icons/location_request.svg
   SvgGenImage get locationRequest =>
       const SvgGenImage('assets/icons/location_request.svg');
-
-  /// Directory path: assets/icons/logo
-  $AssetsIconsLogoGen get logo => const $AssetsIconsLogoGen();
 
   /// File path: assets/icons/notifications.svg
   SvgGenImage get notifications =>
@@ -219,6 +219,7 @@ class $AssetsIconsGen {
     graph,
     homeOutline,
     iconsProductSubscriptions,
+    kena,
     locationRequest,
     notifications,
     notshare,
@@ -775,17 +776,6 @@ class $AssetsJsonGen {
 
   /// Directory path: assets/json/map_styles
   $AssetsJsonMapStylesGen get mapStyles => const $AssetsJsonMapStylesGen();
-}
-
-class $AssetsIconsLogoGen {
-  const $AssetsIconsLogoGen();
-
-  /// File path: assets/icons/logo/splash.png
-  AssetGenImage get splash =>
-      const AssetGenImage('assets/icons/logo/splash.png');
-
-  /// List of all assets
-  List<AssetGenImage> get values => [splash];
 }
 
 class $AssetsJsonMapStylesGen {

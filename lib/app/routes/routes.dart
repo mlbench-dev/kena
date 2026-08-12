@@ -42,6 +42,7 @@ import 'package:kena_emotional_journey/view/notifications/notifications_screen.d
 import 'package:kena_emotional_journey/view/profile/edit_profile.dart';
 import 'package:kena_emotional_journey/view/profile/profile.dart';
 import 'package:kena_emotional_journey/view/splash/splash_view.dart';
+// KenaSplashScreen replaces the old SplashView (see splash_view.dart).
 import 'package:kena_emotional_journey/view/subscription/active_subscription_screen.dart';
 import 'package:kena_emotional_journey/view/subscription/free_trail.dart';
 import 'package:kena_emotional_journey/view/subscription/subscription_plan.dart';
@@ -50,7 +51,7 @@ class Routes {
   static String initialRoute() => RoutesName.splash;
   // static String initialRoute() => RoutesName.noConnection;
   static final Map<String, WidgetBuilder> _routes = {
-    RoutesName.splash: (_) => const SplashView(),
+    RoutesName.splash: (_) => const KenaSplashScreen(),
     // RoutesName.welcome: (_) => const WelcomeScreen(),
     RoutesName.noConnection: (_) => const NoConnectionScreen(),
     RoutesName.userSignup: (_) => const UserSignupScreen(),
@@ -88,7 +89,12 @@ class Routes {
     ),
     RoutesName.analyticsScreen: (_) => const AnalyticsScreen(),
     RoutesName.profile: (_) => const ProfileScreen(),
-    RoutesName.endDayReflection: (_) => const EndDayReflectionScreen(),
+    RoutesName.endDayReflection: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      final map = args is Map<String, dynamic> ? args : <String, dynamic>{};
+      final isFromHome = map['isFromHome'] as bool? ?? false;
+      return EndDayReflectionScreen(isFromHome: isFromHome);
+    },
     RoutesName.homeScreen: (_) => const HomeScreen(),
     // RoutesName.aspireScreen: (_) => const AspireScreen(),
     RoutesName.selectedEmotionsScreen: (_) => const SelectedEmotionsScreen(),

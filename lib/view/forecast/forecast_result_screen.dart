@@ -190,12 +190,15 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
 
       if (!mounted) return;
 
-      Navigator.pushNamed(
-        context,
-        hasRealityData
-            ? RoutesName.endDayComparisonScreen
-            : RoutesName.endDayReflection,
-      );
+      if (hasRealityData) {
+        Navigator.pushNamed(context, RoutesName.endDayComparisonScreen);
+      } else {
+        Navigator.pushNamed(
+          context,
+          RoutesName.endDayReflection,
+          arguments: {'isFromHome': true},
+        );
+      }
     } catch (e) {
       debugPrint('Error loading end-of-day comparison: $e');
     } finally {

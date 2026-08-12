@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +17,6 @@ import 'package:kena_emotional_journey/model/forecast/comparison_model.dart'
     as comparison;
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
-import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/services/common/image_picker.dart';
 import 'package:kena_emotional_journey/services/common/upload_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -73,7 +73,9 @@ class SelectedEndDayReflectionEmotion {
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 class EndDayReflectionScreen extends StatefulWidget {
-  const EndDayReflectionScreen({super.key});
+  final bool isFromHome;
+
+  const EndDayReflectionScreen({super.key, this.isFromHome = false});
 
   @override
   State<EndDayReflectionScreen> createState() => _EndDayReflectionScreenState();
@@ -84,6 +86,7 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
   String? _expandedCategory;
   final Map<String, String> _selectedSubEmotions = {};
   final List<SelectedEndDayReflectionEmotion> _selectedEmotions = [];
+  @override
   final List<EmotionCategory> categories = EmotionsList().emotionCategories;
   final UserHomeService userHomeService = UserHomeService();
   final ImagePickerService _imagePickerService = ImagePickerService();
@@ -94,7 +97,7 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
   bool planUseful = false;
   DateTime? reassessDate;
   bool _isUploading = false;
-  int _selectedIntensity = 3;
+  final int _selectedIntensity = 3;
   bool? _isPlanUseFul;
   bool? _goAsForecast;
 
@@ -768,14 +771,25 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
                                         )
                                         .toList();
 
-                                    Navigator.pushNamed(
-                                      context,
-                                      RoutesName.questionsScreen,
-                                      arguments: {
-                                        'selectedEmotions': emotionsData,
-                                        'notes': _endDayNotesController.text,
-                                      },
-                                    );
+                                    widget.isFromHome
+                                        ? Navigator.pushNamed(
+                                            context,
+                                            RoutesName.questionsScreen,
+                                            arguments: {
+                                              'selectedEmotions': emotionsData,
+                                              'notes':
+                                                  _endDayNotesController.text,
+                                            },
+                                          )
+                                        : Navigator.pushReplacementNamed(
+                                            context,
+                                            RoutesName.questionsScreen,
+                                            arguments: {
+                                              'selectedEmotions': emotionsData,
+                                              'notes':
+                                                  _endDayNotesController.text,
+                                            },
+                                          );
                                   },
                                   // onPressed: () async {
                                   //   final success = await _submitEmotions(
@@ -1177,7 +1191,7 @@ class EndDayNoteDialogBox extends StatelessWidget {
             hint: "Write here...",
             maxLines: 8,
             fillColor: context.colors.background,
-            borderColor: context.colors.textSecondary.withOpacity(0.5),
+            borderColor: context.colors.textSecondary.withValues(alpha: 0.5),
           ),
           SizedBox(height: 20.h),
           MyButton(
@@ -1618,7 +1632,7 @@ class EmotionsCard extends StatelessWidget {
           boxShadow: isExpanded
               ? [
                   BoxShadow(
-                    color: context.colors.primary.withOpacity(0.15),
+                    color: context.colors.primary.withValues(alpha: 0.15),
                     blurRadius: 8,
                     spreadRadius: 1,
                   ),

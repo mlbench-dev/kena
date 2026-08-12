@@ -559,7 +559,7 @@ class _ChooseActivityState extends State<ChooseActivity> {
                       padding: EdgeInsets.symmetric(horizontal: 12.w),
                       child: MyButton(
                         icon: const Icon(Icons.add),
-                        label: "Add your own activity",
+                        label: "Customise Activity",
                         onPressed: _showAddActivitySheet,
                         backgroundColor: Colors.transparent,
                         borderWidth: 1,
@@ -573,7 +573,7 @@ class _ChooseActivityState extends State<ChooseActivity> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12.w),
                       child: MyButton(
-                        label: widget.isToday ? "Save" : "Next",
+                        label: widget.isToday ? "Save" : "Continue",
                         onPressed: _isSaving ? null : _onSavePressed,
                         isLoading: _isSaving,
                         textColor: _isSaving ? null : context.colors.background,

@@ -678,7 +678,7 @@ class DeleteActivityDialogBox extends StatelessWidget {
           children: [
             SizedBox(height: 16.h),
             Text(
-              'Are you sure you want to delete "$activityName"?',
+              'Are you sure you want to delete this activity?',
               style: context.typography.body.copyWith(
                 color: context.colors.textPrimary,
                 fontFamily: 'sfpro',

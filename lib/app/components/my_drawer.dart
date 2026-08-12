@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 
 class DrawerMenuItem {
   final Widget icon;
@@ -9,7 +10,8 @@ class DrawerMenuItem {
   final VoidCallback onTap;
   final bool isLoading;
   final bool isAsync;
-  final bool isDisabled; // optional: greys out and blocks taps, e.g. while another item loads
+  final bool
+  isDisabled; // optional: greys out and blocks taps, e.g. while another item loads
 
   const DrawerMenuItem({
     required this.icon,
@@ -48,8 +50,8 @@ class MyDrawer extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(20.w, 12.h, 12.w, 12.h),
               child: Row(
                 children: [
-                  Icon(Icons.eco_rounded, color: brandColor, size: 26.r),
-                  SizedBox(width: 8.w),
+                  Assets.icons.kena.svg(width: 32.r, height: 32.r),
+                  SizedBox(width: 4.w),
                   Text(
                     'Kena',
                     style: TextStyle(
@@ -90,7 +92,7 @@ class MyDrawer extends StatelessWidget {
               child: ListView.separated(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 itemCount: items.length,
-                separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                separatorBuilder: (_, _) => SizedBox(height: 12.h),
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return _DrawerPillButton(item: item);
@@ -139,9 +141,7 @@ class _DrawerPillButton extends StatelessWidget {
                       child: SizedBox(
                         width: 14.r,
                         height: 14.r,
-                        child: LoadingWidget(
-                          color: context.colors.textPrimary,
-                        ),
+                        child: LoadingWidget(color: context.colors.textPrimary),
                       ),
                     ),
                   )

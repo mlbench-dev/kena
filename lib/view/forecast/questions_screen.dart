@@ -302,7 +302,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             _buildLabelRow(context),
             Spacer(),
             MyButton(
-              label: _isSubmitting ? 'Submitting...' : 'Next',
+              label: 'Save',
+              isLoading: _isSubmitting,
+              backgroundColor: context.colors.primary,
+              textColor: context.colors.background,
               onPressed: _isSubmitting
                   ? null
                   : () async {
@@ -333,9 +336,12 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                         await AdMobService.showInterstitialAd();
                         if (!mounted) return;
 
-                        Navigator.pushReplacementNamed(
+                        Navigator.pushNamedAndRemoveUntil(
                           context,
-                          RoutesName.homeScreen,
+                          RoutesName.endDayComparisonScreen,
+                          (route) =>
+                              route.settings.name == RoutesName.homeScreen ||
+                              route.isFirst,
                         );
                         Future.microtask(() {
                           context.flushBarSuccessMessage(

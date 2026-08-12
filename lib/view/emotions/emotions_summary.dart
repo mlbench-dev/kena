@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -45,9 +44,11 @@ class _EmotionsSummaryState extends State<EmotionsSummary> {
   final ImagePickerService _imagePickerService = ImagePickerService();
   final ImageUploadService _imageUploadService = ImageUploadService();
   bool _isLoading = true;
+  bool _isSaving = false;
   bool _isEditMode = false;
   int? _loadingCoreIndex;
   int? _loadingAspirationIndex;
+  String? _loadingActivityKey;
 
   bool get _isAnyEmotionTileLoading =>
       _loadingCoreIndex != null || _loadingAspirationIndex != null;
@@ -57,7 +58,6 @@ class _EmotionsSummaryState extends State<EmotionsSummary> {
   @override
   void initState() {
     super.initState();
-    FlutterNativeSplash.remove();
     _load();
     AdMobService.loadInterstitialAd();
   }
@@ -85,7 +85,23 @@ class _EmotionsSummaryState extends State<EmotionsSummary> {
     });
   }
 
-  void _onSavePressed() {
+  void _onSavePressed() async {
+    if (_isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    // Simulate a 2-second saving process
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    // Reset loading state if needed before navigation
+    setState(() {
+      _isSaving = false;
+    });
+
     Navigator.pushReplacementNamed(context, RoutesName.selectedEmotionsScreen);
     context.flushBarSuccessMessage(
       message: "Your emotions have been saved successfully",
@@ -208,6 +224,7 @@ class _EmotionsSummaryState extends State<EmotionsSummary> {
                     MyButton(
                       label: "Save",
                       onPressed: _onSavePressed,
+                      isLoading: _isSaving,
                       backgroundColor: context.colors.primary,
                       textColor: context.colors.background,
                     ),
@@ -366,7 +383,19 @@ class _EmotionsSummaryState extends State<EmotionsSummary> {
                       activity,
                       _isEditMode,
                       () => _load(),
-                      () {
+                      isDeleting:
+                          _loadingActivityKey ==
+                          (activity.id ?? activity.name ?? ''),
+                      onDeleteStart: () => setState(
+                        () => _loadingActivityKey =
+                            activity.id ?? activity.name ?? '',
+                      ),
+                      onDeleteEnd: () {
+                        if (mounted) {
+                          setState(() => _loadingActivityKey = null);
+                        }
+                      },
+                      onEditTap: () {
                         MyDialogBox.show(
                           context,
                           child: EditActivityDialogBox(
@@ -565,9 +594,12 @@ Widget _buildActivityItem(
   BuildContext context,
   Activity activity,
   bool isEditMode,
-  VoidCallback? onRefresh,
+  VoidCallback? onRefresh, {
+  bool isDeleting = false,
+  VoidCallback? onDeleteStart,
+  VoidCallback? onDeleteEnd,
   VoidCallback? onEditTap,
-) {
+}) {
   final apiLabel = activity.name?.trim();
   final title = apiLabel?.isNotEmpty == true
       ? apiLabel!
@@ -578,69 +610,98 @@ Widget _buildActivityItem(
 
   return Padding(
     padding: EdgeInsets.only(bottom: 5.h),
-    child: Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: context.colors.background, // choose visible color
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(
-          color: context.colors.textSecondary.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Row(
-        children: [
-          Text(
-            title,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: context.colors.textPrimary,
+    child: Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+          decoration: BoxDecoration(
+            color: context.colors.background, // choose visible color
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: context.colors.textSecondary.withValues(alpha: 0.2),
             ),
           ),
-          if (isEditMode) ...[
-            SizedBox(width: 12.w),
-            GestureDetector(
-              onTap: () {
-                MyDialogBox.show(
-                  context,
-                  child: DeleteActivityDialogBox(
-                    parentContext: context,
-                    activityName: title,
-                    onDeleted: () {
-                      onRefresh?.call();
-                    },
-                  ),
-                );
-              },
-              child: Assets.icons.bin.svg(height: 22.h, width: 22.h),
-            ),
-            SizedBox(width: 8.w),
-            GestureDetector(
-              onTap: onEditTap,
-              child: Assets.icons.pen.svg(height: 22.h, width: 22.h),
-            ),
-          ],
-          const Spacer(),
-          if (badge?.isNotEmpty == true)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE9EEEB),
-                borderRadius: BorderRadius.circular(4.r),
+          child: Row(
+            children: [
+              Text(
+                title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: context.colors.textPrimary,
+                ),
               ),
-              child: Text(
-                badge!,
-                style: context.typography.body.copyWith(
+              if (isEditMode) ...[
+                SizedBox(width: 12.w),
+                GestureDetector(
+                  onTap: isDeleting
+                      ? null
+                      : () {
+                          MyDialogBox.show(
+                            context,
+                            child: DeleteActivityDialogBox(
+                              parentContext: context,
+                              activityName: title,
+                              onDeleteStart: onDeleteStart,
+                              onDeleteEnd: onDeleteEnd,
+                              onDeleted: () {
+                                onRefresh?.call();
+                                context.flushBarSuccessMessage(
+                                  message: 'Activity deleted successfully',
+                                );
+                              },
+                            ),
+                          );
+                        },
+                  child: Assets.icons.bin.svg(height: 22.h, width: 22.h),
+                ),
+                SizedBox(width: 8.w),
+                GestureDetector(
+                  onTap: isDeleting ? null : onEditTap,
+                  child: Assets.icons.pen.svg(height: 22.h, width: 22.h),
+                ),
+              ],
+              const Spacer(),
+              if (badge?.isNotEmpty == true)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE9EEEB),
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                  child: Text(
+                    badge!,
+                    style: context.typography.body.copyWith(
+                      color: context.colors.primary,
+                      fontSize: 11.sp,
+                      fontFamily: 'sfpro',
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        if (isDeleting)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: context.colors.background,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: context.colors.textSecondary.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
                   color: context.colors.primary,
-                  fontSize: 11.sp,
-                  fontFamily: 'sfpro',
+                  size: 20,
                 ),
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     ),
   );
 }
