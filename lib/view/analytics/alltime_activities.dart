@@ -100,7 +100,7 @@ class _AlltimeActivitiesState extends State<AlltimeActivities> {
         children: [
           if (period != null) SizedBox(height: 20.h),
           AllTimeProgressCard(
-            lable: 'All Time',
+            lable: 'All Time Progress',
             currentProgress: (progress?.activitiesDone ?? 0).toDouble(),
             goalValue: (progress?.goal ?? 1000).toDouble(),
           ),

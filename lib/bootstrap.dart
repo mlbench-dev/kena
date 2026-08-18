@@ -33,22 +33,30 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     DeviceOrientation.portraitDown,
   ]);
 
+  // Each step below talks to a device-dependent service (Play Services, ad
+  // SDK, secure storage) with no guaranteed bound on its own. Previously the
+  // native splash screen sat on top of these while they ran, so a hang or
+  // throw here was invisible. With native splash removed, the same failure
+  // means nothing is ever drawn, so every step is now timeout- and
+  // error-guarded to make sure runApp() always eventually fires.
+
   /// Initialize Firebase with platform-specific options
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp().timeout(const Duration(seconds: 10));
 
-  // Initialize Crashlytics
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    // Initialize Crashlytics
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    FlutterError.onError =
+        FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
-  // CRITICAL: Initialize Google Sign-In
-  // await GoogleSignIn.instance.initialize(
-  //   // clientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com', // Required for Web
-  // );
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  } catch (e, st) {
+    log('Firebase init failed/timed out: $e', stackTrace: st);
+  }
 
   // Detect current flavor (pass --dart-define=FLAVOR=development when building)
   const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'production');
@@ -58,7 +66,11 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   try {
     await dotenv.load(fileName: envFile);
   } catch (_) {
-    await dotenv.load(fileName: ".env");
+    try {
+      await dotenv.load(fileName: ".env");
+    } catch (e, st) {
+      log('dotenv load failed: $e', stackTrace: st);
+    }
   }
 
   // Single client ID per platform (not per flavor)
@@ -66,17 +78,32 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
       ? dotenv.env['IOS_GOOGLE_CLIENT_ID']
       : null;
 
-  await GoogleSignIn.instance.initialize(
-    // Android reads OAuth config from google-services.json; iOS uses the clientId
-    clientId: iosClientId,
-    serverClientId: dotenv.env['WEB_GOOGLE_CLIENT_ID'],
-  );
+  try {
+    await GoogleSignIn.instance
+        .initialize(
+          // Android reads OAuth config from google-services.json; iOS uses the clientId
+          clientId: iosClientId,
+          serverClientId: dotenv.env['WEB_GOOGLE_CLIENT_ID'],
+        )
+        .timeout(const Duration(seconds: 10));
+  } catch (e, st) {
+    log('GoogleSignIn init failed/timed out: $e', stackTrace: st);
+  }
+
   // Add cross-flavor configuration here
-  await SessionController().init();
+  try {
+    await SessionController().init().timeout(const Duration(seconds: 10));
+  } catch (e, st) {
+    log('SessionController init failed/timed out: $e', stackTrace: st);
+  }
 
   // TEST ADS ONLY — see ad_mob_service.dart header before ever touching
   // the ad unit IDs there.
-  await AdMobService.initialize();
+  try {
+    await AdMobService.initialize().timeout(const Duration(seconds: 10));
+  } catch (e, st) {
+    log('AdMobService init failed/timed out: $e', stackTrace: st);
+  }
 
   runApp(MultiProvider(providers: providers, child: await builder()));
 }

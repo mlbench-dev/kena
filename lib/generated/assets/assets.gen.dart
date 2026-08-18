@@ -106,6 +106,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/daily_puls.svg
   SvgGenImage get dailyPuls => const SvgGenImage('assets/icons/daily_puls.svg');
 
+  /// File path: assets/icons/edit_circle.svg
+  SvgGenImage get editCircle =>
+      const SvgGenImage('assets/icons/edit_circle.svg');
+
   /// File path: assets/icons/google_icon.svg
   SvgGenImage get googleIcon =>
       const SvgGenImage('assets/icons/google_icon.svg');
@@ -215,6 +219,7 @@ class $AssetsIconsGen {
     circleEdits,
     crown,
     dailyPuls,
+    editCircle,
     googleIcon,
     graph,
     homeOutline,

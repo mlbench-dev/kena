@@ -204,14 +204,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   readOnly: isLoading,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required.';
-                    } else if (!value.passwordValidator()) {
-                      return 'Password must contain at least one uppercase letter, one number, and one special character.';
-                    }
-                    return null;
-                  },
+                  // validator: (value) {
+                  //   if (value == null || value.isEmpty) {
+                  //     return 'Password is required.';
+                  //   } else if (!value.passwordValidator()) {
+                  //     return 'Password must contain at least one uppercase letter, one number, and one special character.';
+                  //   }
+                  //   return null;
+                  // },
                 ),
                 SizedBox(height: 8.h),
                 GestureDetector(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_bottom_sheet.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
@@ -448,7 +447,7 @@ class _CreateandUpdateCommunityBottomSheetState
               controller: _nameController,
               hint: "Enter your Circle name",
               fillColor: Colors.transparent,
-              borderColor: context.colors.textSecondary.withOpacity(0.3),
+              borderColor: context.colors.textSecondary.withValues(alpha: 0.3),
             ),
             // SizedBox(height: 10.h),
             // Text(
@@ -477,7 +476,7 @@ class _CreateandUpdateCommunityBottomSheetState
               maxLines: 6,
               hint: "Write a short description about your circle purpose.",
               fillColor: Colors.transparent,
-              borderColor: context.colors.textSecondary.withOpacity(0.3),
+              borderColor: context.colors.textSecondary.withValues(alpha: 0.3),
             ),
             SizedBox(height: 20.h),
 
@@ -499,15 +498,18 @@ class _CreateandUpdateCommunityBottomSheetState
                 Expanded(
                   child: MyButton(
                     fontWeight: FontWeight.w500,
-                    label: _isCreating
-                        ? (widget.isEditMode ? "Updating..." : "Creating...")
-                        : (widget.isEditMode ? "Update" : "Create"),
+                    label:
+                        //  _isCreating
+                        //     ? (widget.isEditMode ? "Updating..." : "Creating...")
+                        //     :
+                        (widget.isEditMode ? "Update" : "Create"),
                     onPressed: _isCreating
                         ? null
                         : (widget.isEditMode
                               ? _updateCommunity
                               : _createCommunity),
                     backgroundColor: context.colors.primary,
+                    isLoading: _isCreating,
                   ),
                 ),
               ],

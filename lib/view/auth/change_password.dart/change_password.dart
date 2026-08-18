@@ -106,7 +106,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Password is required.';
                   } else if (!value.passwordValidator()) {
-                    return 'Password must contain at least one uppercase letter, one number, and one special character.';
+                    return 'Password must contain 8 characters and at least one uppercase letter, one number, and one special character.';
                   }
                   return null;
                 },

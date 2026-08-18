@@ -82,6 +82,7 @@ class MyTextField extends StatelessWidget {
       keyboardType: keyboardType,
       obscureText: obscureText,
       maxLength: maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
       onChanged: onChanged,
       maxLines: maxLines ?? 1,
       style: TextStyle(color: textColor ?? context.colors.textPrimary),

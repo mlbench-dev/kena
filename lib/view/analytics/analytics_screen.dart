@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
+import 'package:kena_emotional_journey/app/components/capsule_tabbar.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
@@ -11,12 +12,11 @@ import 'package:kena_emotional_journey/model/analytics/analytics_model.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:kena_emotional_journey/app/components/capsule_tabbar.dart';
+import 'package:kena_emotional_journey/view/analytics/alltime_activities.dart';
 import 'package:kena_emotional_journey/view/analytics/calendar_screen.dart';
 import 'package:kena_emotional_journey/view/analytics/monthly_activities.dart';
 import 'package:kena_emotional_journey/view/analytics/overall_screen.dart';
 import 'package:kena_emotional_journey/view/analytics/weekly_activities.dart';
-import 'package:kena_emotional_journey/view/analytics/alltime_activities.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -113,7 +113,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         leading: BackButton(color: context.colors.textPrimary),
         title: Text(
-          "Overview",
+          "Your Analytics",
           style: context.typography.title.copyWith(
             fontWeight: FontWeight.w600,
             color: context.colors.textPrimary,

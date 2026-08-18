@@ -4,7 +4,6 @@ import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
-import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
@@ -12,14 +11,13 @@ import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/community_detail_model.dart';
 import 'package:kena_emotional_journey/model/community/invitations_model.dart';
-import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
+import 'package:kena_emotional_journey/view/community/empty_community.dart';
 import 'package:kena_emotional_journey/view/community/widgets/button_shimmer_loading.dart';
 import 'package:kena_emotional_journey/view/community/widgets/explore_feeds_shimmer.dart';
 import 'package:kena_emotional_journey/view/community/widgets/invitation_shimmer.dart';
 import 'package:kena_emotional_journey/view/community/widgets/user_profile_shimmer.dart';
-import 'package:provider/provider.dart';
 
 class MyCommunityScreen extends StatefulWidget {
   // final String communityId;
@@ -156,7 +154,6 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final actions = context.watch<NavigationActionsController>();
     final detailData = communityDetailModel?.data?.isNotEmpty == true
         ? communityDetailModel!.data!.first
         : null;
@@ -168,54 +165,6 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
     final maxMembers = detailData?.maxMembers ?? 0;
     final pendingInvites = detailData?.pendingInvites ?? [];
     return MyScaffold(
-      endDrawer: MyDrawer(
-        items: [
-          DrawerMenuItem(
-            icon: Assets.icons.homeOutline.svg(),
-            label: 'Home',
-            isDisabled: actions.isAnyLoading,
-            onTap: () {
-              Navigator.pushNamed(context, RoutesName.homeScreen);
-            },
-          ),
-          DrawerMenuItem(
-            icon: Assets.icons.aspire.svg(),
-            label: 'Aspire',
-            isLoading: actions.aspireLoading,
-            isDisabled: actions.isAnyLoading && !actions.aspireLoading,
-            isAsync: true,
-            onTap: () => actions.onAspireTap(context),
-          ),
-          DrawerMenuItem(
-            icon: Assets.icons.dailyPuls.svg(),
-            label: 'Daily Pulse',
-            isLoading: actions.forecastLoading,
-            isDisabled: actions.isAnyLoading && !actions.forecastLoading,
-            isAsync: true,
-            onTap: () => actions.onForecastTap(context),
-          ),
-          DrawerMenuItem(
-            icon: Assets.icons.activity.svg(),
-            label: 'Activities',
-            isDisabled: actions.isAnyLoading,
-            onTap: () => actions.onActivitiesTap(context),
-          ),
-          DrawerMenuItem(
-            icon: Assets.icons.circle.svg(),
-            label: 'Circle',
-            isDisabled: actions.isAnyLoading,
-            onTap: () => actions.onCommunityTap(context),
-          ),
-          DrawerMenuItem(
-            icon: Assets.icons.bellIcon.svg(),
-            label: 'Notifications',
-            isDisabled: actions.isAnyLoading,
-            onTap: () {
-              Navigator.pushNamed(context, RoutesName.notificationScreen);
-            },
-          ),
-        ],
-      ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
         child: SingleChildScrollView(
@@ -237,19 +186,22 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
                       ),
                     ),
                   ),
-                  Builder(
-                    builder: (scaffoldContext) => GestureDetector(
-                      onTap: () => Scaffold.of(scaffoldContext).openEndDrawer(),
-                      child: Container(
-                        color: Colors.transparent,
-                        padding: EdgeInsets.all(6.w),
-                        child: Icon(
-                          Icons.menu,
-                          color: context.colors.textPrimary,
-                          size: 26.sp,
+                  GestureDetector(
+                    onTap: () {
+                      MyDialogBox.show(
+                        context,
+                        child: CreateandUpdateCommunityBottomSheet(
+                          communityId: _sessionController.communityId,
+                          communityName: detailData?.community?.name,
+                          communityDescription:
+                              detailData?.community?.description,
+                          onCommunityUpdated: (name, description) {
+                            fetchCommunityDetails();
+                          },
                         ),
-                      ),
-                    ),
+                      );
+                    },
+                    child: Assets.icons.editCircle.svg(),
                   ),
                 ],
               ),
@@ -285,7 +237,7 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
                 width: double.infinity,
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: context.colors.textSecondary.withOpacity(0.1),
+                  color: context.colors.textSecondary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: (isCommunityLoading && members.isEmpty)
@@ -321,8 +273,8 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
                           style: context.typography.headline.copyWith(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w500,
-                            color: context.colors.textSecondary.withOpacity(
-                              0.9,
+                            color: context.colors.textSecondary.withValues(
+                              alpha: 0.9,
                             ),
                           ),
                         ),
@@ -608,7 +560,7 @@ class _InviteRequestCardState extends State<InviteRequestCard> {
               height: 25.h,
               decoration: BoxDecoration(
                 color: widget.onAccept == null || _isAccepting
-                    ? context.colors.primary.withOpacity(0.5)
+                    ? context.colors.primary.withValues(alpha: 0.5)
                     : context.colors.primary,
                 borderRadius: BorderRadius.circular(6.r),
               ),
@@ -645,7 +597,7 @@ class _InviteRequestCardState extends State<InviteRequestCard> {
               height: 25.h,
               decoration: BoxDecoration(
                 color: widget.onDecline == null || _isDeclining
-                    ? const Color(0xFFF2DBD9).withOpacity(0.5)
+                    ? const Color(0xFFF2DBD9).withValues(alpha: 0.5)
                     : const Color(0xFFF2DBD9),
                 borderRadius: BorderRadius.circular(6.r),
               ),
@@ -835,8 +787,12 @@ class RemoveMemberDialog extends StatelessWidget {
                   label: "Cancel",
                   fontWeight: FontWeight.w600,
                   textColor: context.colors.textPrimary,
-                  backgroundColor: context.colors.background.withOpacity(0.8),
-                  borderColor: context.colors.textSecondary.withOpacity(0.1),
+                  backgroundColor: context.colors.background.withValues(
+                    alpha: 0.8,
+                  ),
+                  borderColor: context.colors.textSecondary.withValues(
+                    alpha: 0.1,
+                  ),
                   onPressed: onCancel,
                 ),
               ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/model/analytics/weekly_activities_model.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -123,7 +122,7 @@ class _WeeklyActivitiesState extends State<WeeklyActivities> {
       child: Column(
         children: [
           AllTimeProgressCard(
-            lable: 'Weekly',
+            lable: 'Weekly Progress',
             currentProgress: (progress?.activitiesDone ?? 0).toDouble(),
             goalValue: (progress?.goal ?? 1000).toDouble(),
           ),
