@@ -309,6 +309,35 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               ),
                             ],
                           ),
+                          endActionPane: ActionPane(
+                            motion: const DrawerMotion(),
+                            extentRatio: 0.22,
+                            children: [
+                              CustomSlidableAction(
+                                onPressed: (_) {
+                                  context.flushBarSuccessMessage(
+                                    message:
+                                        "Your notification deleted sucessfully",
+                                  );
+                                },
+                                backgroundColor: Colors
+                                    .transparent, // no white pane behind it
+                                foregroundColor: context.colors.background,
+                                padding: EdgeInsets.zero,
+                                child: Container(
+                                  width: 50.w,
+                                  height: 30
+                                      .w, // same as width, so it's a true circle
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: context.colors.primary,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Icon(Icons.done_all, size: 22),
+                                ),
+                              ),
+                            ],
+                          ),
                           child: NotificationsChip(
                             imageUrl: notification.actor?.avatarUrl,
                             title: notification.title ?? '',
