@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kena_emotional_journey/app/data/exception/app_exceptions.dart';
@@ -360,9 +361,7 @@ class PaystackSubscriptionService {
       }
       return data;
     } catch (e) {
-      debugPrint(
-        '⚠️ Could not sync freemium with backend (non-critical): $e',
-      );
+      debugPrint('⚠️ Could not sync freemium with backend (non-critical): $e');
       return null;
     }
   }

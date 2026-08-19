@@ -4,11 +4,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/app/utils/local_storage.dart';
+import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/notifications/notification_model.dart';
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
@@ -272,18 +274,54 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           );
                         }
                         final notification = _notifications[index];
-                        return NotificationsChip(
-                          imageUrl: notification.actor?.avatarUrl,
-                          title: notification.title ?? '',
-                          description: notification.body ?? '',
-                          type: notification.type,
-                          createdAt: notification.createdAt,
-                          notificationId: notification.id,
-                          initiallySubmitted: _answeredCheckInIds.contains(
-                            notification.id,
+                        return Slidable(
+                          key: ValueKey(notification.id),
+                          startActionPane: ActionPane(
+                            motion: const DrawerMotion(),
+                            extentRatio: 0.22,
+                            children: [
+                              CustomSlidableAction(
+                                onPressed: (_) {
+                                  context.flushBarSuccessMessage(
+                                    message:
+                                        "Your notification deleted sucessfully",
+                                  );
+                                },
+                                backgroundColor: Colors
+                                    .transparent, // no white pane behind it
+                                foregroundColor: context.colors.background,
+                                padding: EdgeInsets.zero,
+                                child: Container(
+                                  width: 50.w,
+                                  height: 30
+                                      .w, // same as width, so it's a true circle
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Assets.icons.trashBin.svg(
+                                    color: context.colors.background,
+                                    width: 25,
+                                    height: 25,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          onOptionSelected: (mood) =>
-                              _submitCheckIn(notification.id, mood),
+                          child: NotificationsChip(
+                            imageUrl: notification.actor?.avatarUrl,
+                            title: notification.title ?? '',
+                            description: notification.body ?? '',
+                            type: notification.type,
+                            createdAt: notification.createdAt,
+                            notificationId: notification.id,
+                            initiallySubmitted: _answeredCheckInIds.contains(
+                              notification.id,
+                            ),
+                            onOptionSelected: (mood) =>
+                                _submitCheckIn(notification.id, mood),
+                          ),
                         );
                       },
                     ),

@@ -379,8 +379,8 @@ Widget _infoCard(
             ],
           ),
         ),
-        if (showEdit)
-          GestureDetector(onTap: onEdit, child: Assets.icons.pen2.svg()),
+        // if (showEdit)
+        //   GestureDetector(onTap: onEdit, child: Assets.icons.pen2.svg()),
       ],
     ),
   );

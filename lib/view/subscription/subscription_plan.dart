@@ -149,10 +149,10 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         margin: EdgeInsets.only(bottom: 16.h),
-        padding: EdgeInsets.all(16.w),
+        padding: EdgeInsets.symmetric(vertical: 25.w, horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(15.r),
           border: Border.all(
             color: isSelected
                 ? kenaDarkGreen
@@ -198,18 +198,18 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                     style: context.typography.title.copyWith(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: context.colors.textPrimary,
                     ),
                   ),
-                  Text(
-                    description,
-                    style: context.typography.body.copyWith(
-                      fontSize: 13.sp,
-                      color: context.colors.textSecondary,
-                      fontFamily: "Raleway",
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  // Text(
+                  //   description,
+                  //   style: context.typography.body.copyWith(
+                  //     fontSize: 13.sp,
+                  //     color: context.colors.textSecondary,
+                  //     fontFamily: "Raleway",
+                  //     fontWeight: FontWeight.w400,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -222,9 +222,9 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                 Text(
                   priceText,
                   style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                    color: kenaDarkGreen,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: context.colors.primary,
                     fontFamily: 'Inter',
                   ),
                 ),
@@ -274,7 +274,12 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               ),
             )
           : Padding(
-              padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 10.h),
+              padding: EdgeInsets.only(
+                left: 16.w,
+                right: 16.w,
+                bottom: 10.h,
+                top: 10.h,
+              ),
               child: Column(
                 children: [
                   Expanded(
@@ -299,8 +304,11 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                               _buildPlanOption(
                                 isSelected: selectedIndex == i,
                                 name:
-                                    availablePlans[i]['name'] as String? ??
-                                    'Plan',
+                                    (availablePlans[i]['interval'] as String?)
+                                            ?.toLowerCase() ==
+                                        'year'
+                                    ? 'Annual'
+                                    : 'Monthly',
                                 description: 'Best for getting started',
                                 priceText:
                                     '${_getCurrencySymbol(availablePlans[i]['currency'] as String? ?? 'KES')}${availablePlans[i]['unitAmountDecimal'] as String? ?? '0.00'}',
@@ -625,7 +633,7 @@ class FeatureName extends StatelessWidget {
         Text(
           title,
           style: context.typography.title.copyWith(
-            fontSize: 14.sp,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w400,
             color: context.colors.textSecondary.withValues(alpha: 0.9),
             fontFamily: "sfpro",

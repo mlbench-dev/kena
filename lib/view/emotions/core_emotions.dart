@@ -694,7 +694,7 @@ class _CoreEmotionsState extends State<CoreEmotions> with EmotionSearchMixin {
             if (_selectedEmotions.isNotEmpty && !_isPanelOpen) ...[
               SizedBox(height: 10.h),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                padding: EdgeInsets.all(12.w),
                 child: MyButton(
                   label: "Continue",
                   onPressed: _submitEmotions,

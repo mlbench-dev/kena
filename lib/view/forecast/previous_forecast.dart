@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/components/expandable_text.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
@@ -7,7 +8,6 @@ import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/model/analytics/month_data_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_history_model.dart'
     as history;
@@ -407,7 +407,7 @@ class _PreviousForecastScreenState extends State<PreviousForecastScreen> {
     return EmotionsSectionCard(
       title: 'Forecast',
       isEditMode: false,
-      onToggleEdit: (_) {},
+      onToggleEdit: null,
       tiles: emotionsToShow.map((emotion) {
         return EmotionTile(
           isEditMode: false,
@@ -463,7 +463,7 @@ class _PreviousForecastScreenState extends State<PreviousForecastScreen> {
     return EmotionsSectionCard(
       title: 'End Day Reflection',
       isEditMode: false,
-      onToggleEdit: (_) {},
+      onToggleEdit: null,
       tiles: emotionsToShow.map((emotion) {
         return EmotionTile(
           isEditMode: false,

@@ -50,3 +50,30 @@ temp_auto_push.bat
 temp_interactive_push.bat
 .gitignore
 branch_structure.json
+
+android/.gradle/
+.gradle/
+android/local.properties
+build/
+android/app/build/
+*.iml
+.idea/
+
+# Android signing/generated files - never upload to GitHub
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+
+# iOS generated/build files
+ios/.symlinks/
+ios/Pods/
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/ephemeral/
+ios/Runner/GeneratedPluginRegistrant.h
+ios/Runner/GeneratedPluginRegistrant.m
+
+# macOS generated files
+macos/Flutter/ephemeral/
