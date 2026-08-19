@@ -670,7 +670,7 @@ class DeleteActivityDialogBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 150.h,
+      height: 175.h,
       child: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(
@@ -682,7 +682,7 @@ class DeleteActivityDialogBox extends StatelessWidget {
               style: context.typography.body.copyWith(
                 color: context.colors.textPrimary,
                 fontFamily: 'sfpro',
-                fontSize: 14.sp,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
