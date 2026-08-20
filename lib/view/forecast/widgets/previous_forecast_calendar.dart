@@ -11,6 +11,30 @@ class CalendarDay {
   CalendarDay({required this.date, required this.hasData});
 }
 
+/// One category shown in the analytics legend and as a per-day dot.
+/// [isActive] reads the relevant flag off a [MonthDay].
+class _AnalyticsCategory {
+  final String label;
+  final Color color;
+  final bool Function(MonthDay? monthDay) isActive;
+
+  const _AnalyticsCategory(this.label, this.color, this.isActive);
+}
+
+const List<_AnalyticsCategory> _analyticsCategories = [
+  _AnalyticsCategory('Activity', Color(0xFF0000FF), _isActivity),
+  _AnalyticsCategory('Core', Color(0xFF1E5631), _isCore),
+  _AnalyticsCategory('Aspirational', Color(0xFF00BFFF), _isAspirational),
+  _AnalyticsCategory('Forecast', Color(0xFFFF0000), _isForecast),
+  _AnalyticsCategory('Reflection', Color(0xFFFFD700), _isReflection),
+];
+
+bool _isActivity(MonthDay? d) => d?.activity == true;
+bool _isCore(MonthDay? d) => d?.core == true;
+bool _isAspirational(MonthDay? d) => d?.aspirational == true;
+bool _isForecast(MonthDay? d) => d?.forecast == true;
+bool _isReflection(MonthDay? d) => d?.reflection == true;
+
 class PreviousForecastCalendar extends StatefulWidget {
   final Function(DateTime)? onDateSelected;
   final Function(DateTime)? onMonthChanged;
@@ -48,14 +72,6 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
   // padding/width used inside `_buildDayItem`.
   static const double _dayItemWidth = 52;
 
-  // Consistent color palette matching Screenshot 2026-07-03 at 1.06.01 PM.png
-  final List<Color> analyticalDots = [
-    const Color(0xFF1E5631), // Dark Green (Core)
-    const Color(0xFF0000FF), // Blue (Activity)
-    const Color(0xFFFF0000), // Red (Forecast)
-    const Color(0xFFFFD700), // Yellow (Reflection)
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -85,22 +101,7 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
     for (var day in visibleDays) {
       final formattedDay = DateFormat('yyyy-MM-dd').format(day.date);
       final monthDay = widget.monthDaysData[formattedDay];
-      final bool hasMonthData =
-          monthDay != null &&
-          (monthDay.forecast == true ||
-              monthDay.core == true ||
-              monthDay.activity == true ||
-              monthDay.reflection == true ||
-              monthDay.aspirational == true);
-
-      day.hasData =
-          hasMonthData ||
-          widget.datesWithData.any(
-            (d) =>
-                d.year == day.date.year &&
-                d.month == day.date.month &&
-                d.day == day.date.day,
-          );
+      day.hasData = monthDay?.forecast == true;
     }
     setState(() {});
   }
@@ -147,23 +148,9 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
       final formattedDay = DateFormat('yyyy-MM-dd').format(date);
       final monthDay = widget.monthDaysData[formattedDay];
 
-      final bool hasMonthData =
-          monthDay != null &&
-          (monthDay.forecast == true ||
-              monthDay.core == true ||
-              monthDay.activity == true ||
-              monthDay.reflection == true ||
-              monthDay.aspirational == true);
-
-      final hasData =
-          hasMonthData ||
-          widget.datesWithData.any(
-            (d) =>
-                d.year == date.year &&
-                d.month == date.month &&
-                d.day == date.day,
-          );
-      visibleDays.add(CalendarDay(date: date, hasData: hasData));
+      visibleDays.add(
+        CalendarDay(date: date, hasData: monthDay?.forecast == true),
+      );
     }
     setState(() {});
   }
@@ -302,23 +289,8 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SectionColorCard(
-                  color: const Color(0xFF0000FF),
-                  label: "Activity",
-                ),
-                SectionColorCard(color: const Color(0xFF1E5631), label: "Core"),
-                SectionColorCard(
-                  color: const Color(0xFF00BFFF),
-                  label: "Aspirational",
-                ),
-                SectionColorCard(
-                  color: const Color(0xFFFF0000),
-                  label: "Forecast",
-                ),
-                SectionColorCard(
-                  color: const Color(0xFFFFD700),
-                  label: "Reflection",
-                ),
+                for (final category in _analyticsCategories)
+                  _LegendItem(color: category.color, label: category.label),
               ],
             ),
           ),
@@ -394,91 +366,70 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
             ),
             SizedBox(height: 8.h),
 
-            // --- DOT INDICATOR ---
             if (widget.isAnalytics)
-              Builder(
-                builder: (context) {
-                  final formattedDay = DateFormat(
-                    'yyyy-MM-dd',
-                  ).format(day.date);
-                  final monthDay = widget.monthDaysData[formattedDay];
-
-                  final dots = [
-                    _AnalyticsDot(
-                      const Color(0xFF0000FF),
-                      monthDay?.activity == true,
-                    ),
-                    _AnalyticsDot(
-                      const Color(0xFF1E5631),
-                      monthDay?.core == true,
-                    ),
-                    _AnalyticsDot(
-                      const Color(0xFF00BFFF),
-                      monthDay?.aspirational == true,
-                    ),
-                    _AnalyticsDot(
-                      const Color(0xFFFF0000),
-                      monthDay?.forecast == true,
-                    ),
-                    _AnalyticsDot(
-                      const Color(0xFFFFD700),
-                      monthDay?.reflection == true,
-                    ),
-                  ];
-
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: dots.map((dot) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 1.w),
-                        child: Container(
-                          width: 5.w,
-                          height: 5.w,
-                          decoration: BoxDecoration(
-                            color: (!disabled && dot.active)
-                                ? dot.color
-                                : Colors.transparent,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  );
-                },
-              )
+              _buildAnalyticsDots(day, disabled)
             else
-              Container(
-                width: 6.w,
-                height: 6.w,
-                decoration: BoxDecoration(
-                  color: (isSelected || day.hasData) && !disabled
-                      ? context.colors.primary
-                      : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
+              _Dot(
+                size: 6.w,
+                color: day.hasData && !disabled
+                    ? context.colors.primary
+                    : Colors.transparent,
               ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildAnalyticsDots(CalendarDay day, bool disabled) {
+    final formattedDay = DateFormat('yyyy-MM-dd').format(day.date);
+    final monthDay = widget.monthDaysData[formattedDay];
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final category in _analyticsCategories)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 1.w),
+            child: _Dot(
+              size: 5.w,
+              color: !disabled && category.isActive(monthDay)
+                  ? category.color
+                  : Colors.transparent,
+            ),
+          ),
+      ],
+    );
+  }
 }
 
-class SectionColorCard extends StatelessWidget {
+/// A small filled circle used for the day indicator and analytics dots.
+class _Dot extends StatelessWidget {
+  final double size;
+  final Color color;
+  const _Dot({required this.size, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
+class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;
-  const SectionColorCard({super.key, required this.color, required this.label});
+  const _LegendItem({required this.color, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: 10.w,
-          height: 10.w,
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
+        _Dot(size: 10.w, color: color),
         SizedBox(width: 4.w),
         Text(
           label,
@@ -492,10 +443,4 @@ class SectionColorCard extends StatelessWidget {
       ],
     );
   }
-}
-
-class _AnalyticsDot {
-  final Color color;
-  final bool active;
-  const _AnalyticsDot(this.color, this.active);
 }

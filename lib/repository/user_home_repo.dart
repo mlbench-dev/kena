@@ -159,6 +159,13 @@ class UserHomeRepository {
     return _apiServices.delete(url: AppUrl.removeCommunityMember(memberId));
   }
 
+  //Delete Notification
+  Future<Map<String, dynamic>> deleteNotification({
+    required String notificationId,
+  }) async {
+    return _apiServices.delete(url: AppUrl.deleteNotification(notificationId));
+  }
+
   //accept Invite
   Future<Map<String, dynamic>> acceptInvite({required String inviteId}) async {
     return _apiServices.post(url: AppUrl.acceptInvite(inviteId), data: {});
@@ -269,9 +276,9 @@ class UserHomeRepository {
   }) async {
     final Map<String, dynamic> data = {
       'memberIds': memberIds,
-      if (endDate != null) 'endDate': endDate,
-      if (message != null) 'message': message,
-      if (communityId != null) 'communityId': communityId,
+      'endDate': ?endDate,
+      'message': ?message,
+      'communityId': ?communityId,
     };
     return _apiServices.post(url: AppUrl.shareWeeklyForecast, data: data);
   }
@@ -281,10 +288,7 @@ class UserHomeRepository {
     required List<String> userIds,
     String? endDate,
   }) async {
-    final Map<String, dynamic> data = {
-      'userIds': userIds,
-      if (endDate != null) 'endDate': endDate,
-    };
+    final Map<String, dynamic> data = {'userIds': userIds, 'endDate': ?endDate};
     return _apiServices.post(url: AppUrl.stopSharingWeeklyForecast, data: data);
   }
 
@@ -347,9 +351,7 @@ class UserHomeRepository {
     required String date,
     required String key,
   }) async {
-    final query = Uri(
-      queryParameters: {'date': date, 'key': key},
-    ).query;
+    final query = Uri(queryParameters: {'date': date, 'key': key}).query;
     return await _apiServices.delete(
       url: '${AppUrl.deleteReflectionEmotion}?$query',
     );

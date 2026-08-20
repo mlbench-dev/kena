@@ -15,6 +15,7 @@ import 'package:kena_emotional_journey/model/notifications/notification_model.da
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
 import 'package:kena_emotional_journey/services/user/thought_monitoring_service.dart';
+import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/notifications/empty_notifications.dart';
 import 'package:kena_emotional_journey/view/notifications/notification_permission_screen.dart';
 import 'package:kena_emotional_journey/view/notifications/widgets/notifications_chip.dart';
@@ -33,6 +34,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   final _notificationsService = NotificationsService();
   final _thoughtMonitoringService = ThoughtMonitoringService();
   final _localStorage = LocalStorage();
+  final UserHomeService _service = UserHomeService();
   static final FirebaseMessaging _firebaseMessaging =
       FirebaseMessaging.instance;
 
@@ -165,6 +167,25 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return success;
   }
 
+  Future<void> deleteNotification(String? notificationId) async {
+    if (notificationId == null) return;
+    final success = await _service.deleteNotification(
+      notificationId: notificationId,
+      context: context,
+    );
+    if (!mounted) return;
+    if (success) {
+      setState(() {
+        _notifications.removeWhere((n) => n.id == notificationId);
+      });
+      if (context.mounted) {
+        context.flushBarSuccessMessage(
+          message: "Your notification deleted sucessfully",
+        );
+      }
+    }
+  }
+
   Future<void> _handlePermissionResult() async {
     final result = await Navigator.push(
       context,
@@ -276,17 +297,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         final notification = _notifications[index];
                         return Slidable(
                           key: ValueKey(notification.id),
-                          startActionPane: ActionPane(
+                          endActionPane: ActionPane(
                             motion: const DrawerMotion(),
                             extentRatio: 0.22,
                             children: [
                               CustomSlidableAction(
-                                onPressed: (_) {
-                                  context.flushBarSuccessMessage(
-                                    message:
-                                        "Your notification deleted sucessfully",
-                                  );
-                                },
+                                onPressed: (_) =>
+                                    deleteNotification(notification.id),
                                 backgroundColor: Colors
                                     .transparent, // no white pane behind it
                                 foregroundColor: context.colors.background,
@@ -309,35 +326,35 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               ),
                             ],
                           ),
-                          endActionPane: ActionPane(
-                            motion: const DrawerMotion(),
-                            extentRatio: 0.22,
-                            children: [
-                              CustomSlidableAction(
-                                onPressed: (_) {
-                                  context.flushBarSuccessMessage(
-                                    message:
-                                        "Your notification deleted sucessfully",
-                                  );
-                                },
-                                backgroundColor: Colors
-                                    .transparent, // no white pane behind it
-                                foregroundColor: context.colors.background,
-                                padding: EdgeInsets.zero,
-                                child: Container(
-                                  width: 50.w,
-                                  height: 30
-                                      .w, // same as width, so it's a true circle
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: context.colors.primary,
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Icon(Icons.done_all, size: 22),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // endActionPane: ActionPane(
+                          //   motion: const DrawerMotion(),
+                          //   extentRatio: 0.22,
+                          //   children: [
+                          //     CustomSlidableAction(
+                          //       onPressed: (_) {
+                          //         context.flushBarSuccessMessage(
+                          //           message:
+                          //               "Your notification deleted sucessfully",
+                          //         );
+                          //       },
+                          //       backgroundColor: Colors
+                          //           .transparent, // no white pane behind it
+                          //       foregroundColor: context.colors.background,
+                          //       padding: EdgeInsets.zero,
+                          //       child: Container(
+                          //         width: 50.w,
+                          //         height: 30
+                          //             .w, // same as width, so it's a true circle
+                          //         alignment: Alignment.center,
+                          //         decoration: BoxDecoration(
+                          //           color: context.colors.primary,
+                          //           borderRadius: BorderRadius.circular(16),
+                          //         ),
+                          //         child: Icon(Icons.done_all, size: 22),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           child: NotificationsChip(
                             imageUrl: notification.actor?.avatarUrl,
                             title: notification.title ?? '',

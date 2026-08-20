@@ -164,6 +164,10 @@ class AppUrl {
   static String removeCommunityMember(String memberId) =>
       '$baseUrl/api/community/members/$memberId';
 
+  // Delete Notification
+  static String deleteNotification(String notificationId) =>
+      '$baseUrl/api/notifications/$notificationId';
+
   // Accept / Decline Invitation
   static String acceptInvite(String inviteId) =>
       '$baseUrl/api/community/invitations/$inviteId/accept';

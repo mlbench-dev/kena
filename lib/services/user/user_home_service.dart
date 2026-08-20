@@ -6,17 +6,18 @@ import 'package:kena_emotional_journey/app/utils/service_error_handler.dart';
 import 'package:kena_emotional_journey/model/activites/activities_model.dart';
 import 'package:kena_emotional_journey/model/activites/planned_activity_model.dart';
 import 'package:kena_emotional_journey/model/activites/today_activity_model.dart';
-import 'package:kena_emotional_journey/model/analytics/analytics_model.dart';
+import 'package:kena_emotional_journey/model/analytics/all_time_activities.dart';
 import 'package:kena_emotional_journey/model/analytics/analytics_calendar_model.dart';
+import 'package:kena_emotional_journey/model/analytics/analytics_model.dart';
 import 'package:kena_emotional_journey/model/analytics/forecast_plan_activities.dart';
-import 'package:kena_emotional_journey/model/analytics/overall_alltime_model.dart';
 import 'package:kena_emotional_journey/model/analytics/month_data_model.dart';
+import 'package:kena_emotional_journey/model/analytics/monthly_activities_model.dart'
+    show MonthlyActivitiesModel;
+import 'package:kena_emotional_journey/model/analytics/overall_alltime_model.dart';
 import 'package:kena_emotional_journey/model/analytics/overall_monthly_model.dart';
 import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart';
 import 'package:kena_emotional_journey/model/analytics/weekly_activities_model.dart'
     show WeeklyActivitiesModel;
-import 'package:kena_emotional_journey/model/analytics/monthly_activities_model.dart'
-    show MonthlyActivitiesModel;
 import 'package:kena_emotional_journey/model/community/communities_model.dart';
 import 'package:kena_emotional_journey/model/community/community_detail_model.dart';
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
@@ -28,17 +29,14 @@ import 'package:kena_emotional_journey/model/community/user_community.dart';
 import 'package:kena_emotional_journey/model/community/weekly_feed_model.dart'
     show WeeklyFeedModel;
 import 'package:kena_emotional_journey/model/emotions/result_emotion_model.dart';
-import 'package:kena_emotional_journey/model/forecast/end_day_model.dart';
 import 'package:kena_emotional_journey/model/forecast/comparison_model.dart';
+import 'package:kena_emotional_journey/model/forecast/end_day_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_history_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_notes.dart';
 import 'package:kena_emotional_journey/model/user/user_home_model.dart';
 import 'package:kena_emotional_journey/repository/user_home_repo.dart';
-import 'package:kena_emotional_journey/model/analytics/all_time_activities.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
-import 'package:kena_emotional_journey/view/analytics/weekly_activities.dart';
-import 'package:path/path.dart';
 
 class UserHomeService {
   //   final BaseApiServices api = NetworkApiService();
@@ -595,8 +593,8 @@ class UserHomeService {
       final Map<String, dynamic> data = {
         "appIdentifier": appIdentifier,
         "platform": platform,
-        if (appName != null) "appName": appName,
-        if (category != null) "category": category,
+        "appName": ?appName,
+        "category": ?category,
         "day": day ?? DateTime.now().toIso8601String().split("T")[0],
       };
 
@@ -790,6 +788,27 @@ class UserHomeService {
 
       debugPrint('Remove Member Raw: $response');
 
+      return response['success'] == true;
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHandler.handle(context, e, serviceName: tag);
+      }
+      return false;
+    }
+  }
+
+  ///
+  /// Delete Notification
+  ///
+  Future<bool> deleteNotification({
+    required String notificationId,
+    required BuildContext context,
+  }) async {
+    try {
+      final response = await _userHomeRepo.deleteNotification(
+        notificationId: notificationId,
+      );
+      debugPrint('Notification Deleted Raw: $response');
       return response['success'] == true;
     } catch (e) {
       if (context.mounted) {
@@ -1595,8 +1614,9 @@ class UserHomeService {
     BuildContext? context,
   }) async {
     try {
-      final response =
-          await _userHomeRepo.getCalendarMonthAnalytics(month: month);
+      final response = await _userHomeRepo.getCalendarMonthAnalytics(
+        month: month,
+      );
       debugPrint('Calendar Month Analytics Raw: $response');
       return MonthDataModel.fromJson(response);
     } catch (e) {
@@ -1929,7 +1949,7 @@ class UserHomeService {
       if (response['success'] == true) {
         // Extract communityId from response
         final data = response['data'];
-        
+
         if (data is List && data.isNotEmpty) {
           final firstItem = data.first;
           if (firstItem is Map) {
@@ -1955,7 +1975,7 @@ class UserHomeService {
             return (community['_id'] ?? community['id'])?.toString();
           }
         }
-        
+
         if (response.containsKey('communityId')) {
           return response['communityId']?.toString();
         }
