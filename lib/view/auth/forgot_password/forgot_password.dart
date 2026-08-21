@@ -84,9 +84,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     setState(() => isSendingOtp = true);
     await authService
         .sendForgotOtp(context: context, email: emailController.text)
-        .then((_) {
-          isOtpSent = true;
-          _startTimer();
+        .then((success) {
+          if (success) {
+            isOtpSent = true;
+            _startTimer();
+          }
           if (mounted) {
             setState(() => isSendingOtp = false);
           }
@@ -140,7 +142,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       fontWeight: FontWeight.w400,
                       fontSize: 15.sp,
                       // fontFamily: 'sfpro',
-                      color: context.colors.textSecondary.withOpacity(0.8),
+                      color: context.colors.textSecondary.withValues(
+                        alpha: 0.8,
+                      ),
                     ),
                   ),
                   SizedBox(height: 30.h),
