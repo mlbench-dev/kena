@@ -2,6 +2,7 @@
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
   <application android:label="${appName}" android:name="${applicationName}" android:icon="@mipmap/launcher_icon">
     <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop" android:taskAffinity="" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
       <!-- Specifies an Android theme to apply to this Activity as soon as
@@ -20,6 +21,7 @@
     <!-- Google Maps API Key -->
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyCU4fOhX4k3jJquH8cJMA5AvIahe_LFVG4"/>
     <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification"/>
+    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="@string/default_notification_channel_id"/>
     <!-- AdMob App ID — TEST ID ONLY. Replace with your real AdMob app ID
          before any production/release build. -->
     <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>
