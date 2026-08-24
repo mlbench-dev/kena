@@ -7,7 +7,9 @@ import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 class NotificationRouteResolver {
   NotificationRouteResolver._();
 
-  static String routeForType(String? type) {
+  static String routeForType(String? type, {String? communityId}) {
+    final hasCommunity = communityId?.trim().isNotEmpty == true;
+
     switch (type) {
       case 'reassessment_reminder':
         return RoutesName.selectedEmotionsScreen;
@@ -29,7 +31,9 @@ class NotificationRouteResolver {
         return RoutesName.aspirationalEmotions;
       case 'community_invite_received':
       case 'community_invite_accepted':
-        return RoutesName.myCommunity;
+        return hasCommunity
+            ? RoutesName.myCommunity
+            : RoutesName.emptyCommunity;
       case 'community_like':
       case 'community_comment':
       case 'share_comment':

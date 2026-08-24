@@ -248,7 +248,10 @@ class PushNotificationsService {
 
   void _handleNotificationNavigation(RemoteMessage message) {
     final type = message.data['type'] as String?;
-    final route = NotificationRouteResolver.routeForType(type);
+    final route = NotificationRouteResolver.routeForType(
+      type,
+      communityId: _session.communityId,
+    );
 
     // Defer navigation to after the current frame to avoid _debugLocked
     SchedulerBinding.instance.addPostFrameCallback((_) {

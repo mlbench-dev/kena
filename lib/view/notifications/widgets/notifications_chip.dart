@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/routes/notification_route_resolver.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
+import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class NotificationStyleConfig {
@@ -81,7 +82,10 @@ class _NotificationsChipState extends State<NotificationsChip> {
   NotificationStyleConfig _getStyleConfig(BuildContext context) {
     final primaryColor = context.colors.primary;
     final bellIcon = Assets.icons.bell.svg(height: 18.w, width: 18.w);
-    final route = NotificationRouteResolver.routeForType(widget.type);
+    final route = NotificationRouteResolver.routeForType(
+      widget.type,
+      communityId: SessionController().communityId,
+    );
 
     final String badgeLabel;
     switch (widget.type) {

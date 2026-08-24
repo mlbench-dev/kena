@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kena_emotional_journey/app/data/exception/app_exceptions.dart';
 import 'package:kena_emotional_journey/app/data/response/api_response.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/app/utils/service_error_handler.dart';
@@ -1465,6 +1466,9 @@ class UserHomeService {
       debugPrint('✅ User Details parsed successfully!');
 
       return model;
+    } on NotFoundException {
+      await SessionController().clearCommunityId();
+      return null;
     } catch (e) {
       if (context != null && context.mounted) {
         ErrorHandler.handle(context, e, serviceName: tag);

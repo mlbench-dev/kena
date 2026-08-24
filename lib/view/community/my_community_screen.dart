@@ -63,6 +63,13 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
       context: context,
     );
 
+    if (_sessionController.communityId == null) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, RoutesName.emptyCommunity);
+      }
+      return;
+    }
+
     if (mounted) {
       setState(() {
         communityDetailModel = result;

@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import 'package:kena_emotional_journey/app/data/exception/app_exceptions.dart';
 import 'package:kena_emotional_journey/app/network/base_api_services.dart';
 import 'package:kena_emotional_journey/app/utils/app_url.dart';
 import 'package:kena_emotional_journey/app/utils/log_manager.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 
@@ -112,8 +113,9 @@ class NetworkApiService implements BaseApiServices {
         throw BadRequestException(response.body);
       case 401:
         throw UnauthorizedException(response.body);
-      case 500:
       case 404:
+        throw NotFoundException(response.body);
+      case 500:
         throw FetchDataException(response.body);
       default:
         throw FetchDataException(response.body);

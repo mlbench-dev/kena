@@ -39,6 +39,21 @@ class FetchDataException extends AppException {
   }
 }
 
+class NotFoundException extends AppException {
+  NotFoundException([String? responseBody])
+    : super(_extractMessage(responseBody), 'Not Found', responseBody);
+
+  static String _extractMessage(String? responseBody) {
+    try {
+      final Map<String, dynamic> json =
+          jsonDecode(responseBody ?? '{}') as Map<String, dynamic>;
+      return json['message'] as String? ?? 'Resource not found';
+    } catch (_) {
+      return 'Resource not found';
+    }
+  }
+}
+
 /// Exception class representing a bad request error.
 class BadRequestException extends AppException {
   BadRequestException([String? responseBody])

@@ -1,11 +1,11 @@
 // Enum for storage keys to prevent typos
 import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:kena_emotional_journey/app/utils/enums.dart';
 import 'package:kena_emotional_journey/app/utils/local_storage.dart';
 import 'package:kena_emotional_journey/model/user/users_model.dart';
-import 'dart:developer';
-import 'package:kena_emotional_journey/view/pro_tip/pro_tip_manager.dart';
 
 enum StorageKey {
   accessToken('access_token'),
@@ -157,6 +157,12 @@ class SessionController extends ChangeNotifier {
     _communityId = communityId;
     await _localStorage.setValue(StorageKey.communityId.value, communityId);
     log('Community ID saved: $communityId');
+  }
+
+  Future<void> clearCommunityId() async {
+    _communityId = null;
+    await _localStorage.clearValue(StorageKey.communityId.value);
+    notifyListeners();
   }
 
   Future<void> saveActivities(List<Map<String, dynamic>> activities) async {
