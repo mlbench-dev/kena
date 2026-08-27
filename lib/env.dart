@@ -4,8 +4,6 @@ part 'env.g.dart';
 
 @Envied(path: '.env', obfuscate: true)
 abstract class Env {
-  @EnviedField(varName: 'PLACES_API_KEY')
-  static final String placesApiKey = _Env.placesApiKey;
 
   // @EnviedField(varName: 'STRIPE_PUBLISHABLE_KEY')
   // static final String stripePublishableKey = _Env.stripePublishableKey;

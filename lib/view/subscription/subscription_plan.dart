@@ -6,8 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/utils/app_constants.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/payment/iap_services.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
@@ -355,7 +357,52 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 12.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () => openLegalUrl(
+                          context,
+                          ExternalLinks.kenaTermsAndConditions,
+                        ),
+                        child: Text(
+                          'Terms & Conditions',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: context.colors.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Text(
+                        'and',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: context.colors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      GestureDetector(
+                        onTap: () => openLegalUrl(
+                          context,
+                          ExternalLinks.kenaPrivacyPolicy,
+                        ),
+                        child: Text(
+                          'Privacy Policy',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                            color: context.colors.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12.h),
                   MyButton(
                     label: "Proceed",
                     isLoading: isSubscriptionLoading,

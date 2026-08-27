@@ -6,7 +6,9 @@ import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
+import 'package:kena_emotional_journey/app/utils/app_constants.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
@@ -78,95 +80,143 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 SizedBox(height: 20.h),
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 41,
-                      backgroundColor: context.colors.primary,
-                      child: CircleAvatar(
-                        radius: 40,
-                        backgroundColor: Color(0xFF475569),
-                        backgroundImage:
-                            (user?.avatarUrl != null &&
-                                user!.avatarUrl!.isNotEmpty)
-                            ? CachedNetworkImageProvider(user.avatarUrl!)
-                            : null,
-                        child:
-                            (user?.avatarUrl == null ||
-                                user!.avatarUrl!.isEmpty)
-                            ? Icon(Icons.person, color: Colors.grey, size: 24.r)
-                            : null,
-                      ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 41,
+                              backgroundColor: context.colors.primary,
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Color(0xFF475569),
+                                backgroundImage:
+                                    (user?.avatarUrl != null &&
+                                        user!.avatarUrl!.isNotEmpty)
+                                    ? CachedNetworkImageProvider(
+                                        user.avatarUrl!,
+                                      )
+                                    : null,
+                                child:
+                                    (user?.avatarUrl == null ||
+                                        user!.avatarUrl!.isEmpty)
+                                    ? Icon(
+                                        Icons.person,
+                                        color: Colors.grey,
+                                        size: 24.r,
+                                      )
+                                    : null,
+                              ),
+                            ),
+                            if (_hasPaidSubscription)
+                              Positioned(
+                                top: 0,
+                                right: -5.w,
+                                width: 28.w,
+                                height: 28.h,
+                                child: Assets.icons.premium.svg(),
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        Text(
+                          user?.username ?? "",
+                          style: context.typography.title.copyWith(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "sfpro",
+                          ),
+                        ),
+                        SizedBox(height: 30.h),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Settings",
+                            style: context.typography.title.copyWith(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.textPrimary,
+                              fontFamily: "sfpro",
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
+                          icon: Assets.icons.pen2.svg(),
+                          text: "Edit Profile",
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RoutesName.editProfile,
+                            );
+                          },
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
+                          icon: Assets.icons.lockIcon.svg(),
+                          text: "Change Password",
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RoutesName.changePassword,
+                            );
+                          },
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
+                          icon: Assets.icons.iconsProductSubscriptions.svg(),
+                          text: "Subscription Plan",
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RoutesName.activeSubscription,
+                            );
+                          },
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
+                          icon: Icon(
+                            Icons.description_outlined,
+                            color: context.colors.primary,
+                          ),
+                          text: "Terms & Conditions",
+                          onTap: () => openLegalUrl(
+                            context,
+                            ExternalLinks.kenaTermsAndConditions,
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
+                          icon: Icon(
+                            Icons.privacy_tip_outlined,
+                            color: context.colors.primary,
+                          ),
+                          text: "Privacy Policy",
+                          onTap: () => openLegalUrl(
+                            context,
+                            ExternalLinks.kenaPrivacyPolicy,
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        ProfileMenuTile(
+                          icon: Assets.icons.trashBin.svg(),
+                          text: "Delete Account",
+                          textColor: Colors.red,
+                          onTap: () {
+                            MyDialogBox.show(
+                              context,
+                              child: DeleteAccountDialog(
+                                authService: _authService,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    if (_hasPaidSubscription)
-                      Positioned(
-                        top: 0,
-                        right: -5.w,
-                        width: 28.w,
-                        height: 28.h,
-                        child: Assets.icons.premium.svg(),
-                      ),
-                  ],
-                ),
-                SizedBox(height: 10.h),
-                Text(
-                  user?.username ?? "",
-                  style: context.typography.title.copyWith(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "sfpro",
                   ),
                 ),
-                SizedBox(height: 30.h),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Settings",
-                    style: context.typography.title.copyWith(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: context.colors.textPrimary,
-                      fontFamily: "sfpro",
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                ProfileMenuTile(
-                  icon: Assets.icons.pen2.svg(),
-                  text: "Edit Profile",
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.editProfile);
-                  },
-                ),
-                SizedBox(height: 10.h),
-                ProfileMenuTile(
-                  icon: Assets.icons.lockIcon.svg(),
-                  text: "Change Password",
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.changePassword);
-                  },
-                ),
-                SizedBox(height: 10.h),
-                ProfileMenuTile(
-                  icon: Assets.icons.iconsProductSubscriptions.svg(),
-                  text: "Subscription Plan",
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.activeSubscription);
-                  },
-                ),
-                SizedBox(height: 20.h),
-                ProfileMenuTile(
-                  icon: Assets.icons.trashBin.svg(),
-                  text: "Delete Account",
-                  textColor: Colors.red,
-                  onTap: () {
-                    MyDialogBox.show(
-                      context,
-                      child: DeleteAccountDialog(authService: _authService),
-                    );
-                  },
-                ),
-                Spacer(),
                 const BannerAdWidget(),
                 SizedBox(height: 10.h),
                 MyButton(

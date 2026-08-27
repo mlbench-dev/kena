@@ -1,6 +1,6 @@
 class AppUrl {
   // Base URLs
-  // static const String baseUrl = 'https://rf0cfpc5-3000.inc1.devtunnels.ms';
+  // static const String baseUrl = 'https://c4rv5zwz-3000.inc1.devtunnels.ms';
   // static const String baseUrl = 'https://kena-backend-phase2.vercel.app';
   static const String baseUrl = 'https://www.kena.life';
 

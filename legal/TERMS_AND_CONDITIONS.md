@@ -1,17 +1,12 @@
----
-STATUS: DRAFT — for internal and legal counsel review before publication. Not yet reviewed by a
-qualified lawyer. Bracketed items marked [ ] require confirmation before this document is published.
----
-
 # Kena — Terms & Conditions
 
-**Effective Date:** [Insert date of publication]
-**Last Updated:** 10 August 2026
+**Effective Date:** 27 August 2026
+**Last Updated:** 27 August 2026
 
 ## 1. Introduction and Acceptance
 
 These Terms & Conditions ("**Terms**") are a binding agreement between you ("**User**," "**you**," or
-"**your**") and [Company Legal Name] ("**Kena**," "**we**," "**us**," or "**our**"), the operator of the
+"**your**") and GiantCanopy Ltd ("**Kena**," "**we**," "**us**," or "**our**"), the operator of the
 Kena mobile application, associated websites (including kena.life), and related services (collectively,
 the "**Services**").
 
@@ -31,9 +26,9 @@ authority to bind that entity, and "you" refers to that entity as well as you in
 
 ## 3. Eligibility
 
-3.1 You must be at least **18 years old** [confirm minimum age policy] to create an Account and use the
-Services. By registering, you represent and warrant that you meet this requirement and that you have the
-legal capacity to enter into these Terms.
+3.1 You must be at least **18 years old** to create an Account and use the Services. By registering, you
+represent and warrant that you meet this requirement and that you have the legal capacity to enter into
+these Terms.
 
 3.2 The Services are not directed at children, and we do not knowingly collect information from anyone
 under the minimum age stated above. If we learn that we have done so, we will take steps to delete the
@@ -49,7 +44,7 @@ a one-time passcode sent to your email), or by signing in with a supported third
 
 4.2 **Account security.** You are responsible for maintaining the confidentiality of your login
 credentials and for all activity that occurs under your Account. Notify us immediately at
-**noreply@kena.life** if you suspect unauthorized use of your Account.
+**customersupport@kena.life** if you suspect unauthorized use of your Account.
 
 4.3 **One account per person.** Each individual may maintain one Account.
 
@@ -187,8 +182,8 @@ responsible for the practices or content of third-party providers.
 ## 12. Intellectual Property
 
 12.1 The Services, including the Kena name, logo, app design, software, and all content we create
-(excluding User Content), are owned by [Company Legal Name] or our licensors and are protected by
-intellectual property laws.
+(excluding User Content), are owned by GiantCanopy Ltd or our licensors and are protected by intellectual
+property laws.
 
 12.2 Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable,
 revocable license to download and use the Kena app on a device you own or control, solely for your
@@ -224,37 +219,35 @@ EXCLUDED UNDER APPLICABLE LAW, INCLUDING THE CONSUMER PROTECTION ACT, 2012 OF KE
 
 ## 15. Limitation of Liability
 
-TO THE MAXIMUM EXTENT PERMITTED BY LAW, [COMPANY LEGAL NAME] AND ITS OFFICERS, EMPLOYEES, AND AGENTS WILL
-NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, GIANTCANOPY LTD AND ITS OFFICERS, EMPLOYEES, AND AGENTS WILL NOT
+BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF
 PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR RELATING TO YOUR USE OF THE
 SERVICES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR TOTAL AGGREGATE LIABILITY FOR ANY CLAIM
-ARISING OUT OF OR RELATING TO THESE TERMS OR THE SERVICES WILL NOT EXCEED THE GREATER OF (A) THE AMOUNT
-YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM AROSE, OR (B) [KES 5,000], EXCEPT WHERE SUCH LIMITATION IS
-NOT PERMITTED BY APPLICABLE LAW.
+ARISING OUT OF OR RELATING TO THESE TERMS OR THE SERVICES WILL NOT EXCEED THE TOTAL AMOUNT YOU PAID US, IF
+ANY, IN THE 12 MONTHS BEFORE THE CLAIM AROSE, EXCEPT WHERE SUCH LIMITATION IS NOT PERMITTED BY APPLICABLE
+LAW.
 
 Nothing in these Terms limits liability that cannot be limited under applicable law, including liability
 for death or personal injury caused by negligence, or fraud.
 
 ## 16. Indemnification
 
-You agree to indemnify and hold harmless [Company Legal Name] and its officers, employees, and agents from
-any claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or
+You agree to indemnify and hold harmless GiantCanopy Ltd and its officers, employees, and agents from any
+claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or
 related to: (a) your use of the Services; (b) your Content; (c) your violation of these Terms; or (d) your
 violation of any right of a third party, including another User.
 
 ## 17. Governing Law and Dispute Resolution
 
-17.1 These Terms are governed by and construed in accordance with the laws of the **Republic of Kenya**
-[confirm: verify Kena's legal entity is actually registered/operated in Kenya before finalizing — do not
-retain Kenya here solely because the app/project is associated with Kenya], without regard to its
-conflict-of-laws principles.
+17.1 These Terms are governed by and construed in accordance with the laws of the **Republic of Kenya**,
+without regard to its conflict-of-laws principles.
 
 17.2 The parties will first attempt to resolve any dispute arising out of or relating to these Terms or
-the Services through good-faith informal negotiation by contacting **noreply@kena.life**.
+the Services through good-faith informal negotiation by contacting **customersupport@kena.life**.
 
 17.3 If a dispute is not resolved informally within 30 days, the parties submit to the exclusive
-jurisdiction of the courts of Kenya, seated in [Nairobi], to resolve the dispute, subject to any
-mandatory consumer-protection rights you may have to bring a claim in your local courts.
+jurisdiction of the courts of Kenya, seated in Nairobi, to resolve the dispute, subject to any mandatory
+consumer-protection rights you may have to bring a claim in your local courts.
 
 ## 18. Changes to These Terms
 
@@ -287,74 +280,5 @@ circumstances beyond our reasonable control.
 
 If you have questions about these Terms, contact us at:
 
-**Email:** noreply@kena.life
+**Email:** customersupport@kena.life
 **Website:** https://www.kena.life
-
----
-
-### Drafting notes (remove before publication)
-
-- Replace every `[Company Legal Name]`, `[Insert date]`, `[Nairobi]`, and `[KES 5,000]` placeholder with
-  confirmed values from the client/legal team.
-- **Vendor marketplace confirmed removed and re-verified.** No live route, screen, or service call reaches
-  any vendor-related code (`lib/app/routes/routes.dart` has the `VendorSignupScreen` route commented out;
-  `auth_service.dart` and `o_auth_service.dart` have vendor signup/login/OAuth methods commented out). This
-  is unused backend/permission scaffolding, not a shipped feature.
-- **Location data removed in this revision.** The prior draft listed location as a live permission based on
-  the iOS `Info.plist` string ("track nearby vendors") and Android manifest permissions. Re-checked against
-  the actual Dart code: `lib/services/common/location_permission_service.dart` is entirely commented out,
-  and the `geolocator` package is commented out in `pubspec.yaml` (line 62) — there is no live code path
-  that requests or reads device location anywhere in the app. The manifest/Info.plist permission
-  declarations are themselves leftover and not currently backed by functionality.
-- **Stripe removed in this revision.** `flutter_stripe` is commented out in `pubspec.yaml` ("replaced by
-  Paystack (webview checkout)"), and no live file imports or calls any Stripe service/repo class. Only
-  Paystack (Android) and Apple In-App Purchase (iOS) are live payment paths, confirmed via the
-  `Platform.isIOS` / `Platform.isAndroid` branch in `lib/services/payment/subscription_services.dart`.
-- **"Pro tips" reframed as "in-app tips".** The dedicated tips screen (`lib/view/pro_tip/tip_screen.dart`)
-  is explicitly a debug/test screen and its route is commented out. The actual live feature is a milestone
-  dialog (`ProTipManager` + `pro_tip_wrapper.dart`) shown periodically from the home screen — Section 5.3
-  now describes that instead of a browsable content library.
-- Separately worth flagging to engineering (not a Terms issue, but related to the point above): the iOS
-  `Info.plist` location and camera usage-description strings still reference "nearby vendors" and "vendor"
-  even though neither location nor vendor features are live. A permission description that doesn't match
-  actual app behavior can draw App Store review scrutiny.
-- This draft assumes Kenya as the governing jurisdiction per client instruction, but as of this revision
-  that assumption is explicitly **not yet confirmed** — do not finalize Kenya in Section 17.1/17.3 until
-  it's verified that Kena's actual legal entity (the one that will be named in place of `[Company Legal
-  Name]`) is Kenya-registered, rather than assuming it because the app/project is Kenya-associated. If the
-  entity turns out to be registered elsewhere, this whole document (governing law, consumer-protection
-  references, Central Bank of Kenya / payments-regulation references) needs re-review by counsel in that
-  jurisdiction instead of Kenya.
-- **Minimum age (Section 3.1)** is still unconfirmed — 18 is used as a conservative default per the
-  original drafting note; the client has not yet decided between 18+ and 16+ with guardian consent. Do not
-  publish either way, and do not remove the `[confirm minimum age policy]` bracket, until the client
-  decides. This also affects Apple App Store age-rating metadata and should be kept consistent with it.
-- **Effective Date** is intentionally still `[Insert date of publication]` — not yet confirmed as of this
-  revision. Set it to the actual publication date when the document is ready to go live; it does not
-  default to today's date just because a review pass happened on that date.
-- **`[Company Legal Name]`** (Sections 1, 12.1, 15, 16) and **`[KES 5,000]`** (Section 15) remain
-  unconfirmed placeholders. The legal name must be the actual entity that owns Kena; the liability-cap
-  amount should come from the client/lawyer, not be guessed.
-- **Contact email (`noreply@kena.life`)** is being kept as-is for now (Sections 4.2, 17.2, 20) per current
-  instruction, but this is a known issue: a "noreply" address is a poor channel for account-security
-  reports, dispute notices, or legal inquiries a user or regulator would actually need to reach. Revisit
-  before publication if a monitored `support@` or `legal@` address becomes available.
-- **`kena.life` domain/entity match** — Section 1 lists `kena.life` as an associated website, and Section
-  20 lists `https://www.kena.life` as the contact site. Before publication, confirm `kena.life` is actually
-  owned/controlled by whichever entity ends up in `[Company Legal Name]`, and that this Terms document will
-  actually be hosted there.
-- **Language (Section 19.6)** now states English only, per client confirmation that no French version will
-  be published. Revert this if a French version is later planned.
-- A companion Privacy Policy is referenced throughout (Sections 1, 7, 8, 13) but does not yet exist in
-  this repository — confirmed still outstanding as of this revision, not yet drafted. It must exist and be
-  reviewed before publication; the in-app subscription screen should link both documents side by side
-  (Terms & Conditions | Privacy Policy).
-- **Apple EULA:** current direction is to use Apple's Standard EULA
-  (https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) rather than configuring this
-  document as a custom EULA in App Store Connect. This Terms document is *not* automatically Apple's EULA —
-  if that decision changes and the client wants this document to serve as the custom license agreement, it
-  must be explicitly configured as such in App Store Connect (Apple provides a dedicated setting for this).
-- This document is a template based on the app's current, actually-reachable feature set (verified against
-  live route tables and un-commented service calls, not just repository/API scaffolding) and has not been
-  reviewed by a licensed attorney. Have it reviewed by legal counsel in the confirmed governing
-  jurisdiction before publishing or relying on it.

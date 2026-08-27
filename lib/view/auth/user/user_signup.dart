@@ -11,8 +11,10 @@ import 'package:kena_emotional_journey/app/components/my_form_text_field.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/native_liquid_glass_apple_button.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
+import 'package:kena_emotional_journey/app/utils/app_constants.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/validations_exception.dart';
+import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/o_auth_service.dart';
@@ -43,6 +45,9 @@ class _UserSignupScreenState extends State<UserSignupScreen> {
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _confirmPasswordFocusNode = FocusNode();
 
+  late final TapGestureRecognizer _termsTapRecognizer = TapGestureRecognizer()
+    ..onTap = () => openLegalUrl(context, ExternalLinks.kenaTermsAndConditions);
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +72,7 @@ class _UserSignupScreenState extends State<UserSignupScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _termsTapRecognizer.dispose();
     isFormFilled.dispose();
 
     _passwordFocusNode.dispose();
@@ -422,6 +428,7 @@ class _UserSignupScreenState extends State<UserSignupScreen> {
                               ),
                               TextSpan(
                                 text: 'Terms and Conditions',
+                                recognizer: _termsTapRecognizer,
                                 style: TextStyle(
                                   color: context.colors.textPrimary,
                                   fontWeight: FontWeight.w600,
