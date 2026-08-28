@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -19,7 +18,8 @@ class NavBarButtonItem {
   final String label;
   final VoidCallback onTap;
   final bool isLoading; // optional: shows a spinner instead of the icon
-  final bool isDisabled; // optional: greys out and blocks taps, e.g. while another section loads
+  final bool
+  isDisabled; // optional: greys out and blocks taps, e.g. while another section loads
   final Key? key; // optional: key for tour targeting
 
   const NavBarButtonItem({

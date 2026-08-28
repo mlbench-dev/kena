@@ -173,11 +173,9 @@ class ExternalLinks {
   static const String appleTermsOfService =
       'https://www.apple.com/legal/internet-services/itunes/dev/stdeula'; //apple End User License Agreement (EULA) or Terms of Service
 
-  // Dummy placeholders — swap for the real hosted URLs once the Terms &
-  // Conditions / Privacy Policy pages are deployed on kena.life.
   static const String kenaTermsAndConditions =
-      'https://www.kena.life/terms-and-conditions';
-  static const String kenaPrivacyPolicy = 'https://www.kena.life/privacy-policy';
+      'https://kena.life/terms-and-conditions';
+  static const String kenaPrivacyPolicy = 'https://kena.life/privacy-policy';
 }
 
 class KeyConstants {

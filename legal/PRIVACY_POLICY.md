@@ -35,6 +35,7 @@ We collect the following categories of personal data:
 2.1 **Account and Profile Data**
 - Name, email address, and password (or authentication credentials)
 - Profile preferences and settings
+- Profile photo and any images you choose to attach to a journal, forecast, or reflection entry
 
 2.2 **Support Circle Data**
 - Identifiers of users you invite (or who invite you) to a support circle — by email address or username
@@ -82,9 +83,11 @@ We do not sell your personal data. We share data only in the following limited c
 
 - **Support Circle members:** Only the specific information you choose to share with the limited contacts
   you invite.
-- **Service providers:** Trusted third parties who help us operate the Service — including Firebase
-  (analytics, crash reporting, cloud messaging), Google Sign-In, Sign in with Apple, and Google Mobile Ads
-  — under strict contractual obligations to protect your data.
+- **Service providers:** Trusted third parties who help us operate the Service — including Vercel
+  (application hosting), MongoDB Atlas (database hosting), Firebase (analytics, crash reporting, cloud
+  messaging, and file storage for uploaded images), Resend (transactional email for verification codes and
+  password resets), Google Sign-In, Sign in with Apple, and Google Mobile Ads — under strict contractual
+  obligations to protect your data.
 - **Payment processors:** Apple's In-App Purchase system (iOS) and Paystack (Android) process payment and
   subscription data according to their own privacy policies.
 - **Legal and safety reasons:** When required by law, court order, or to protect the rights, safety, or
@@ -106,8 +109,11 @@ policy, including:
 - For a reasonable period after account deletion to comply with legal, accounting, or reporting
   requirements, or to resolve disputes
 
-When you delete your account, we will delete or anonymise your personal data (including wellness data)
-within a reasonable timeframe, except where we are required to retain it by law.
+When you delete your account, your personal data — including journal entries, emotion logs, forecasts, and
+community content — is deleted from our live systems immediately as part of that request. Copies of this
+data may persist for a limited additional period in encrypted backups until they are rotated out as part
+of our routine backup schedule, or where we are required to retain specific records by law (for example,
+transaction records for accounting purposes).
 
 ## 8. Security Measures
 

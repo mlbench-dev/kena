@@ -97,8 +97,6 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     log('SessionController init failed/timed out: $e', stackTrace: st);
   }
 
-  // TEST ADS ONLY — see ad_mob_service.dart header before ever touching
-  // the ad unit IDs there.
   try {
     await AdMobService.initialize().timeout(const Duration(seconds: 10));
   } catch (e, st) {

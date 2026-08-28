@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
-import 'package:kena_emotional_journey/app/components/native_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
@@ -115,20 +114,6 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
   /// trigger a reload if needed.
   Future<void> refresh() => _init();
 
-  /// Insert one native ad after every 8 feed cards (not after the last one).
-  static const int _nativeAdInterval = 8;
-
-  int _slotCountWithAds(int feedCount) {
-    if (feedCount == 0) return 0;
-    return feedCount + (feedCount - 1) ~/ _nativeAdInterval;
-  }
-
-  bool _isNativeAdSlot(int slotIndex) =>
-      slotIndex != 0 && (slotIndex + 1) % (_nativeAdInterval + 1) == 0;
-
-  int _feedIndexForSlot(int slotIndex) =>
-      slotIndex - slotIndex ~/ (_nativeAdInterval + 1);
-
   Future<void> _stopSharingWithAll() async {
     final sharedResult = await _service.getSharedMembers(context: context);
     if (!mounted) return;
@@ -213,7 +198,9 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
                     Icon(
                       Icons.people_outline_rounded,
                       size: 56.sp,
-                      color: context.colors.textSecondary.withOpacity(0.4),
+                      color: context.colors.textSecondary.withValues(
+                        alpha: 0.4,
+                      ),
                     ),
                     SizedBox(height: 12.h),
                     Text(
@@ -228,7 +215,9 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
                       "Your circle hasn't shared anything today.",
                       style: context.typography.body.copyWith(
                         fontSize: 13.sp,
-                        color: context.colors.textSecondary.withOpacity(0.6),
+                        color: context.colors.textSecondary.withValues(
+                          alpha: 0.6,
+                        ),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -239,17 +228,7 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
           else
             SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
-                if (_isNativeAdSlot(index)) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
-                    ),
-                    child: const NativeAdWidget(factoryId: 'listTile'),
-                  );
-                }
-
-                final item = _feeds[_feedIndexForSlot(index)];
+                final item = _feeds[index];
                 return Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,
@@ -265,7 +244,7 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
                     isStopping: _isStoppingAll,
                   ),
                 );
-              }, childCount: _slotCountWithAds(_feeds.length)),
+              }, childCount: _feeds.length),
             ),
 
           SliverToBoxAdapter(child: SizedBox(height: 24.h)),
@@ -600,7 +579,7 @@ class _FeedCardState extends State<FeedCard> {
         ),
         SizedBox(height: 8.h),
         Divider(
-          color: context.colors.textSecondary.withOpacity(0.12),
+          color: context.colors.textSecondary.withValues(alpha: 0.12),
           thickness: 1,
         ),
       ],
@@ -775,8 +754,8 @@ class _ForecastCard extends StatelessWidget {
                           style: context.typography.body.copyWith(
                             fontSize: 10.sp,
                             fontWeight: FontWeight.w400,
-                            color: context.colors.textSecondary.withOpacity(
-                              0.6,
+                            color: context.colors.textSecondary.withValues(
+                              alpha: 0.6,
                             ),
                           ),
                         ),
@@ -1063,12 +1042,12 @@ class _Avatar extends StatelessWidget {
                   ),
                 ),
               ),
-              placeholder: (_, __) => SizedBox(
+              placeholder: (_, _) => SizedBox(
                 width: 45.r,
                 height: 45.r,
                 child: const Center(child: LoadingWidget()),
               ),
-              errorWidget: (_, __, ___) => _fallback(),
+              errorWidget: (_, _, _) => _fallback(),
             )
           : _fallback(),
     );

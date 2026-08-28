@@ -79,17 +79,17 @@ android {
         production {
             dimension "default"
             applicationIdSuffix ""
-            manifestPlaceholders = [appName: "kena"]
+            manifestPlaceholders = [appName: "kena.life"]
         }
         staging {
             dimension "default"
             applicationIdSuffix ".stg"
-            manifestPlaceholders = [appName: "[STG] kena"]
+            manifestPlaceholders = [appName: "[STG] kena.life"]
         }
         development {
             dimension "default"
             applicationIdSuffix ".dev"
-            manifestPlaceholders = [appName: "[DEV] kena"]
+            manifestPlaceholders = [appName: "[DEV] kena.life"]
         }
     }
 

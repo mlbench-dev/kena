@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
 
@@ -18,12 +20,28 @@ class AdMobService {
     if (_initialized) return;
     await MobileAds.instance.initialize();
 
+    // Ad unit IDs are live/production, so any device not listed here gets
+    // real ads (real impressions/clicks on your own test runs risk an
+    // invalid-traffic flag on the AdMob account). To add a device: run the
+    // app on it once, then copy the ID from the console line Google prints,
+    // e.g. "To get test ads on this device, set: ... testDeviceIdentifiers
+    // = @[ @"XXXXXXXX-XXXX-..." ]" (iOS) or "Use RequestConfiguration...
+    // testDeviceIds": ["XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"]" (Android). Put
+    // the IDs in .env as ADMOB_TEST_DEVICE_IDS=id1,id2.
+    final testDeviceIds =
+        dotenv.env['ADMOB_TEST_DEVICE_IDS']
+            ?.split(',')
+            .map((id) => id.trim())
+            .where((id) => id.isNotEmpty)
+            .toList() ??
+        <String>[];
+
     await MobileAds.instance.updateRequestConfiguration(
-      RequestConfiguration(testDeviceIds: <String>[]),
+      RequestConfiguration(testDeviceIds: testDeviceIds),
     );
 
     _initialized = true;
-    log('[AdMobService] Initialized (TEST ADS ONLY)');
+    log('[AdMobService] Initialized (${testDeviceIds.length} test device(s))');
   }
 
   static Future<bool> shouldShowAds() async {
@@ -38,24 +56,20 @@ class AdMobService {
   }
 
   // ─────────────────────────────────────────────
-  // 🔑 AD UNIT IDS (Google test IDs — see warning above)
+  // 🔑 AD UNIT IDS (Kena production — from .env)
   // ─────────────────────────────────────────────
 
   static String get bannerAdUnitId => Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/6300978111'
-      : 'ca-app-pub-3940256099942544/2435281174';
-
-  static String get nativeAdUnitId => Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/2247696110'
-      : 'ca-app-pub-3940256099942544/3986624511';
+      // TEST ID: ca-app-pub-3940256099942544/6300978111
+      ? dotenv.env['ANDROID_ADMOB_BANNER_UNIT_ID']!
+      // TEST ID: ca-app-pub-3940256099942544/2435281174
+      : dotenv.env['IOS_ADMOB_BANNER_UNIT_ID']!;
 
   static String get interstitialAdUnitId => Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/1033173712'
-      : 'ca-app-pub-3940256099942544/4411468910';
-
-  static String get rewardedAdUnitId => Platform.isAndroid
-      ? 'ca-app-pub-3940256099942544/5224354917'
-      : 'ca-app-pub-3940256099942544/1712485313';
+      // TEST ID: ca-app-pub-3940256099942544/1033173712
+      ? dotenv.env['ANDROID_ADMOB_INTERSTITIAL_UNIT_ID']!
+      // TEST ID: ca-app-pub-3940256099942544/4411468910
+      : dotenv.env['IOS_ADMOB_INTERSTITIAL_UNIT_ID']!;
 
   // ─────────────────────────────────────────────
   // 📐 BANNER AD
@@ -88,38 +102,6 @@ class AdMobService {
       ),
     );
     bannerAd.load();
-  }
-
-  // ─────────────────────────────────────────────
-  // 🧩 NATIVE AD
-  // ─────────────────────────────────────────────
-  static Future<void> loadNativeAd({
-    required String factoryId,
-    required void Function(NativeAd ad) onAdLoaded,
-    void Function(LoadAdError error)? onAdFailedToLoad,
-  }) async {
-    if (!await shouldShowAds()) return;
-
-    final nativeAd = NativeAd(
-      adUnitId: nativeAdUnitId,
-      factoryId: factoryId,
-      request: const AdRequest(),
-      listener: NativeAdListener(
-        onAdLoaded: (ad) {
-          debugPrint('✅ Native ad loaded');
-          onAdLoaded(ad as NativeAd);
-        },
-        onAdFailedToLoad: (ad, error) {
-          debugPrint('❌ Native ad failed to load: $error');
-          ad.dispose();
-          onAdFailedToLoad?.call(error);
-        },
-        onAdOpened: (ad) => debugPrint('📖 Native ad opened'),
-        onAdClosed: (ad) => debugPrint('📕 Native ad closed'),
-        onAdImpression: (ad) => debugPrint('👁️ Native ad impression'),
-      ),
-    );
-    nativeAd.load();
   }
 
   // ─────────────────────────────────────────────
@@ -213,60 +195,6 @@ class AdMobService {
   }
 
   // ─────────────────────────────────────────────
-  // 🎁 REWARDED AD
-  // ─────────────────────────────────────────────
-
-  static RewardedAd? _rewardedAd;
-  static bool _isRewardedAdReady = false;
-
-  /// Pre-loads a rewarded ad. Call this early so the ad is ready when
-  static void loadRewardedAd() {
-    RewardedAd.load(
-      adUnitId: rewardedAdUnitId,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          debugPrint('✅ Rewarded ad loaded');
-          _rewardedAd = ad;
-          _isRewardedAdReady = true;
-
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              debugPrint('📕 Rewarded ad dismissed');
-              ad.dispose();
-              _rewardedAd = null;
-              _isRewardedAdReady = false;
-            },
-            onAdFailedToShowFullScreenContent: (ad, error) {
-              debugPrint('❌ Rewarded ad failed to show: $error');
-              ad.dispose();
-              _rewardedAd = null;
-              _isRewardedAdReady = false;
-            },
-          );
-        },
-        onAdFailedToLoad: (error) {
-          debugPrint('❌ Rewarded ad failed to load: $error');
-          _isRewardedAdReady = false;
-        },
-      ),
-    );
-  }
-
-  /// Shows the rewarded ad if ready.
-  static bool showRewardedAd({
-    required void Function(AdWithoutView ad, RewardItem reward)
-    onUserEarnedReward,
-  }) {
-    if (_isRewardedAdReady && _rewardedAd != null) {
-      _rewardedAd!.show(onUserEarnedReward: onUserEarnedReward);
-      return true;
-    }
-    debugPrint('⚠️ Rewarded ad not ready yet');
-    return false;
-  }
-
-  // ─────────────────────────────────────────────
   // 🧹 CLEANUP
   // ─────────────────────────────────────────────
 
@@ -274,10 +202,7 @@ class AdMobService {
   /// or on logout.
   static void dispose() {
     _interstitialAd?.dispose();
-    _rewardedAd?.dispose();
     _interstitialAd = null;
-    _rewardedAd = null;
     _isInterstitialAdReady = false;
-    _isRewardedAdReady = false;
   }
 }
