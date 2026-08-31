@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/routes/notification_route_resolver.dart';
+import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
@@ -51,6 +53,7 @@ class NotificationsChip extends StatefulWidget {
 
 class _NotificationsChipState extends State<NotificationsChip> {
   bool _isSubmitting = false;
+  bool _isCheckingForecast = false;
   late bool _isSubmitted = widget.initiallySubmitted;
   // bool isQuickCheckIn = false;
 
@@ -160,15 +163,49 @@ class _NotificationsChipState extends State<NotificationsChip> {
         widget.type == 'morning_forecast' && actions.forecastLoading;
     final bool endDayReflectionLoading =
         widget.type == 'evening_reflection' && actions.endDayReflectionLoading;
+    final bool isForecastCheckLoading =
+        (widget.type == 'midday_checkin' ||
+            widget.type == 'daily_pulse_nudge') &&
+        _isCheckingForecast;
 
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (widget.type == 'morning_forecast') {
           if (isForecastLoading) return;
           actions.onForecastTap(context);
         } else if (widget.type == 'evening_reflection') {
           if (endDayReflectionLoading) return;
           actions.onEndDayReflectionTap(context);
+        } else if (widget.type == 'midday_checkin') {
+          if (_isCheckingForecast) return;
+          setState(() => _isCheckingForecast = true);
+          final hasForecast = await actions.hasForecast(context);
+          if (!mounted) return;
+          setState(() => _isCheckingForecast = false);
+          if (!context.mounted) return;
+          if (hasForecast) {
+            Navigator.pushNamed(context, RoutesName.forecastResultScreen);
+          } else {
+            context.flushBarErrorMessage(
+              message: "You haven't completed your forecast yet",
+            );
+          }
+        } else if (widget.type == 'daily_pulse_nudge') {
+          if (_isCheckingForecast) return;
+          setState(() => _isCheckingForecast = true);
+          final hasForecast = await actions.hasForecast(context);
+          if (!mounted) return;
+          setState(() => _isCheckingForecast = false);
+          if (!context.mounted) return;
+          if (hasForecast) {
+            Navigator.pushNamed(context, RoutesName.forecastResultScreen);
+          } else {
+            Navigator.pushNamed(
+              context,
+              RoutesName.forecastScreen,
+              arguments: {'isFromHome': true},
+            );
+          }
         } else {
           Navigator.pushNamed(context, config.route);
         }
@@ -191,7 +228,9 @@ class _NotificationsChipState extends State<NotificationsChip> {
                   onBackgroundImageError: hasImage ? (_, _) {} : null,
                   child: hasImage
                       ? null
-                      : isForecastLoading
+                      : (isForecastLoading ||
+                            endDayReflectionLoading ||
+                            isForecastCheckLoading)
                       ? SizedBox(
                           width: 16.w,
                           height: 16.w,
