@@ -42,11 +42,11 @@
 		<key>FirebaseAppDelegateProxyEnabled</key>
 		<true/>
 		<!-- AdMob App ID — Kena production app ID. -->
-		<!-- Google test AdMob App ID (iOS) -->
 		<!-- <key>GADApplicationIdentifier</key> -->
-		<!-- <string>ca-app-pub-3940256099942544~1458002511</string> -->
+		<!-- <string>ca-app-pub-6436974481231355~3663818921</string> -->
+		<!-- Google test AdMob App ID (iOS) -->
 		<key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-6436974481231355~3663818921</string>
+		<string>ca-app-pub-3940256099942544~1458002511</string>
 		<key>GIDClientID</key>
 		<string>239129406623-0msvipur0kcahggcu3b1di9ps4n87575.apps.googleusercontent.com</string>
 		<key>LSRequiresIPhoneOS</key>

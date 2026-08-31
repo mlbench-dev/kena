@@ -138,5 +138,6 @@
     "New_Strings": "New Strings",  
   "exception_check_internet_connection": "We're unable to show results.\nPlease check your data\nconnection.",
   "exception_retry": "RETRY",
+  "offline_banner_message": "No internet connection",
   "test_done": "Done"
 }

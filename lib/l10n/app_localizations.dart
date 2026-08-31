@@ -350,6 +350,12 @@ abstract class AppLocalizations {
   /// **'RETRY'**
   String get exception_retry;
 
+  /// No description provided for @offline_banner_message.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection'**
+  String get offline_banner_message;
+
   /// No description provided for @test_done.
   ///
   /// In en, this message translates to:

@@ -142,5 +142,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exception_retry => 'RETRY';
 
   @override
+  String get offline_banner_message => 'No internet connection';
+
+  @override
   String get test_done => 'Done';
 }

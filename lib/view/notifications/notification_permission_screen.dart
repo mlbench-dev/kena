@@ -1,9 +1,9 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 
 class NotificationPermissionScreen extends StatefulWidget {
@@ -62,7 +62,7 @@ class _NotificationPermissionScreenState
       },
       child: MyScaffold(
         appBar: AppBar(
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          systemOverlayStyle: UIHelper.statusBarDark,
           leading: BackButton(
             color: context.colors.textPrimary,
             onPressed: () {

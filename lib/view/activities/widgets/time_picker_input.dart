@@ -85,8 +85,10 @@ class TimePickerInputField extends StatefulWidget {
 class _TimePickerInputFieldState extends State<TimePickerInputField> {
   static const _borderRadius = 12.0;
   static final _completeTimePattern = RegExp(r'^([1-9]|1[0-2]):[0-5][0-9]$');
+  static final _hourOnlyPattern = RegExp(r'^([1-9]|1[0-2])$');
 
   final _timeController = TextEditingController();
+  final _focusNode = FocusNode();
   late String _selectedPeriod;
 
   @override
@@ -95,6 +97,7 @@ class _TimePickerInputFieldState extends State<TimePickerInputField> {
     _selectedPeriod = widget.initialPeriod;
     _timeController.text = widget.initialTime ?? '';
     _timeController.addListener(_handleTimeTextChanged);
+    _focusNode.addListener(_handleFocusChanged);
   }
 
   @override
@@ -106,6 +109,8 @@ class _TimePickerInputFieldState extends State<TimePickerInputField> {
   @override
   void dispose() {
     _timeController.removeListener(_handleTimeTextChanged);
+    _focusNode.removeListener(_handleFocusChanged);
+    _focusNode.dispose();
     _timeController.dispose();
     super.dispose();
   }
@@ -132,6 +137,19 @@ class _TimePickerInputFieldState extends State<TimePickerInputField> {
     final text = _timeController.text.trim();
     if (_completeTimePattern.hasMatch(text)) {
       widget.onTimeChanged?.call('$text $_selectedPeriod');
+    } else if (_hourOnlyPattern.hasMatch(text)) {
+      widget.onTimeChanged?.call('$text:00 $_selectedPeriod');
+    }
+  }
+
+  /// Fills in ":00" for an hour-only entry (e.g. "8" -> "8:00") once the
+  /// user leaves the field, so the displayed value matches what was
+  /// reported via [TimePickerInputField.onTimeChanged].
+  void _handleFocusChanged() {
+    if (_focusNode.hasFocus) return;
+    final text = _timeController.text.trim();
+    if (_hourOnlyPattern.hasMatch(text)) {
+      _timeController.text = '$text:00';
     }
   }
 
@@ -147,6 +165,7 @@ class _TimePickerInputFieldState extends State<TimePickerInputField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _timeController,
+      focusNode: _focusNode,
       keyboardType: TextInputType.datetime,
       inputFormatters: [
         _TimeInputFormatter(),

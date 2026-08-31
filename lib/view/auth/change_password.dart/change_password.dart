@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_form_text_field.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/validations_exception.dart';
 import 'package:kena_emotional_journey/l10n/l10n.dart';
@@ -35,7 +35,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return MyScaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        systemOverlayStyle: UIHelper.statusBarDark,
         centerTitle: true,
         leading: BackButton(color: context.colors.textPrimary),
         title: Text(

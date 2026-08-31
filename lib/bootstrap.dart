@@ -23,11 +23,13 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
-  // Always show top + bottom overlays (status bar + nav bar)
-  await SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.manual,
-    overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
-  );
+  // Edge-to-edge is enforced by the OS on Android 15+ (API 35+) regardless of
+  // what the app requests, so `SystemUiMode.manual` with explicit overlays
+  // (the pre-edge-to-edge API) leaves the area behind the system nav bar
+  // uncomposited by Flutter, showing raw black instead of the app's
+  // background. `edgeToEdge` opts in explicitly so Flutter paints its own
+  // background all the way to the screen edges, behind the transparent bars.
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

@@ -589,6 +589,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 
 // =============================================================================
 // CONFIGURATION — edit these values to customise the walkthrough
@@ -802,6 +803,7 @@ class _HomeWalkthroughScreenState extends State<HomeWalkthroughScreen>
     final step = _walkthroughSteps[_currentStep];
     const hPad = 20.0;
 
+    UIHelper.setStatusBar(background: Colors.white);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(

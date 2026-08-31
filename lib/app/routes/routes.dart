@@ -15,7 +15,6 @@ import 'package:kena_emotional_journey/view/auth/login.dart';
 import 'package:kena_emotional_journey/view/auth/user/email_verification.dart';
 // import 'package:kena/view/auth/user/email_verification.dart';
 import 'package:kena_emotional_journey/view/auth/user/user_signup.dart';
-import 'package:kena_emotional_journey/view/common/no_connection.dart';
 import 'package:kena_emotional_journey/view/common/walkthroughs.dart';
 import 'package:kena_emotional_journey/view/community/empty_community.dart';
 import 'package:kena_emotional_journey/view/community/feeds_screen.dart';
@@ -53,7 +52,7 @@ class Routes {
   static final Map<String, WidgetBuilder> _routes = {
     RoutesName.splash: (_) => const KenaSplashScreen(),
     // RoutesName.welcome: (_) => const WelcomeScreen(),
-    RoutesName.noConnection: (_) => const NoConnectionScreen(),
+    // RoutesName.noConnection: (_) => const NoConnectionScreen(),
     RoutesName.userSignup: (_) => const UserSignupScreen(),
     // RoutesName.vendorSignup: (_) => const VendorSignupScreen(),
     RoutesName.changePassword: (_) => const ChangePasswordScreen(),

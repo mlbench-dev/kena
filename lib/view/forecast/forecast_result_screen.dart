@@ -59,7 +59,6 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   // ── State ────────────────────────────────────────────────────────────
 
   bool _isLoading = true;
-  bool _endDayLoading = false;
   bool _isUpdatingNotes = false;
   bool _isSavingForecastNote = false;
   bool _isEditMode = false;
@@ -174,37 +173,6 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   // =========================================================
   // ACTIONS / HANDLERS
   // =========================================================
-
-  Future<void> _onEndDayReflectionTap() async {
-    if (_endDayLoading) return;
-
-    setState(() => _endDayLoading = true);
-    try {
-      final comparisonResult = await _service.getComparison(context: context);
-      final comparisonData = comparisonResult?.data;
-
-      final hasRealityData =
-          comparisonData != null &&
-          comparisonData.isNotEmpty &&
-          (comparisonData.first.reality?.emotions?.isNotEmpty ?? false);
-
-      if (!mounted) return;
-
-      if (hasRealityData) {
-        Navigator.pushNamed(context, RoutesName.endDayComparisonScreen);
-      } else {
-        Navigator.pushNamed(
-          context,
-          RoutesName.endDayReflection,
-          arguments: {'isFromHome': true},
-        );
-      }
-    } catch (e) {
-      debugPrint('Error loading end-of-day comparison: $e');
-    } finally {
-      if (mounted) setState(() => _endDayLoading = false);
-    }
-  }
 
   Future<void> _onShareWithFriendsTap() async {
     await MyDialogBox.show(
@@ -912,15 +880,13 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   }
 
   Widget _buildEndDayReflectionButton() {
+    final actions = context.watch<NavigationActionsController>();
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 2.w),
       child: MyButton(
         label: 'End of Day Reflection',
-        isLoading: _endDayLoading,
-        onPressed: _onEndDayReflectionTap,
-        // onPressed: () {
-        //   FirebaseCrashlytics.instance.crash();
-        // },
+        isLoading: actions.endDayReflectionLoading,
+        onPressed: () => actions.onEndDayReflectionTap(context),
       ),
     );
   }

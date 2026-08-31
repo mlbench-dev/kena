@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/routes/notification_route_resolver.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
+import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class NotificationStyleConfig {
   final Widget icon;
@@ -51,6 +53,7 @@ class _NotificationsChipState extends State<NotificationsChip> {
   bool _isSubmitting = false;
   late bool _isSubmitted = widget.initiallySubmitted;
   // bool isQuickCheckIn = false;
+
   Future<void> _selectOption(String mood) async {
     // isQuickCheckIn = false;
     if (_isSubmitting || _isSubmitted) return;
@@ -152,10 +155,23 @@ class _NotificationsChipState extends State<NotificationsChip> {
     final bool isQuickCheckIn =
         widget.type == 'thought_check_in' ||
         widget.description.toLowerCase().contains('thought');
+    final actions = context.watch<NavigationActionsController>();
+    final bool isForecastLoading =
+        widget.type == 'morning_forecast' && actions.forecastLoading;
+    final bool endDayReflectionLoading =
+        widget.type == 'evening_reflection' && actions.endDayReflectionLoading;
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, config.route);
+        if (widget.type == 'morning_forecast') {
+          if (isForecastLoading) return;
+          actions.onForecastTap(context);
+        } else if (widget.type == 'evening_reflection') {
+          if (endDayReflectionLoading) return;
+          actions.onEndDayReflectionTap(context);
+        } else {
+          Navigator.pushNamed(context, config.route);
+        }
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +188,19 @@ class _NotificationsChipState extends State<NotificationsChip> {
                   backgroundImage: hasImage
                       ? NetworkImage(widget.imageUrl!)
                       : null,
-                  child: hasImage ? null : config.icon,
+                  onBackgroundImageError: hasImage ? (_, _) {} : null,
+                  child: hasImage
+                      ? null
+                      : isForecastLoading
+                      ? SizedBox(
+                          width: 16.w,
+                          height: 16.w,
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                            color: Colors.white,
+                            size: 16.w,
+                          ),
+                        )
+                      : config.icon,
                 ),
               ),
               if (hasImage)

@@ -15,6 +15,7 @@ import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.da
 import 'package:kena_emotional_journey/view/analytics/widgets/prediction_insights.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/progress_card.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/top_activities_section.dart';
+import 'package:kena_emotional_journey/view/community/empty_feed_screen.dart';
 import 'package:kena_emotional_journey/view/community/widgets/weekly_feeds_shimmer.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
@@ -119,6 +120,10 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const WeeklyFeedsShimmer();
+    }
+
+    if (widget.scope != 'me' && !_isWeeklyShared) {
+      return EmptyFeedScreen(isStopSharing: false);
     }
 
     final feedPeriod = _weeklyFeedData?.data?.firstOrNull;

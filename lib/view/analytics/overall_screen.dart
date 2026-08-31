@@ -103,7 +103,7 @@ class EmotionRow extends StatelessWidget {
 }
 
 /// A small "number over label" pair, e.g. the Forecast/Actual counters in
-/// 
+///
 class _EmotionCount extends StatelessWidget {
   const _EmotionCount({required this.label, required this.value});
 

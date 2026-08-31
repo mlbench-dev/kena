@@ -8,43 +8,55 @@ class EmptyFeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 270.w,
-            child: Text(
-              isStopSharing
-                  ? "You are no longer sharing your forecast"
-                  : "Your friend has not shared their forecast today.",
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(24.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 88.w,
+              height: 88.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: context.colors.primary.withValues(alpha: 0.08),
+              ),
+              child: Icon(
+                isStopSharing
+                    ? Icons.visibility_off_rounded
+                    : Icons.groups_outlined,
+                size: 36.sp,
+                color: context.colors.primary,
+              ),
+            ),
+            SizedBox(height: 20.h),
+            Text(
+              isStopSharing ? "Sharing Paused" : "Nothing Shared Yet",
               textAlign: TextAlign.center,
-              style: context.typography.body.copyWith(
+              style: context.typography.title.copyWith(
                 fontSize: 18.sp,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w600,
                 color: context.colors.textPrimary,
               ),
             ),
-          ),
-          // SizedBox(height: 20.h),
-          // Padding(
-          //   padding: EdgeInsets.only(bottom: 100.w),
-          //   child: MyButton(
-          //     label: isStopSharing
-          //         ? "Reshare your Forecast"
-          //         : "Share your Forecast",
-          //     onPressed: () {
-          //       isStopSharing
-          //           ? Navigator.pushNamed(
-          //               context,
-          //               RoutesName.forecastResultScreen,
-          //             )
-          //           : null;
-          //     },
-          //   ),
-          // ),
-        ],
+            SizedBox(height: 8.h),
+            SizedBox(
+              width: 260.w,
+              child: Text(
+                isStopSharing
+                    ? "You are no longer sharing your forecast with your circle."
+                    : "Your friend hasn't shared their forecast yet.",
+                textAlign: TextAlign.center,
+                style: context.typography.body.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                  color: context.colors.textSecondary,
+                  height: 1.4,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

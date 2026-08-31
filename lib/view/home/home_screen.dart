@@ -8,12 +8,14 @@ import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_nav_bar.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/no_internet_dialog.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/tour_controller.dart';
 import 'package:kena_emotional_journey/app/utils/tour_manager.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
+import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
@@ -280,6 +282,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       const Spacer(),
                       GestureDetector(
                         onTap: () {
+                          if (!context
+                              .read<ConnectivityProvider>()
+                              .isConnected) {
+                            MyDialogBox.show(
+                              context,
+                              child: const NoInternetDialog(),
+                            );
+                            return;
+                          }
                           Navigator.pushNamed(
                             context,
                             RoutesName.notificationScreen,

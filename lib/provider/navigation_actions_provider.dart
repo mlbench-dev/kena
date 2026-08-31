@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:kena_emotional_journey/app/components/my_dialog.dart';
+import 'package:kena_emotional_journey/app/components/no_internet_dialog.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
+import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
+import 'package:provider/provider.dart';
 
 /// ============================================================
 /// NAVIGATION ACTIONS CONTROLLER
@@ -34,9 +38,11 @@ class NavigationActionsController extends ChangeNotifier {
 
   bool _aspireLoading = false;
   bool _forecastLoading = false;
+  bool _endDayReflectionLoading = false;
 
   bool get aspireLoading => _aspireLoading;
   bool get forecastLoading => _forecastLoading;
+  bool get endDayReflectionLoading => _endDayReflectionLoading;
   bool get isAnyLoading => _aspireLoading || _forecastLoading;
 
   void _setAspireLoading(bool value) {
@@ -47,6 +53,19 @@ class NavigationActionsController extends ChangeNotifier {
   void _setForecastLoading(bool value) {
     _forecastLoading = value;
     notifyListeners();
+  }
+
+  void _setEndDayReflectionLoading(bool value) {
+    _endDayReflectionLoading = value;
+    notifyListeners();
+  }
+
+  /// Returns `false` (and shows a "no internet" dialog) when the device is
+  /// offline, so callers can bail out before hitting the network.
+  bool _requireConnection(BuildContext context) {
+    if (context.read<ConnectivityProvider>().isConnected) return true;
+    MyDialogBox.show(context, child: const NoInternetDialog());
+    return false;
   }
 
   void _closeDrawerIfOpen(BuildContext context) {
@@ -63,6 +82,7 @@ class NavigationActionsController extends ChangeNotifier {
   /// Same logic as the old `_onAspireTap` in HomeScreen.
   Future<void> onAspireTap(BuildContext context) async {
     if (_aspireLoading) return;
+    if (!_requireConnection(context)) return;
     _setAspireLoading(true);
     try {
       final result = await _userHomeService.getUserEmotions(context: context);
@@ -94,6 +114,7 @@ class NavigationActionsController extends ChangeNotifier {
   /// Same logic as the old `_onForecastTap` in HomeScreen.
   Future<void> onForecastTap(BuildContext context) async {
     if (_forecastLoading) return;
+    if (!_requireConnection(context)) return;
     _setForecastLoading(true);
 
     try {
@@ -151,18 +172,55 @@ class NavigationActionsController extends ChangeNotifier {
     }
   }
 
+  /// Same logic as the old `_onEndDayReflectionTap` in ForecastResultScreen.
+  Future<void> onEndDayReflectionTap(BuildContext context) async {
+    if (_endDayReflectionLoading) return;
+
+    _setEndDayReflectionLoading(true);
+    try {
+      final comparisonResult = await _userHomeService.getComparison(
+        context: context,
+      );
+      final comparisonData = comparisonResult?.data;
+
+      final hasRealityData =
+          comparisonData != null &&
+          comparisonData.isNotEmpty &&
+          (comparisonData.first.reality?.emotions?.isNotEmpty ?? false);
+
+      if (!context.mounted) return;
+
+      if (hasRealityData) {
+        Navigator.pushNamed(context, RoutesName.endDayComparisonScreen);
+      } else {
+        Navigator.pushNamed(
+          context,
+          RoutesName.endDayReflection,
+          arguments: {'isFromHome': true},
+        );
+      }
+    } catch (e) {
+      debugPrint('Error loading end-of-day comparison: $e');
+    } finally {
+      _setEndDayReflectionLoading(false);
+    }
+  }
+
   /// Same logic as the old `_onActivitiesTap` in HomeScreen.
   void onActivitiesTap(BuildContext context) {
+    if (!_requireConnection(context)) return;
     Navigator.pushNamed(context, RoutesName.activitiesScreen);
   }
 
   /// Same logic as the old `_onAnalyticsTap` in HomeScreen.
   void onAnalyticsTap(BuildContext context) {
+    if (!_requireConnection(context)) return;
     Navigator.pushNamed(context, RoutesName.analyticsScreen);
   }
 
   /// Same logic as the old `_onCommunityTap` in HomeScreen.
   void onCommunityTap(BuildContext context) {
+    if (!_requireConnection(context)) return;
     if (_sessionController.communityId == null ||
         _sessionController.communityId!.trim().isEmpty) {
       Navigator.pushNamed(context, RoutesName.emptyCommunity);

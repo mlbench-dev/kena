@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/app/utils/local_storage.dart';
@@ -200,7 +200,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     if (_checkingPermission) {
-      return Scaffold(
+      return MyScaffold(
         body: Center(
           child: LoadingAnimationWidget.staggeredDotsWave(
             color: context.colors.primary,
@@ -217,7 +217,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           _handlePermissionResult();
         });
       }
-      return Scaffold(
+      return MyScaffold(
         body: Center(
           child: LoadingAnimationWidget.staggeredDotsWave(
             color: context.colors.primary,
@@ -229,7 +229,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
     return MyScaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        systemOverlayStyle: UIHelper.statusBarDark,
         leading: BackButton(color: context.colors.textPrimary),
         centerTitle: true,
         title: Text(

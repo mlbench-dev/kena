@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:kena_emotional_journey/app/components/global_unfocus_keyboard.dart';
+import 'package:kena_emotional_journey/app/components/offline_banner.dart';
 import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
-import 'package:flutter/material.dart';
 
 class MyScaffold extends StatefulWidget {
   const MyScaffold({
@@ -59,20 +60,27 @@ class _MyScaffoldState extends State<MyScaffold> {
       ),
       child: Scaffold(
         backgroundColor: context.colors.background,
-        body:
-            ((widget.extendBody ?? false) ||
-                (widget.extendBodyBehindAppBar ?? false))
-            ? (widget.body ?? const SizedBox.shrink())
-            : GlobalUnfocusKeyboard(
-                child: (widget.isSafeArea == false)
-                    ? widget.body ?? const SizedBox.shrink()
-                    : SafeArea(
-                        bottom: widget.removeSafeAreaBottom ?? false
-                            ? false
-                            : true,
-                        child: widget.body ?? const SizedBox.shrink(),
-                      ),
-              ),
+        body: Column(
+          children: [
+            const OfflineBanner(),
+            Expanded(
+              child:
+                  ((widget.extendBody ?? false) ||
+                      (widget.extendBodyBehindAppBar ?? false))
+                  ? (widget.body ?? const SizedBox.shrink())
+                  : GlobalUnfocusKeyboard(
+                      child: (widget.isSafeArea == false)
+                          ? widget.body ?? const SizedBox.shrink()
+                          : SafeArea(
+                              bottom: widget.removeSafeAreaBottom ?? false
+                                  ? false
+                                  : true,
+                              child: widget.body ?? const SizedBox.shrink(),
+                            ),
+                    ),
+            ),
+          ],
+        ),
         appBar: widget.appBar,
         drawer: widget.drawer,
         bottomNavigationBar: widget.bottomNavigationBar,

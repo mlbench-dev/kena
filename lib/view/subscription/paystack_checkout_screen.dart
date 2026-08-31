@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -76,7 +77,9 @@ class _PaystackCheckoutScreenState extends State<PaystackCheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    UIHelper.setStatusBar(background: context.colors.background);
     return Scaffold(
+      backgroundColor: context.colors.background,
       appBar: AppBar(
         title: Text(
           'Complete Payment',

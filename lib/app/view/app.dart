@@ -6,7 +6,6 @@ import 'package:kena_emotional_journey/provider/auth/locale_provider.dart';
 import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/services/common/connectivity service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:kena_emotional_journey/view/common/no_connection.dart';
 import 'package:kena_emotional_journey/view/home/widgets/app_usage_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -96,19 +95,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
             supportedLocales: AppLocalizations.supportedLocales,
             initialRoute: Routes.initialRoute(),
             onGenerateRoute: Routes.generateRoute,
-            builder: (context, appChild) {
-              return Consumer<ConnectivityProvider>(
-                builder: (context, connectivityProvider, _) {
-                  return Stack(
-                    children: [
-                      appChild ?? const SizedBox.shrink(),
-                      if (!connectivityProvider.isConnected)
-                        const Positioned.fill(child: NoConnectionScreen()),
-                    ],
-                  );
-                },
-              );
-            },
           );
         },
       ),
