@@ -11,7 +11,6 @@ import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/thought_monitoring_widget.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.dart';
-import 'package:kena_emotional_journey/view/analytics/widgets/prediction_insights.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/progress_card.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/top_activities_section.dart';
 import 'package:kena_emotional_journey/view/community/widgets/user_profile_shimmer.dart';
@@ -205,12 +204,12 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PredictionInsightsCard(summary: predictionSummary),
-          SizedBox(height: 16.h),
+          // PredictionInsightsCard(summary: predictionSummary),
+          // SizedBox(height: 16.h),
           AllTimeProgressCard(
             currentProgress: planUsefulPercent.toDouble(),
             goalValue: 100,
-            lable: 'Plan useful',
+            lable: 'How often the plan was useful',
             hidebottomLabel: false,
           ),
           SizedBox(height: 16.h),
@@ -539,13 +538,13 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
                 width: 52.w,
                 height: 52.w,
                 decoration: BoxDecoration(
-                  color: context.colors.textPrimary.withOpacity(0.06),
+                  color: context.colors.textPrimary.withValues(alpha: 0.06),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.people_outline_rounded,
                   size: 22.sp,
-                  color: context.colors.textPrimary.withOpacity(0.4),
+                  color: context.colors.textPrimary.withValues(alpha: 0.4),
                 ),
               ),
               SizedBox(height: 16.h),
@@ -562,7 +561,7 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
                 'Members you add will show up here once they join.',
                 textAlign: TextAlign.center,
                 style: context.typography.body.copyWith(
-                  color: context.colors.textPrimary.withOpacity(0.55),
+                  color: context.colors.textPrimary.withValues(alpha: 0.55),
                   fontSize: 10.sp,
                   height: 1.4,
                 ),
@@ -581,7 +580,7 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: _members.length,
-            separatorBuilder: (_, _a) => SizedBox(width: 12.w),
+            separatorBuilder: (_, a) => SizedBox(width: 12.w),
             itemBuilder: (context, index) =>
                 _buildMemberItem(index, values[index]),
           ),

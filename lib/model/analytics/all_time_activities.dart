@@ -73,9 +73,10 @@ class ChartData {
 class TopActivities {
   final String? name;
   final int? count;
+  final int? percentage;
   final String? duration;
 
-  const TopActivities({this.name, this.count, this.duration});
+  const TopActivities({this.name, this.count, this.percentage, this.duration});
 
   factory TopActivities.fromJson(Map<String, dynamic> json) =>
       _$TopActivitiesFromJson(json);

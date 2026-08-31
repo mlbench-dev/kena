@@ -82,6 +82,7 @@ TopActivities _$TopActivitiesFromJson(Map<String, dynamic> json) =>
     TopActivities(
       name: json['name'] as String?,
       count: (json['count'] as num?)?.toInt(),
+      percentage: (json['percentage'] as num?)?.toInt(),
       duration: json['duration'] as String?,
     );
 
@@ -89,5 +90,6 @@ Map<String, dynamic> _$TopActivitiesToJson(TopActivities instance) =>
     <String, dynamic>{
       'name': instance.name,
       'count': instance.count,
+      'percentage': instance.percentage,
       'duration': instance.duration,
     };

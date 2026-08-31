@@ -55,11 +55,11 @@ class SegmentedProgressBar extends StatelessWidget {
   final Color backgroundColor;
 
   const SegmentedProgressBar({
-    Key? key,
+    super.key,
     this.height = 12.0,
     required this.categories,
     this.backgroundColor = const Color(0xFFD2E8DB),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -106,10 +106,10 @@ class ThoughtMonitoringWidget extends StatelessWidget {
   final int goal;
 
   const ThoughtMonitoringWidget({
-    Key? key,
+    super.key,
     required this.categories,
     this.goal = 100,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class ThoughtMonitoringWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "Today's Thought Monitoring",
+            "Thought Monitoring",
             style: TextStyle(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
@@ -133,21 +133,21 @@ class ThoughtMonitoringWidget extends StatelessWidget {
               fontFamily: 'sfpro',
             ),
           ),
-          SizedBox(height: 14.h),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "Goal: $goal%",
-              style: context.typography.body.copyWith(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: context.colors.primary,
-                fontFamily: 'sfpro',
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          SegmentedProgressBar(categories: categories),
+          // SizedBox(height: 14.h),
+          // Align(
+          //   alignment: Alignment.centerRight,
+          //   child: Text(
+          //     "Goal: $goal%",
+          //     style: context.typography.body.copyWith(
+          //       fontSize: 12.sp,
+          //       fontWeight: FontWeight.w600,
+          //       color: context.colors.primary,
+          //       fontFamily: 'sfpro',
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 8),
+          // SegmentedProgressBar(categories: categories),
           const SizedBox(height: 24),
           for (int i = 0; i < categories.length; i++) ...[
             _LegendRow(category: categories[i]),
@@ -163,7 +163,7 @@ class ThoughtMonitoringWidget extends StatelessWidget {
 class _LegendRow extends StatelessWidget {
   final ThoughtCategory category;
 
-  const _LegendRow({Key? key, required this.category}) : super(key: key);
+  const _LegendRow({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {

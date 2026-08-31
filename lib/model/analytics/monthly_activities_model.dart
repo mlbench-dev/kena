@@ -72,9 +72,10 @@ class ActivityChartData {
 class TopActivity {
   final String? name;
   final int? count;
+  final int? percentage;
   final String? duration;
 
-  TopActivity({this.name, this.count, this.duration});
+  TopActivity({this.name, this.count, this.percentage, this.duration});
 
   factory TopActivity.fromJson(Map<String, dynamic> json) =>
       _$TopActivityFromJson(json);

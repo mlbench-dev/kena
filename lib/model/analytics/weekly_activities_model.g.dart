@@ -81,6 +81,7 @@ Map<String, dynamic> _$ActivityChartDataToJson(ActivityChartData instance) =>
 TopActivity _$TopActivityFromJson(Map<String, dynamic> json) => TopActivity(
   name: json['name'] as String?,
   count: (json['count'] as num?)?.toInt(),
+  percentage: (json['percentage'] as num?)?.toInt(),
   duration: json['duration'] as String?,
 );
 
@@ -88,5 +89,6 @@ Map<String, dynamic> _$TopActivityToJson(TopActivity instance) =>
     <String, dynamic>{
       'name': instance.name,
       'count': instance.count,
+      'percentage': instance.percentage,
       'duration': instance.duration,
     };

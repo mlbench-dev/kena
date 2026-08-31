@@ -7,7 +7,6 @@ import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/thought_monitoring_widget.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.dart';
-import 'package:kena_emotional_journey/view/analytics/widgets/prediction_insights.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/progress_card.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/top_activities_section.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
@@ -209,12 +208,12 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PredictionInsightsCard(summary: predictionSummary),
-          SizedBox(height: 16.h),
+          // PredictionInsightsCard(summary: predictionSummary),
+          // SizedBox(height: 16.h),
           AllTimeProgressCard(
             currentProgress: planUsefulPercent.toDouble(),
             goalValue: 100,
-            lable: 'Plan useful',
+            lable: 'How often the plan was useful',
             hidebottomLabel: false,
           ),
           SizedBox(height: 16.h),

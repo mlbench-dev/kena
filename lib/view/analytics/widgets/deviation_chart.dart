@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 
@@ -62,7 +62,7 @@ class _PerformanceDeviationChartState extends State<PerformanceDeviationChart> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Worse ↔ Better',
+                'How it went vs forecast',
                 style: context.typography.body.copyWith(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
@@ -70,15 +70,15 @@ class _PerformanceDeviationChartState extends State<PerformanceDeviationChart> {
                   color: context.colors.textPrimary,
                 ),
               ),
-              Text(
-                'vs Goal',
-                style: context.typography.body.copyWith(
-                  fontSize: 12.sp,
-                  fontFamily: 'sfpro',
-                  fontWeight: FontWeight.w500,
-                  color: context.colors.textPrimary,
-                ),
-              ),
+              // Text(
+              //   'vs Goal',
+              //   style: context.typography.body.copyWith(
+              //     fontSize: 12.sp,
+              //     fontFamily: 'sfpro',
+              //     fontWeight: FontWeight.w500,
+              //     color: context.colors.textPrimary,
+              //   ),
+              // ),
             ],
           ),
 
@@ -150,7 +150,7 @@ class _PerformanceDeviationChartState extends State<PerformanceDeviationChart> {
                       checkToShowHorizontalLine: (value) => value == 0,
                       getDrawingHorizontalLine: (value) {
                         return FlLine(
-                          color: Colors.green.withOpacity(0.3),
+                          color: Colors.green.withValues(alpha: 0.3),
                           strokeWidth: 1.5,
                         );
                       },

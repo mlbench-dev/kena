@@ -90,8 +90,9 @@ class _WeeklyActivitiesState extends State<WeeklyActivities> {
     return topActivities.map((item) {
       return ActivityDataModel(
         name: item.name ?? '',
-        currentDays: (item.count ?? 0).toDouble(),
-        maxDays: 7.0,
+        currentDays: (item.percentage ?? 0).toDouble(),
+        maxDays: 100.0,
+        displayValue: '${item.count ?? 0}',
       );
     }).toList();
   }

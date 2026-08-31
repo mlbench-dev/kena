@@ -62,8 +62,9 @@ class _AlltimeActivitiesState extends State<AlltimeActivities> {
     return topActivities.map((item) {
       return ActivityDataModel(
         name: item.name ?? '',
-        currentDays: (item.count ?? 0).toDouble(),
-        maxDays: 365.0,
+        currentDays: (item.percentage ?? 0).toDouble(),
+        maxDays: 100.0,
+        displayValue: '${item.count ?? 0}',
       );
     }).toList();
   }

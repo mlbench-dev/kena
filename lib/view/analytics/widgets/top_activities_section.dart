@@ -11,6 +11,7 @@ class ActivityDataModel {
   final Color?
   trackingBarColor; // 👈 Added optional background track color parameter
   final String? title;
+  final String? displayValue; // Overrides the "X days" label when set
   ActivityDataModel({
     required this.name,
     required this.currentDays,
@@ -18,6 +19,7 @@ class ActivityDataModel {
     this.barColor,
     this.title,
     this.trackingBarColor, // 👈 Initialized in constructor
+    this.displayValue,
   });
 }
 
@@ -135,7 +137,8 @@ class _TopActivitiesFlSectionState extends State<TopActivitiesFlSection> {
                                     borderRadius: BorderRadius.circular(4.r),
                                   ),
                                   child: Text(
-                                    "${item.currentDays} days",
+                                    item.displayValue ??
+                                        "${item.currentDays} days",
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w700,
@@ -145,7 +148,9 @@ class _TopActivitiesFlSectionState extends State<TopActivitiesFlSection> {
                                   ),
                                 )
                               : Text(
-                                  "${item.maxDays.toInt()} days",
+                                  item.displayValue != null
+                                      ? "${item.currentDays.toInt()}%"
+                                      : "${item.maxDays.toInt()} days",
                                   key: ValueKey('max_$index'),
                                   style: context.typography.body.copyWith(
                                     fontSize: 12.sp,
