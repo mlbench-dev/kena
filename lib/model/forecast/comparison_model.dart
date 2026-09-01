@@ -27,6 +27,8 @@ class ComparisonData {
   /// Was List<Null> in the old model
   final List<dynamic>? activitiesCompleted;
 
+  final ThoughtMonitoring? thoughtMonitoring;
+
   ComparisonData({
     this.day,
     this.isEndDay,
@@ -34,6 +36,7 @@ class ComparisonData {
     this.reality,
     this.activitiesToday,
     this.activitiesCompleted,
+    this.thoughtMonitoring,
   });
 
   factory ComparisonData.fromJson(Map<String, dynamic> json) =>
@@ -99,6 +102,20 @@ class Emotion {
       imageUrl: imageUrl ?? this.imageUrl,
     );
   }
+}
+
+@JsonSerializable()
+class ThoughtMonitoring {
+  final int? positive;
+  final int? neutral;
+  final int? negative;
+
+  ThoughtMonitoring({this.positive, this.neutral, this.negative});
+
+  factory ThoughtMonitoring.fromJson(Map<String, dynamic> json) =>
+      _$ThoughtMonitoringFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ThoughtMonitoringToJson(this);
 }
 
 @JsonSerializable()

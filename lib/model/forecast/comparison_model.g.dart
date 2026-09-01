@@ -36,6 +36,11 @@ ComparisonData _$ComparisonDataFromJson(Map<String, dynamic> json) =>
           ?.map((e) => ActivityToday.fromJson(e as Map<String, dynamic>))
           .toList(),
       activitiesCompleted: json['activitiesCompleted'] as List<dynamic>?,
+      thoughtMonitoring: json['thoughtMonitoring'] == null
+          ? null
+          : ThoughtMonitoring.fromJson(
+              json['thoughtMonitoring'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$ComparisonDataToJson(
@@ -47,6 +52,7 @@ Map<String, dynamic> _$ComparisonDataToJson(
   'reality': instance.reality?.toJson(),
   'activitiesToday': instance.activitiesToday?.map((e) => e.toJson()).toList(),
   'activitiesCompleted': instance.activitiesCompleted,
+  'thoughtMonitoring': instance.thoughtMonitoring?.toJson(),
 };
 
 Forecast _$ForecastFromJson(Map<String, dynamic> json) => Forecast(
@@ -94,6 +100,20 @@ Map<String, dynamic> _$EmotionToJson(Emotion instance) => <String, dynamic>{
   'intensity': instance.intensity,
   'imageUrl': instance.imageUrl,
 };
+
+ThoughtMonitoring _$ThoughtMonitoringFromJson(Map<String, dynamic> json) =>
+    ThoughtMonitoring(
+      positive: (json['positive'] as num?)?.toInt(),
+      neutral: (json['neutral'] as num?)?.toInt(),
+      negative: (json['negative'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$ThoughtMonitoringToJson(ThoughtMonitoring instance) =>
+    <String, dynamic>{
+      'positive': instance.positive,
+      'neutral': instance.neutral,
+      'negative': instance.negative,
+    };
 
 ActivityToday _$ActivityTodayFromJson(Map<String, dynamic> json) =>
     ActivityToday(

@@ -157,6 +157,49 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
   comparison.Forecast? get _forecast => _comparisonData?.forecast;
   comparison.Reality? get _reality => _comparisonData?.reality;
 
+  /// Today's thought-monitoring split, as percentages of positive/neutral/
+  /// negative thoughts logged for the day.
+  List<ActivityDataModel> get _thoughtMonitoringActivities {
+    final thoughtMonitoring = _comparisonData?.thoughtMonitoring;
+    final positive = thoughtMonitoring?.positive ?? 0;
+    final neutral = thoughtMonitoring?.neutral ?? 0;
+    final negative = thoughtMonitoring?.negative ?? 0;
+    final total = positive + neutral + negative;
+
+    double percentOf(int value) => total == 0 ? 0 : (value / total) * 100;
+
+    final positivePercent = percentOf(positive);
+    final neutralPercent = percentOf(neutral);
+    final negativePercent = percentOf(negative);
+
+    return [
+      ActivityDataModel(
+        title: "Today's Thought Monitoring",
+        name: 'Positive',
+        currentDays: positivePercent,
+        maxDays: 100,
+        barColor: const Color(0xFF21573b),
+        displayValue: '${positivePercent.toInt()}%',
+      ),
+      ActivityDataModel(
+        name: 'Neutral',
+        currentDays: neutralPercent,
+        maxDays: 100,
+        barColor: const Color(0xFFCAAC08),
+        trackingBarColor: const Color(0xFFF1EAC2),
+        displayValue: '${neutralPercent.toInt()}%',
+      ),
+      ActivityDataModel(
+        name: 'Negative',
+        currentDays: negativePercent,
+        maxDays: 100,
+        barColor: const Color(0xFFD60605),
+        trackingBarColor: const Color(0xFFF5C1C1),
+        displayValue: '${negativePercent.toInt()}%',
+      ),
+    ];
+  }
+
   // ── Notes ────────────────────────────────────────────────────────────
 
   Future<void> _onEditPlanNotesTap() async {
@@ -447,9 +490,7 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
           _buildDayRating(context),
           SizedBox(height: 16.h),
 
-          // TODO: replace with real thought-monitoring data once the
-          // backend endpoint is available; this is placeholder content.
-          TopActivitiesFlSection(activities: _placeholderThoughtActivities),
+          TopActivitiesFlSection(activities: _thoughtMonitoringActivities),
           SizedBox(height: 10.h),
 
           _buildNotesInput(context),
@@ -867,36 +908,6 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
     );
   }
 }
-
-// ── Placeholder data ───────────────────────────────────────────────────
-//
-// Hardcoded until the "thought monitoring" backend endpoint exists.
-// Kept top-level (rather than inline in build()) so it's obviously not
-// per-instance state, and easy to find/replace later.
-
-final List<ActivityDataModel> _placeholderThoughtActivities = [
-  ActivityDataModel(
-    title: "Today's Thought Monitoring",
-    name: 'Positive',
-    currentDays: 6.8,
-    maxDays: 7.0,
-    barColor: const Color(0xFF21573b),
-  ),
-  ActivityDataModel(
-    name: 'Neutral',
-    currentDays: 6.0,
-    maxDays: 7.0,
-    barColor: const Color(0xFFCAAC08),
-    trackingBarColor: const Color(0xFFF1EAC2),
-  ),
-  ActivityDataModel(
-    name: 'Negative',
-    currentDays: 5.2,
-    maxDays: 7.0,
-    barColor: const Color(0xFFD60605),
-    trackingBarColor: const Color(0xFFF5C1C1),
-  ),
-];
 
 // ── Small presentational widgets ────────────────────────────────────────
 
