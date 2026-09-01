@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: context.typography.title.copyWith(
                         fontSize: 32.sp,
                         fontFamily: 'ZenAntiqueSoft',
-                        color: context.colors.primary,
+                        color: context.colors.tertiary,
                         fontWeight: FontWeight.w400,
                       ),
                     ),

@@ -19,7 +19,8 @@ class RadioSelector<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isSelected = value == groupValue;
-    final Color primaryColor = context.colors.primary;
+    final Color tertiaryColor =
+        context.colors.tertiary; // Use tertiary color for selected state
 
     return Expanded(
       child: GestureDetector(
@@ -33,7 +34,7 @@ class RadioSelector<T> extends StatelessWidget {
             ), // Premium soft light gray background
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-              color: isSelected ? primaryColor : const Color(0xFFE5E5E5),
+              color: isSelected ? tertiaryColor : const Color(0xFFE5E5E5),
               width: isSelected ? 1.4 : 1.0,
             ),
           ),
@@ -48,7 +49,7 @@ class RadioSelector<T> extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isSelected ? primaryColor : const Color(0xFF5F6E65),
+                    color: isSelected ? tertiaryColor : const Color(0xFF5F6E65),
                     width: 2,
                   ),
                 ),
@@ -58,7 +59,7 @@ class RadioSelector<T> extends StatelessWidget {
                   width: isSelected ? 10.w : 0,
                   height: isSelected ? 10.w : 0,
                   decoration: BoxDecoration(
-                    color: primaryColor,
+                    color: tertiaryColor,
                     shape: BoxShape.circle,
                   ),
                 ),

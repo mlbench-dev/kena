@@ -657,10 +657,14 @@ Widget _buildActivityItem(
                         },
                   child: Assets.icons.bin.svg(height: 22.h, width: 22.h),
                 ),
-                SizedBox(width: 8.w),
+                SizedBox(width: 10.w),
                 GestureDetector(
                   onTap: isDeleting ? null : onEditTap,
-                  child: Assets.icons.pen.svg(height: 22.h, width: 22.h),
+                  child: Assets.icons.penOutline.svg(
+                    height: 13.h,
+                    width: 13.w,
+                    color: context.colors.secondary,
+                  ),
                 ),
               ],
               const Spacer(),
@@ -674,7 +678,7 @@ Widget _buildActivityItem(
                   child: Text(
                     badge!,
                     style: context.typography.body.copyWith(
-                      color: context.colors.primary,
+                      color: context.colors.tertiary,
                       fontSize: 11.sp,
                       fontFamily: 'sfpro',
                     ),

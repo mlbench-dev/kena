@@ -59,7 +59,7 @@ class EmotionTile extends StatelessWidget {
                 ? "$intensity-5"
                 : (showDenominator ? "$intensity/5" : intensity),
             style: context.typography.body.copyWith(
-              color: context.colors.primary,
+              color: context.colors.secondary,
               fontWeight: FontWeight.w500,
               fontSize: 12.sp,
               fontFamily: "sfpro",
@@ -122,10 +122,15 @@ class EmotionTile extends StatelessWidget {
                 child: Opacity(
                   opacity: isDisabled ? 0.4 : 1,
                   child: Center(
-                    child: Assets.icons.circleEdits.svg(
+                    child: Assets.icons.penOutline.svg(
                       height: 23.h,
                       width: 23.w,
-                      allowDrawingOutsideViewBox: true,
+                      color: context.colors.primary,
+                      // allowDrawingOutsideViewBox: true,
+                      // colorFilter: ColorFilter.mode(
+                      //   context.colors.primary,
+                      //   // BlendMode.srcIn,
+                      // ),
                     ),
                   ),
                 ),
@@ -197,6 +202,10 @@ class EmotionTile extends StatelessWidget {
                     height: 23.h,
                     width: 23.w,
                     allowDrawingOutsideViewBox: true,
+                    colorFilter: ColorFilter.mode(
+                      context.colors.primary,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),

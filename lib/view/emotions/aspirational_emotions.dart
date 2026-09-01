@@ -462,7 +462,7 @@ class _AspirationalEmotionsState extends State<AspirationalEmotions>
                       style: context.typography.title.copyWith(
                         fontSize: 21.sp,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFFd106a5),
+                        color: context.colors.secondary,
                       ),
                     ),
                   ],
@@ -1014,7 +1014,7 @@ class TypeofEmotions extends StatelessWidget {
           color: isSelected ? const Color(0xFFf3e0f7) : const Color(0xFFFFF5EC),
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
-            color: isSelected ? context.colors.primary : Colors.transparent,
+            color: isSelected ? context.colors.tertiary : Colors.transparent,
             width: 1.5,
           ),
         ),
@@ -1030,7 +1030,7 @@ class TypeofEmotions extends StatelessWidget {
                 style: context.typography.body.copyWith(
                   fontSize: Platform.isAndroid ? 12.sp : 11.5.sp,
                   color: isSelected
-                      ? context.colors.primary
+                      ? context.colors.tertiary
                       : const Color(0xFF6b5b8c),
                   fontVariations: const [FontVariation('wght', 500.0)],
                 ),
@@ -1072,12 +1072,12 @@ class EmotionsCard extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(10.r),
           border: isExpanded
-              ? Border.all(color: context.colors.primary, width: 2)
+              ? Border.all(color: context.colors.tertiary, width: 2)
               : Border.all(color: Colors.transparent, width: 2),
           boxShadow: isExpanded
               ? [
                   BoxShadow(
-                    color: context.colors.primary.withValues(alpha: 0.15),
+                    color: context.colors.tertiary.withValues(alpha: 0.15),
                     blurRadius: 8,
                     spreadRadius: 1,
                   ),

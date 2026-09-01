@@ -119,7 +119,7 @@ class _MonthCalendarState extends State<MonthCalendar> {
     required bool isSelected,
     required VoidCallback onTap,
   }) {
-    final Color activeGreen = context.colors.primary;
+    final Color activeGreen = context.colors.tertiary;
 
     return GestureDetector(
       onTap: onTap,

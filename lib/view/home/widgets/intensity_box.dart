@@ -224,9 +224,11 @@ class _NumberBox extends StatelessWidget {
       height: 42.h,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.r),
-        color: isSelected ? const Color(0xFFc8e6c9) : const Color(0xFFf5f5f5),
+        color: isSelected
+            ? context.colors.primary.withValues(alpha: 0.2)
+            : const Color(0xFFf5f5f5),
         border: Border.all(
-          color: isSelected ? const Color(0xFF81c784) : const Color(0xFFe0e0e0),
+          color: isSelected ? context.colors.primary : const Color(0xFFe0e0e0),
           width: 2.w,
         ),
       ),

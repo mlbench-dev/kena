@@ -29,7 +29,7 @@ class FreeTrailScreen extends StatelessWidget {
                   style: context.typography.title.copyWith(
                     fontFamily: 'ZenAntiqueSoft',
                     fontSize: 32.sp,
-                    color: context.colors.primary,
+                    color: context.colors.tertiary,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -156,7 +156,7 @@ class FreeTrailScreen extends StatelessWidget {
                       Text(
                         "21-Day Free Trial",
                         style: context.typography.title.copyWith(
-                          color: context.colors.primary,
+                          color: context.colors.tertiary,
                           fontWeight: FontWeight.w600,
                           fontSize: 16.sp,
                           fontFamily: "sfpro",
@@ -298,7 +298,7 @@ class FeatureName extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.check, color: context.colors.primary, size: 18.r),
+        Icon(Icons.check, color: context.colors.tertiary, size: 18.r),
         SizedBox(width: 5.w),
         Text(
           title,

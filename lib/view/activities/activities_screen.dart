@@ -172,7 +172,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                             : "Planned Activities",
                         style: context.typography.headline.copyWith(
                           fontSize: 16.sp,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500,
                           color: context.colors.textPrimary,
                         ),
                       ),
@@ -194,7 +194,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                                   key: const ValueKey('act_done_txt'),
                                   style: context.typography.body.copyWith(
                                     fontFamily: 'sfpro',
-                                    color: context.colors.primary,
+                                    color: context.colors.tertiary,
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -208,7 +208,9 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                                               _plannedActivities
                                                   .isEmpty) // Assuming your list variable is named _plannedActivities
                                       ? const SizedBox.shrink()
-                                      : Assets.icons.penOutline.svg(),
+                                      : Assets.icons.penOutline.svg(
+                                          color: context.colors.secondary,
+                                        ),
                                 ),
                         ),
                       ),
@@ -244,7 +246,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                       borderRadius: BorderRadius.circular(12.r),
                       border: Border.all(
                         color: isActivitiesEditMode
-                            ? context.colors.primary.withValues(
+                            ? context.colors.tertiary.withValues(
                                 alpha: 0.8,
                               ) // Green border frame when active
                             : context.colors.textSecondary.withValues(
@@ -448,7 +450,7 @@ class PlannedActivityCard extends StatelessWidget {
             child: Text(
               activityName,
               style: context.typography.body.copyWith(
-                color: context.colors.primary,
+                color: context.colors.textPrimary,
                 fontFamily: 'sfpro',
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
@@ -473,7 +475,7 @@ class PlannedActivityCard extends StatelessWidget {
               ),
               child: Assets.icons.bin.svg(width: 22.w, height: 22.h),
             ),
-            SizedBox(width: 6.w),
+            SizedBox(width: 12.w),
             GestureDetector(
               onTap: () => MyDialogBox.show(
                 context,
@@ -487,7 +489,11 @@ class PlannedActivityCard extends StatelessWidget {
                   onRefresh: onRefresh,
                 ),
               ),
-              child: Assets.icons.pen.svg(width: 22.w, height: 22.h),
+              child: Assets.icons.penOutline.svg(
+                width: 15.w,
+                height: 15.h,
+                color: context.colors.secondary,
+              ),
             ),
           ],
         ],
@@ -528,7 +534,7 @@ class TodayActivityCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
           color: isChecked
-              ? context.colors.primary
+              ? context.colors.tertiary
               : context.colors.textSecondary.withValues(alpha: 0.15),
           width: 1,
         ),
@@ -539,7 +545,7 @@ class TodayActivityCard extends StatelessWidget {
             child: Text(
               activityName,
               style: context.typography.body.copyWith(
-                color: context.colors.primary,
+                color: context.colors.textPrimary,
                 fontFamily: 'sfpro',
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w400,
@@ -557,7 +563,7 @@ class TodayActivityCard extends StatelessWidget {
                       vertical: 4.h,
                     ),
                     decoration: BoxDecoration(
-                      color: Color(0xFFCAEAC7),
+                      color: context.colors.secondary.withValues(alpha: 0.3),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: Row(
@@ -566,13 +572,13 @@ class TodayActivityCard extends StatelessWidget {
                         Icon(
                           Icons.check,
                           size: 16.sp,
-                          color: context.colors.primary,
+                          color: context.colors.tertiary,
                         ),
                         SizedBox(width: 4.w),
                         Text(
                           'Done',
                           style: TextStyle(
-                            color: context.colors.primary,
+                            color: context.colors.tertiary,
                             fontWeight: FontWeight.w600,
                             fontSize: 13.sp,
                           ),
@@ -599,7 +605,7 @@ class TodayActivityCard extends StatelessWidget {
               ),
               child: Assets.icons.bin.svg(width: 22.w, height: 22.h),
             ),
-            SizedBox(width: 6.w),
+            SizedBox(width: 12.w),
             GestureDetector(
               onTap: () => MyDialogBox.show(
                 context,
@@ -611,7 +617,11 @@ class TodayActivityCard extends StatelessWidget {
                   onEdited: onEdited,
                 ),
               ),
-              child: Assets.icons.pen.svg(width: 22.w, height: 22.h),
+              child: Assets.icons.penOutline.svg(
+                width: 15.w,
+                height: 15.h,
+                color: context.colors.secondary,
+              ),
             ),
           ],
         ],
@@ -670,7 +680,7 @@ class DeleteActivityDialogBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 175.h,
+      height: 180.h,
       child: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(
@@ -696,7 +706,7 @@ class DeleteActivityDialogBox extends StatelessWidget {
                     child: Container(
                       padding: EdgeInsets.all(16.w),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFF0000),
+                        color: context.colors.tertiary,
                         borderRadius: BorderRadius.circular(15.r),
                       ),
                       child: Center(
@@ -965,7 +975,7 @@ class FrequencyChip extends StatelessWidget {
           fontSize: 10.sp,
           fontFamily: 'sfpro',
           fontWeight: isActive ? FontWeight.bold : FontWeight.w400,
-          color: context.colors.primary,
+          color: context.colors.tertiary,
         ),
       ),
     );

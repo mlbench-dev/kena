@@ -4,6 +4,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   const AppColorScheme({
     // Core colors
     required this.primary,
+    required this.secondary,
+    required this.tertiary,
     required this.background,
     required this.surface,
     required this.onSurface,
@@ -75,7 +77,9 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     ),
     // ... rest of your light colors
     // Core colors
-    primary: Color(0xff21573b),
+    primary: Color(0xffF2644B),
+    secondary: Color(0xff83C4C5),
+    tertiary: Color(0xff152D58),
     background: Color(0xFFFAFAFA),
     surface: Color(0xff2196f31a),
     onSurface: Color(0xFF0F172A),
@@ -92,7 +96,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     textOnLight: Color(0xFF0F172A),
 
     // Button colors
-    buttonPrimary: Color(0xFF226BF7),
+    buttonPrimary: Color(0xffF2644B),
     buttonPrimaryText: Color(0xFFFAFAFA),
     buttonSecondary: Color(0xFFF1F5F9),
     buttonSecondaryText: Color(0xFF0F172A),
@@ -148,7 +152,9 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     ),
     // ... rest of your dark colors
     // Core colors
-    primary: Color(0xFF21573b),
+    primary: Color(0xffF2644B),
+    secondary: Color(0xff83C4C5),
+    tertiary: Color(0xff152D58),
     background: Color(0xFFFAFAFA),
     surface: Color(0xFF16263D),
     onSurface: Color(0xFFFAF9F7),
@@ -165,7 +171,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     textOnLight: Color(0xFF16263D),
 
     // Button colors
-    buttonPrimary: Color(0xFF21573b),
+    buttonPrimary: Color(0xffF2644B),
     buttonPrimaryText: Color(0xFFFAFAFA),
     buttonSecondary: Color(0xFFF4E9DC),
     buttonSecondaryText: Color(0xFF16263D),
@@ -212,6 +218,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
 
   // Core colors
   final Color primary;
+  final Color secondary;
+  final Color tertiary;
   final Color background;
   final Color surface;
   final Color onSurface;
@@ -277,6 +285,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   @override
   AppColorScheme copyWith({
     Color? primary,
+    Color? secondary,
+    Color? tertiary,
     Color? background,
     Color? surface,
     Color? onSurface,
@@ -327,6 +337,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   }) {
     return AppColorScheme(
       primary: primary ?? this.primary,
+      secondary: secondary ?? this.secondary,
+      tertiary: tertiary ?? this.tertiary,
       background: background ?? this.background,
       surface: surface ?? this.surface,
       onSurface: onSurface ?? this.onSurface,
@@ -390,6 +402,8 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
 
     return AppColorScheme(
       primary: Color.lerp(primary, other.primary, t)!,
+      secondary: Color.lerp(secondary, other.secondary, t)!,
+      tertiary: Color.lerp(tertiary, other.tertiary, t)!,
       background: Color.lerp(background, other.background, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
       onSurface: Color.lerp(onSurface, other.onSurface, t)!,

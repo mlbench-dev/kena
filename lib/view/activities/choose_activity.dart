@@ -489,7 +489,7 @@ class _ChooseActivityState extends State<ChooseActivity> {
                                   if (states.contains(WidgetState.selected)) {
                                     return context
                                         .colors
-                                        .primary; // Checked: Primary color
+                                        .tertiary; // Checked: Primary color
                                   }
                                   return context
                                       .colors
@@ -818,7 +818,9 @@ class SelectionBox extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 8.w),
         height: 40.h,
         decoration: BoxDecoration(
-          color: isSelected ? context.colors.primary : const Color(0xFFFAF5EB),
+          color: isSelected
+              ? context.colors.tertiary
+              : context.colors.textSecondary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Row(
@@ -832,10 +834,9 @@ class SelectionBox extends StatelessWidget {
                 maxLines: 2,
                 style: context.typography.body.copyWith(
                   fontSize: Platform.isIOS ? 11.sp : 11.sp,
-                  fontWeight: FontWeight.w500,
-                  color: isSelected
-                      ? Colors.white
-                      : context.colors.textSecondary,
+                  fontWeight: FontWeight.w400,
+                  color: isSelected ? Colors.white : context.colors.textPrimary,
+                  fontFamily: 'sfpro',
                 ),
               ),
             ),
@@ -848,13 +849,11 @@ class SelectionBox extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15.r),
                 ),
                 side: BorderSide(
-                  color: isSelected
-                      ? Colors.white
-                      : context.colors.primary.withValues(alpha: 0.5),
-                  width: 1.5,
+                  color: isSelected ? Colors.white : context.colors.textPrimary,
+                  width: 1.w,
                 ),
                 activeColor: Colors.white,
-                checkColor: context.colors.primary,
+                checkColor: context.colors.tertiary,
               ),
             ),
           ],

@@ -23,7 +23,7 @@ class FrequencyChip extends StatelessWidget {
           color: isActive ? context.colors.background : Color(0xFFE9EEEB),
           borderRadius: BorderRadius.circular(3.r),
           border: Border.all(
-            color: isActive ? context.colors.primary : Colors.transparent,
+            color: isActive ? context.colors.tertiary : Colors.transparent,
             width:
                 1.5, // Fixed width keeps the chip size stable on click transitions
           ),
@@ -33,8 +33,10 @@ class FrequencyChip extends StatelessWidget {
           style: context.typography.body.copyWith(
             fontSize: 10.sp,
             fontFamily: 'sfpro',
-            fontWeight: isActive ? FontWeight.bold : FontWeight.w400,
-            color: context.colors.primary,
+            fontWeight: FontWeight.w400,
+            color: isActive
+                ? context.colors.tertiary
+                : context.colors.textPrimary,
           ),
         ),
       ),

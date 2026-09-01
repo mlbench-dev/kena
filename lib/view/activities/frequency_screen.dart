@@ -237,7 +237,7 @@ class _FrequencyScreenState extends State<FrequencyScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Configure Frequencies",
+                "Select Frequency",
                 style: context.typography.body.copyWith(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.w600,
@@ -268,16 +268,16 @@ class _FrequencyScreenState extends State<FrequencyScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: isActive
-                              ? context.colors.primary.withValues(alpha: 0.05)
+                              ? context.colors.tertiary.withValues(alpha: 0.05)
                               : Colors.white,
                           borderRadius: BorderRadius.circular(12.r),
                           border: Border.all(
                             color: isActive
-                                ? context.colors.primary
+                                ? context.colors.tertiary
                                 : context.colors.textSecondary.withValues(
                                     alpha: 0.15,
                                   ),
-                            width: isActive ? 2.0 : 1.5,
+                            width: isActive ? 1.5 : 1.5,
                           ),
                         ),
                         child: Row(
@@ -287,13 +287,13 @@ class _FrequencyScreenState extends State<FrequencyScreen> {
                                 activity.name,
                                 style: context.typography.body.copyWith(
                                   color: isActive
-                                      ? context.colors.primary
+                                      ? context.colors.tertiary
                                       : context.colors.textPrimary,
                                   fontFamily: 'sfpro',
                                   fontSize: 15.sp,
                                   fontWeight: isActive
-                                      ? FontWeight.w600
-                                      : FontWeight.w500,
+                                      ? FontWeight.w500
+                                      : FontWeight.w400,
                                 ),
                               ),
                             ),
@@ -352,8 +352,8 @@ class _FrequencyScreenState extends State<FrequencyScreen> {
                 "Configuring: ${activeActivity.name}",
                 style: context.typography.body.copyWith(
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: context.colors.primary,
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.tertiary,
                   fontFamily: 'sfpro',
                 ),
               ),
@@ -437,7 +437,7 @@ class _FrequencyScreenState extends State<FrequencyScreen> {
                                   onPressed: () => _changeMonth(-1),
                                   icon: Icon(
                                     Icons.keyboard_double_arrow_left,
-                                    color: context.colors.primary,
+                                    color: context.colors.tertiary,
                                     size: 28.sp,
                                   ),
                                 ),
@@ -467,7 +467,7 @@ class _FrequencyScreenState extends State<FrequencyScreen> {
                                   onPressed: () => _changeMonth(1),
                                   icon: Icon(
                                     Icons.keyboard_double_arrow_right,
-                                    color: context.colors.primary,
+                                    color: context.colors.tertiary,
                                     size: 28.sp,
                                   ),
                                 ),
@@ -608,7 +608,7 @@ class InlineWeekdayChip extends StatelessWidget {
           color: isSelected ? Colors.white : const Color(0xFFE9EEEB),
           borderRadius: BorderRadius.circular(6.r),
           border: Border.all(
-            color: isSelected ? context.colors.primary : Colors.transparent,
+            color: isSelected ? context.colors.tertiary : Colors.transparent,
             width: 1.5,
           ),
         ),
@@ -618,7 +618,7 @@ class InlineWeekdayChip extends StatelessWidget {
             fontSize: 13.sp,
             fontFamily: 'sfpro',
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: context.colors.primary,
+            color: context.colors.tertiary,
           ),
         ),
       ),

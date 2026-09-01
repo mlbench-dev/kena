@@ -90,7 +90,7 @@ class TourTooltip extends StatelessWidget {
                   'Skip',
                   style: context.typography.body.copyWith(
                     fontSize: 14.sp,
-                    color: _accentGreen,
+                    color: context.colors.tertiary,
                     fontWeight: FontWeight.w400,
                     fontFamily: 'sfpro',
                   ),
@@ -103,7 +103,7 @@ class TourTooltip extends StatelessWidget {
                   isLastStep ? 'Done' : 'Next',
                   style: context.typography.body.copyWith(
                     fontSize: 14.sp,
-                    color: _accentGreen,
+                    color: context.colors.tertiary,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'sfpro',
                   ),
@@ -137,7 +137,7 @@ class _DotIndicator extends StatelessWidget {
             shape: BoxShape.circle,
             color: isActive
                 ? TourTooltip._accentGreen
-                : TourTooltip._accentGreen.withOpacity(0.25),
+                : TourTooltip._accentGreen.withValues(alpha: 0.25),
           ),
         );
       }),
