@@ -17,6 +17,8 @@ class EmotionTile extends StatelessWidget {
   final VoidCallback? onDeleteTap;
   final bool
   isDisabled; // optional: blocks edit/delete taps, e.g. while another tile's image uploads
+  final bool showDenominator;
+  final bool showForecastActualRange;
   const EmotionTile({
     super.key,
     required this.emotion,
@@ -25,6 +27,8 @@ class EmotionTile extends StatelessWidget {
     this.onEditImageTap,
     this.onDeleteTap,
     this.isDisabled = false,
+    this.showDenominator = true,
+    this.showForecastActualRange = false,
   });
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,9 @@ class EmotionTile extends StatelessWidget {
           _buildImageContainer(context),
           SizedBox(height: 5.h),
           Text(
-            "$intensity/5",
+            showForecastActualRange
+                ? "$intensity-5"
+                : (showDenominator ? "$intensity/5" : intensity),
             style: context.typography.body.copyWith(
               color: context.colors.primary,
               fontWeight: FontWeight.w500,
@@ -66,6 +72,9 @@ class EmotionTile extends StatelessWidget {
 
   String _formatIntensity(num? intensity) {
     final value = intensity ?? 0;
+    if (!showDenominator || showForecastActualRange) {
+      return value.round().toString();
+    }
     return value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
   }
 

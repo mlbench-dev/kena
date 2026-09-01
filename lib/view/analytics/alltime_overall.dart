@@ -282,12 +282,14 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
             context,
             title: 'Core Emotions',
             emotions: coreEmotions,
+            showForecastActualRange: true,
           ),
           SizedBox(height: 16.h),
           _buildEmotionsSection(
             context,
             title: 'Aspirational Emotions',
             emotions: aspirationalEmotions,
+            showForecastActualRange: true,
           ),
           SizedBox(height: 16.h),
           TopActivitiesFlSection(activities: topActivities),
@@ -306,6 +308,7 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
     BuildContext context, {
     required String title,
     required List<Emotion> emotions,
+    bool showForecastActualRange = false,
   }) {
     final emotionsToShow = emotions.take(3).toList();
 
@@ -319,6 +322,8 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
           isEditMode: false,
           emotion: emotion,
           showImage: true,
+          showDenominator: false,
+          showForecastActualRange: showForecastActualRange,
         );
       }).toList(),
     );

@@ -56,9 +56,7 @@ class NavigationActionsController extends ChangeNotifier {
 
   /// Fetches today's forecast and reports whether the user completed it.
   Future<bool> hasForecast(BuildContext context) async {
-    final forecastResult = await _userHomeService.getForecast(
-      context: context,
-    );
+    final forecastResult = await _userHomeService.getForecast(context: context);
     return _forecastHasContent(forecastResult);
   }
 

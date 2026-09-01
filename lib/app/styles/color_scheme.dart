@@ -77,7 +77,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     // Core colors
     primary: Color(0xff21573b),
     background: Color(0xFFFAFAFA),
-    surface: Color(0xFF2196F31A),
+    surface: Color(0xff2196f31a),
     onSurface: Color(0xFF0F172A),
     onSurfaceVariant: Color(0xFF64748B),
     outline: Color(0xFFE2E8F0),
@@ -158,7 +158,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     error: Color(0xFFF87171),
 
     // Text colors
-    textPrimary: Color(0xFFF000000),
+    textPrimary: Color(0xfff000000),
     textSecondary: Color(0xFF7B7E86),
     textDisabled: Color(0xFF475569),
     textOnDark: Color(0xFFFAF9F7),
