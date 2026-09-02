@@ -251,7 +251,7 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
               onPressed: previousMonth,
               icon: Icon(
                 Icons.keyboard_double_arrow_left,
-                color: context.colors.primary,
+                color: context.colors.tertiary,
                 size: 26.sp,
               ),
             ),
@@ -273,7 +273,7 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
               icon: Icon(
                 Icons.keyboard_double_arrow_right,
                 color: _canGoNext
-                    ? context.colors.primary
+                    ? context.colors.tertiary
                     : context.colors.textSecondary.withValues(alpha: 0.3),
                 size: 26.sp,
               ),
@@ -349,7 +349,7 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
                 color: const Color(0xFFF2F2F2),
                 border: Border.all(
                   color: isSelected && !disabled
-                      ? context.colors.primary
+                      ? context.colors.tertiary
                       : Colors.transparent,
                   width: 1.5.w,
                 ),
@@ -372,7 +372,7 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
               _Dot(
                 size: 6.w,
                 color: day.hasData && !disabled
-                    ? context.colors.primary
+                    ? context.colors.tertiary
                     : Colors.transparent,
               ),
           ],

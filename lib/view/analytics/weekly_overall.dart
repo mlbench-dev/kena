@@ -132,9 +132,10 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     return activities.map((a) {
       return ActivityDataModel(
         name: a.name ?? '',
-        currentDays: (a.completedDays ?? 0).toDouble(),
-        maxDays: (a.targetCount ?? 7).toDouble(),
-        barColor: const Color(0xFF21573b),
+        currentDays: (a.achievementPercent ?? 0).toDouble(),
+        maxDays: 100,
+        barColor:
+            context.colors.secondary, // Use secondary color for the active bar
       );
     }).toList();
   }
@@ -330,9 +331,8 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
                 SizedBox(height: 10.h),
                 MyButton(
                   label: "Share with Circle",
-                  backgroundColor: context.colors.background,
-                  textColor: context.colors.primary,
-                  borderColor: context.colors.primary,
+                  backgroundColor: context.colors.primary,
+                  textColor: context.colors.background,
                   onPressed: _onShareWithCircleTap,
                 ),
               ],

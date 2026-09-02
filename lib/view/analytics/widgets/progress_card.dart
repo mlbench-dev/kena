@@ -54,9 +54,9 @@ class AllTimeProgressCard extends StatelessWidget {
                 style: context.typography.body.copyWith(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
-                  color: const Color(
-                    0xFF1B4D3E,
-                  ), // Deep green accent indicator matching your theme
+                  color: context
+                      .colors
+                      .textPrimary, // Deep green accent indicator matching your theme
                   fontFamily: "sfpro",
                 ),
               ),
@@ -71,11 +71,12 @@ class AllTimeProgressCard extends StatelessWidget {
               height: 8.h, // Clean line thickness matching your design layout
               child: LinearProgressIndicator(
                 value: percentage.clamp(0.0, 1.0),
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  Color(0xFF1B4D3E), // Solid deep green fill
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  context.colors.secondary, // Solid deep green fill
                 ),
-                backgroundColor:
-                    Colors.white, // Pure white empty track background
+                backgroundColor: context.colors.secondary.withValues(
+                  alpha: 0.3,
+                ), // Pure white empty track background
               ),
             ),
           ),

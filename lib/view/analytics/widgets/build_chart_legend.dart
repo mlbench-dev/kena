@@ -15,8 +15,10 @@ class BuildChartLegend extends StatelessWidget {
         Container(
           width: 10.r,
           height: 10.r,
-          decoration: const BoxDecoration(
-            color: Color(0xFFC2D6CE), // Light Sage Green
+          decoration: BoxDecoration(
+            color: context.colors.secondary.withValues(
+              alpha: 0.3,
+            ), // Light Sage Green
             shape: BoxShape.circle,
           ),
         ),
@@ -34,8 +36,8 @@ class BuildChartLegend extends StatelessWidget {
         Container(
           width: 10.r,
           height: 10.r,
-          decoration: const BoxDecoration(
-            color: Color(0xFF1B4D3E), // Deep Dark Green
+          decoration: BoxDecoration(
+            color: context.colors.secondary, // Deep Dark Green
             shape: BoxShape.circle,
           ),
         ),
@@ -49,6 +51,6 @@ class BuildChartLegend extends StatelessWidget {
           ),
         ),
       ],
-    );;
+    );
   }
 }

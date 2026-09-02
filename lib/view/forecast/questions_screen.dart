@@ -171,7 +171,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       horizontal: -4,
                       vertical: -4,
                     ), // reduces spacing
-                    fillColor: WidgetStatePropertyAll(context.colors.primary),
+                    fillColor: WidgetStatePropertyAll(context.colors.tertiary),
                     activeColor: Colors.white,
                   ),
                 ),
@@ -194,7 +194,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       horizontal: -4,
                       vertical: -4,
                     ), // reduces spacing
-                    fillColor: WidgetStatePropertyAll(context.colors.primary),
+                    fillColor: WidgetStatePropertyAll(context.colors.tertiary),
                     activeColor: Colors.white,
                   ),
                 ),
@@ -233,7 +233,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       horizontal: -4,
                       vertical: -4,
                     ), // reduces spacing
-                    fillColor: WidgetStatePropertyAll(context.colors.primary),
+                    fillColor: WidgetStatePropertyAll(context.colors.tertiary),
                     activeColor: Colors.white,
                   ),
                 ),
@@ -256,7 +256,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       horizontal: -4,
                       vertical: -4,
                     ), // reduces spacing
-                    fillColor: WidgetStatePropertyAll(context.colors.primary),
+                    fillColor: WidgetStatePropertyAll(context.colors.tertiary),
                     activeColor: Colors.white,
                   ),
                 ),
@@ -396,7 +396,7 @@ class NumberCircle extends StatelessWidget {
         radius: 26.r,
         // Change color based on selection
         backgroundColor: isSelected
-            ? const Color(0xFFfbbf23)
+            ? context.colors.tertiary
             : const Color(0xFFF3F4F6),
         child: Text(
           "$number",

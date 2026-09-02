@@ -385,7 +385,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     return MyScaffold(
       appBar: AppBar(
         systemOverlayStyle: UIHelper.statusBarDark,
-        leading: BackButton(color: context.colors.primary),
+        leading: BackButton(color: context.colors.textPrimary),
         centerTitle: true,
         title: Text(
           "Subscription Plan",
@@ -425,7 +425,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                       width: double.infinity,
                       height: 77,
                       decoration: BoxDecoration(
-                        color: context.colors.primary,
+                        color: context.colors.tertiary,
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Row(
@@ -643,17 +643,17 @@ class PlanIncludes extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAF4EA),
+        color: context.colors.textSecondary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color: context.colors.textSecondary.withValues(alpha: 0.2),
-        ),
+        // border: Border.all(
+        //   color: context.colors.textSecondary.withValues(alpha: 0.2),
+        // ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: sections.map((section) {
           return Padding(
-            padding: EdgeInsets.only(bottom: 16.h),
+            padding: EdgeInsets.only(bottom: 8.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -666,7 +666,7 @@ class PlanIncludes extends StatelessWidget {
                     fontFamily: "sfpro",
                   ),
                 ),
-
+                SizedBox(height: 10.h),
                 ...section.items.map(
                   (item) => Padding(
                     padding: EdgeInsets.only(bottom: 6.h),
@@ -692,7 +692,7 @@ class PlanIncludesTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.check, color: context.colors.primary, size: 17),
+        Icon(Icons.check, color: context.colors.tertiary, size: 17),
         SizedBox(width: 10.w),
         Expanded(
           // ✅ prevents overflow for long text

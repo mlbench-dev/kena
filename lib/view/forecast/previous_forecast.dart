@@ -437,8 +437,9 @@ class _PreviousForecastScreenState extends State<PreviousForecastScreen> {
           value: isChecked,
           onChanged: onChanged,
           checkColor: context.colors.background,
-          activeColor: context.colors.primary,
-          side: BorderSide(color: context.colors.primary),
+          activeColor: context.colors.tertiary,
+          fillColor: WidgetStateProperty.all(context.colors.tertiary),
+          side: BorderSide(color: context.colors.tertiary),
           shape: const CircleBorder(),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
@@ -447,7 +448,7 @@ class _PreviousForecastScreenState extends State<PreviousForecastScreen> {
         Text(
           title,
           style: context.typography.body.copyWith(
-            color: context.colors.primary,
+            color: context.colors.tertiary,
             fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             fontFamily: 'sfpro',

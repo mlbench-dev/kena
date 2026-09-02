@@ -410,7 +410,7 @@ class _FeedCardState extends State<FeedCard> {
                   height: 27.h,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: context.colors.primary,
+                      backgroundColor: context.colors.tertiary,
                       padding: EdgeInsets.symmetric(horizontal: 4.w),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -480,7 +480,7 @@ class _FeedCardState extends State<FeedCard> {
                   },
                   child: Icon(
                     Icons.info_outline,
-                    color: context.colors.primary,
+                    color: context.colors.tertiary,
                   ),
                 ),
               ],
@@ -489,7 +489,7 @@ class _FeedCardState extends State<FeedCard> {
                 onTap: () {
                   Navigator.pop(context);
                 },
-                child: Assets.icons.word.svg(),
+                child: Assets.icons.word.svg(color: context.colors.tertiary),
               ),
             ],
           ],
@@ -1023,7 +1023,7 @@ class _Avatar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(1),
       decoration: BoxDecoration(
-        color: context.colors.textPrimary,
+        color: context.colors.tertiary,
         shape: BoxShape.circle,
       ),
       child: hasUrl

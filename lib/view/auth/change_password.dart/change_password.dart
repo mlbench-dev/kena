@@ -82,7 +82,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   },
                   child: Icon(
                     hideOldPassword ? Icons.visibility_off : Icons.visibility,
-                    color: context.colors.primary,
+                    color: context.colors.tertiary,
                   ),
                 ),
               ),
@@ -118,7 +118,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   },
                   child: Icon(
                     hidePassword ? Icons.visibility_off : Icons.visibility,
-                    color: context.colors.primary,
+                    color: context.colors.tertiary,
                   ),
                 ),
               ),
@@ -156,7 +156,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     hideConfirmPassword
                         ? Icons.visibility_off
                         : Icons.visibility,
-                    color: context.colors.primary,
+                    color: context.colors.tertiary,
                   ),
                 ),
               ),

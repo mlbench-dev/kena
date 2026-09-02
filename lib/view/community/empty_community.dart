@@ -8,6 +8,7 @@ import 'package:kena_emotional_journey/app/components/my_text_field.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+import 'package:kena_emotional_journey/app/view/app.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -38,16 +39,16 @@ class EmptyCommunityScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
-                  color: Colors.greenAccent.withValues(alpha: 0.1),
+                  color: context.colors.textSecondary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10.r),
-                  border: Border.all(color: context.colors.primary),
+                  // border: Border.all(color: context.colors.primary),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Assets.icons.lockIcon.svg(),
+                        Assets.icons.lockOutline.svg(width: 18.w, height: 18.h),
                         SizedBox(width: 8.h),
                         Text(
                           "Privacy & Sharing",
@@ -55,7 +56,7 @@ class EmptyCommunityScreen extends StatelessWidget {
                             fontSize: 16.sp,
                             fontFamily: 'sfpro',
                             fontWeight: FontWeight.w600,
-                            color: context.colors.primary,
+                            color: context.colors.textPrimary,
                           ),
                         ),
                       ],
@@ -352,9 +353,18 @@ class _CreateandUpdateCommunityBottomSheetState
       // Notify parent to refresh community data
       widget.onCommunityCreated?.call();
 
+      // `context` above belongs to this bottom sheet, which is already
+      // popped (and the parent screen may also have been navigated away
+      // from by onCommunityCreated), so it's no longer safe to use here.
+      // Fall back to the root navigator's context, which stays mounted
+      // across route changes.
+      final rootContext = App.navigatorKey.currentContext;
+      if (rootContext == null) return;
+
       MyBottomSheet.show(
         isDismissible: true,
-        context,
+        // ignore: use_build_context_synchronously
+        rootContext,
         child: CommunityIsReady(communityId: communityId),
       );
     }

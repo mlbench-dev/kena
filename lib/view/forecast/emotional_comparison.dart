@@ -144,7 +144,9 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
   }
 
   void _refreshForecastNotes() {
-    setState(() => _forecastNotesFuture = _fetchForecastNotes());
+    setState(() {
+      _forecastNotesFuture = _fetchForecastNotes();
+    });
   }
 
   // ── Convenience getters ──────────────────────────────────────────────
@@ -440,19 +442,24 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(context),
-          SizedBox(height: 25.h),
+          // SizedBox(height: 25.h),
 
-          _buildSectionIntro(context),
+          // _buildSectionIntro(context),
           SizedBox(height: 10.h),
 
-          _buildEmotionSection(context, slot: _EmotionSlot.forecast),
+          _buildEmotionSection(
+            context,
+            slot: _EmotionSlot.forecast,
+            title: 'Forecast',
+            titleColor: context.colors.secondary,
+          ),
           SizedBox(height: 20.h),
 
           _buildEmotionSection(
             context,
             slot: _EmotionSlot.reality,
             title: 'EOD Reflection',
-            titleColor: const Color(0xFFFF00C3),
+            titleColor: context.colors.secondary,
             isEditMode: _isReflectionEditMode,
             onToggleEdit: (value) =>
                 setState(() => _isReflectionEditMode = value),
@@ -547,24 +554,24 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Forecast vs. Reality',
-          style: context.typography.label.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 8.h),
-        Text(
-          "Here’s how your day unfolded compared to your forecast.",
-          style: context.typography.body.copyWith(
-            fontSize: 14.sp,
-            color: context.colors.textSecondary,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        SizedBox(height: 12.h),
-        _buildSectionLabel(context, 'Forecast', context.colors.textPrimary),
+        // Text(
+        //   'Forecast vs. Reality',
+        //   style: context.typography.label.copyWith(
+        //     fontSize: 16.sp,
+        //     fontWeight: FontWeight.w500,
+        //   ),
+        // ),
+        // SizedBox(height: 8.h),
+        // Text(
+        //   "Here’s how your day unfolded compared to your forecast.",
+        //   style: context.typography.body.copyWith(
+        //     fontSize: 14.sp,
+        //     color: context.colors.textSecondary,
+        //     fontWeight: FontWeight.w400,
+        //   ),
+        // ),
+        // SizedBox(height: 12.h),
+        _buildSectionLabel(context, '', context.colors.textPrimary),
       ],
     );
   }
@@ -1050,7 +1057,7 @@ class NumberCircle extends StatelessWidget {
       child: CircleAvatar(
         radius: 26.r,
         backgroundColor: isSelected
-            ? const Color(0xFFfbbf23)
+            ? context.colors.tertiary
             : const Color(0xFFF3F4F6),
         child: Text(
           '$number',

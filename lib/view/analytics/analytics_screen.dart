@@ -273,7 +273,7 @@ Widget _activityTabBar(
                         ? FontWeight.w600
                         : FontWeight.w400,
                     color: activeTab == AnalyticsTab.overall
-                        ? context.colors.primary
+                        ? context.colors.tertiary
                         : context.colors.textSecondary,
                   ),
                 ),
@@ -296,7 +296,7 @@ Widget _activityTabBar(
                         ? FontWeight.w600
                         : FontWeight.w400,
                     color: activeTab == AnalyticsTab.activites
-                        ? context.colors.primary
+                        ? context.colors.tertiary
                         : context.colors.textSecondary,
                   ),
                 ),
@@ -319,7 +319,7 @@ Widget _activityTabBar(
                         ? FontWeight.w600
                         : FontWeight.w400,
                     color: activeTab == AnalyticsTab.calendar
-                        ? context.colors.primary
+                        ? context.colors.tertiary
                         : context.colors.textSecondary,
                   ),
                 ),
@@ -335,7 +335,7 @@ Widget _activityTabBar(
             child: Container(
               height: 2.h,
               color: activeTab == AnalyticsTab.overall
-                  ? context.colors.primary
+                  ? context.colors.tertiary
                   : context.colors.background,
             ),
           ),
@@ -343,7 +343,7 @@ Widget _activityTabBar(
             child: Container(
               height: 2.h,
               color: activeTab == AnalyticsTab.activites
-                  ? context.colors.primary
+                  ? context.colors.tertiary
                   : context.colors.background,
             ),
           ),
@@ -351,7 +351,7 @@ Widget _activityTabBar(
             child: Container(
               height: 2.h,
               color: activeTab == AnalyticsTab.calendar
-                  ? context.colors.primary
+                  ? context.colors.tertiary
                   : context.colors.background,
             ),
           ),

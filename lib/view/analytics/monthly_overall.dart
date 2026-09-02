@@ -127,9 +127,10 @@ class _MonthlyOverallState extends State<MonthlyOverall> {
     return activities.map((a) {
       return ActivityDataModel(
         name: a.name ?? '',
-        currentDays: (a.completedDays ?? 0).toDouble(),
-        maxDays: (a.targetCount ?? 30).toDouble(),
-        barColor: const Color(0xFF21573b),
+        currentDays: (a.achievementPercent ?? 0).toDouble(),
+        maxDays: 100,
+        barColor:
+            context.colors.secondary, // Use secondary color for the active bar
       );
     }).toList();
   }

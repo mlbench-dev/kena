@@ -399,8 +399,9 @@ Widget _buildActivitiesSection(
         value: isChecked,
         onChanged: onChanged,
         checkColor: context.colors.background,
-        activeColor: context.colors.primary,
-        side: BorderSide(color: context.colors.primary),
+        activeColor: context.colors.tertiary,
+        fillColor: WidgetStateProperty.all(context.colors.tertiary),
+        side: BorderSide(color: context.colors.tertiary),
         shape: const CircleBorder(),
         // --- ADD THESE TWO LINES TO REDUCE HEIGHT ---
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -410,7 +411,7 @@ Widget _buildActivitiesSection(
       Text(
         title,
         style: context.typography.body.copyWith(
-          color: context.colors.primary,
+          color: context.colors.tertiary,
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
           fontFamily: 'sfpro',

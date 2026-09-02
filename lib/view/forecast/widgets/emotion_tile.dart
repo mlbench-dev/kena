@@ -125,12 +125,11 @@ class EmotionTile extends StatelessWidget {
                     child: Assets.icons.penOutline.svg(
                       height: 23.h,
                       width: 23.w,
-                      color: context.colors.primary,
-                      // allowDrawingOutsideViewBox: true,
-                      // colorFilter: ColorFilter.mode(
-                      //   context.colors.primary,
-                      //   // BlendMode.srcIn,
-                      // ),
+                      allowDrawingOutsideViewBox: true,
+                      colorFilter: ColorFilter.mode(
+                        context.colors.primary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                 ),
@@ -191,19 +190,19 @@ class EmotionTile extends StatelessWidget {
 
         if (isEditMode)
           Positioned(
-            top: 4.h,
-            right: 4.w,
+            top: 8.h,
+            right: 8.w,
             child: GestureDetector(
               onTap: isDisabled ? null : onEditImageTap,
               child: Opacity(
                 opacity: isDisabled ? 0.4 : 1,
                 child: Center(
-                  child: Assets.icons.circleEdits.svg(
-                    height: 23.h,
-                    width: 23.w,
+                  child: Assets.icons.penOutline.svg(
+                    height: 13.h,
+                    width: 13.w,
                     allowDrawingOutsideViewBox: true,
                     colorFilter: ColorFilter.mode(
-                      context.colors.primary,
+                      context.colors.secondary,
                       BlendMode.srcIn,
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 
 class CapsuleTabBar extends StatelessWidget {
   final TabController controller;
@@ -39,7 +40,7 @@ class CapsuleTabBar extends StatelessWidget {
           ),
           indicatorSize: TabBarIndicatorSize.tab,
           indicator: BoxDecoration(
-            color: activeColor,
+            color: context.colors.secondary,
             borderRadius: BorderRadius.circular(15.r),
           ),
           overlayColor: WidgetStateProperty.all(Colors.transparent),

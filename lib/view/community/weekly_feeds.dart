@@ -408,9 +408,10 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
     return activities.map((activity) {
       return ActivityDataModel(
         name: activity.name ?? '',
-        currentDays: (activity.achievedCount ?? 0).toDouble(),
-        maxDays: (activity.goalCount ?? 7).toDouble(),
-        barColor: Color(0xFF21573b),
+        currentDays: (activity.achievementPercent ?? 0).toDouble(),
+        maxDays: 100,
+        barColor:
+            context.colors.secondary, // Use secondary color for the active bar
       );
     }).toList();
   }

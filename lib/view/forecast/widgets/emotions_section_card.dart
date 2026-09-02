@@ -153,7 +153,7 @@ class _EditToggle extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         transitionBuilder: (child, animation) =>
             FadeTransition(opacity: animation, child: child),
-        child: isEditMode ? _doneText(context) : _penIcon(),
+        child: isEditMode ? _doneText(context) : _penIcon(context),
       ),
     );
   }
@@ -171,10 +171,14 @@ class _EditToggle extends StatelessWidget {
     );
   }
 
-  Widget _penIcon() {
+  Widget _penIcon(BuildContext context) {
     return SizedBox(
       key: const ValueKey('pen_icon'),
-      child: Assets.icons.penOutline.svg(height: 15.h, width: 15.w),
+      child: Assets.icons.penOutline.svg(
+        height: 15.h,
+        width: 15.w,
+        color: context.colors.secondary,
+      ),
     );
   }
 }

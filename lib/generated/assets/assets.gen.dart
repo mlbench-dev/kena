@@ -46,6 +46,9 @@ class $AssetsIconsGen {
   SvgGenImage get personsContainer =>
       const SvgGenImage('assets/icons/Persons Container.svg');
 
+  /// File path: assets/icons/PushNotif.svg
+  SvgGenImage get pushNotif => const SvgGenImage('assets/icons/PushNotif.svg');
+
   /// File path: assets/icons/SmilingEyes.svg
   SvgGenImage get smilingEyes =>
       const SvgGenImage('assets/icons/SmilingEyes.svg');
@@ -132,6 +135,10 @@ class $AssetsIconsGen {
   SvgGenImage get locationRequest =>
       const SvgGenImage('assets/icons/location_request.svg');
 
+  /// File path: assets/icons/lock_outline.svg
+  SvgGenImage get lockOutline =>
+      const SvgGenImage('assets/icons/lock_outline.svg');
+
   /// File path: assets/icons/notifications.svg
   SvgGenImage get notifications =>
       const SvgGenImage('assets/icons/notifications.svg');
@@ -155,6 +162,14 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/profile.svg
   SvgGenImage get profile => const SvgGenImage('assets/icons/profile.svg');
+
+  /// File path: assets/icons/push notifications.png
+  AssetGenImage get pushNotifications =>
+      const AssetGenImage('assets/icons/push notifications.png');
+
+  /// File path: assets/icons/push_notification.png
+  AssetGenImage get pushNotification =>
+      const AssetGenImage('assets/icons/push_notification.png');
 
   /// File path: assets/icons/send.svg
   SvgGenImage get send => const SvgGenImage('assets/icons/send.svg');
@@ -200,6 +215,7 @@ class $AssetsIconsGen {
     lockIcon,
     pen2,
     personsContainer,
+    pushNotif,
     smilingEyes,
     trashBin,
     userRounded,
@@ -226,6 +242,7 @@ class $AssetsIconsGen {
     iconsProductSubscriptions,
     kena,
     locationRequest,
+    lockOutline,
     notifications,
     notshare,
     oulineSadEmoji,
@@ -233,6 +250,8 @@ class $AssetsIconsGen {
     penOutline,
     premium,
     profile,
+    pushNotifications,
+    pushNotification,
     send,
     sendMessage,
     share,

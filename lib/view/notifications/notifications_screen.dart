@@ -314,7 +314,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                       .w, // same as width, so it's a true circle
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: Colors.red,
+                                    color: context.colors.tertiary,
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Assets.icons.trashBin.svg(

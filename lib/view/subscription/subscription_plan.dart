@@ -157,7 +157,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
           borderRadius: BorderRadius.circular(15.r),
           border: Border.all(
             color: isSelected
-                ? kenaDarkGreen
+                ? context.colors.tertiary
                 : Colors.grey.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
@@ -171,7 +171,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? kenaDarkGreen : Colors.grey,
+                  color: isSelected ? context.colors.tertiary : Colors.grey,
                   width: 2,
                 ),
               ),
@@ -182,7 +182,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                         height: 11.r,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: kenaDarkGreen,
+                          color: context.colors.tertiary,
                         ),
                       ),
                     )
@@ -226,7 +226,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
-                    color: context.colors.primary,
+                    color: context.colors.tertiary,
                     fontFamily: 'Inter',
                   ),
                 ),
@@ -256,7 +256,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
         leading: widget.showBackButton
             ? BackButton(
                 onPressed: () => Navigator.pop(context),
-                color: context.colors.primary,
+                color: context.colors.textPrimary,
               )
             : const SizedBox.shrink(),
         title: Text(
@@ -675,7 +675,7 @@ class FeatureName extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.check, color: context.colors.primary, size: 18.r),
+        Icon(Icons.check, color: context.colors.tertiary, size: 18.r),
         SizedBox(width: 5.w),
         Text(
           title,

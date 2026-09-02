@@ -208,7 +208,9 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
                         ),
                       );
                     },
-                    child: Assets.icons.editCircle.svg(),
+                    child: Assets.icons.editCircle.svg(
+                      color: context.colors.tertiary,
+                    ),
                   ),
                 ],
               ),
@@ -322,7 +324,9 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
                     : Container(
                         padding: EdgeInsets.all(16.w),
                         decoration: BoxDecoration(
-                          color: Color(0xFFd4e9de),
+                          color: context.colors.textSecondary.withValues(
+                            alpha: 0.1,
+                          ),
                           borderRadius: BorderRadius.circular(20.r),
                         ),
                         child: Row(
@@ -358,7 +362,8 @@ class _MyCommunityScreenState extends State<MyCommunityScreen> {
                             ),
                             Spacer(),
                             CircleAvatar(
-                              backgroundColor: Color(0xFFa0aeab),
+                              backgroundColor: context.colors.textSecondary
+                                  .withValues(alpha: 0.3),
                               child: Center(
                                 child: Icon(
                                   Icons.arrow_forward_ios,
@@ -567,8 +572,8 @@ class _InviteRequestCardState extends State<InviteRequestCard> {
               height: 25.h,
               decoration: BoxDecoration(
                 color: widget.onAccept == null || _isAccepting
-                    ? context.colors.primary.withValues(alpha: 0.5)
-                    : context.colors.primary,
+                    ? context.colors.tertiary.withValues(alpha: 0.5)
+                    : context.colors.tertiary,
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Center(

@@ -86,7 +86,7 @@ class _NotificationsChipState extends State<NotificationsChip> {
   }
 
   NotificationStyleConfig _getStyleConfig(BuildContext context) {
-    final primaryColor = context.colors.primary;
+    final primaryColor = context.colors.tertiary;
     final bellIcon = Assets.icons.bell.svg(height: 18.w, width: 18.w);
     final route = NotificationRouteResolver.routeForType(
       widget.type,
@@ -326,7 +326,7 @@ class _NotificationsChipState extends State<NotificationsChip> {
                       padding: EdgeInsets.symmetric(vertical: 8.h),
                       child: Center(
                         child: LoadingAnimationWidget.staggeredDotsWave(
-                          color: context.colors.primary,
+                          color: context.colors.tertiary,
                           size: 20.w,
                         ),
                       ),
@@ -343,7 +343,7 @@ class _NotificationsChipState extends State<NotificationsChip> {
                               padding: EdgeInsets.symmetric(vertical: 6.h),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: context.colors.primary,
+                                color: context.colors.tertiary,
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Text(
@@ -398,14 +398,14 @@ class _NotificationsChipState extends State<NotificationsChip> {
                                 color: Colors.transparent,
                                 borderRadius: BorderRadius.circular(8.r),
                                 border: Border.all(
-                                  color: context.colors.primary,
+                                  color: context.colors.secondary,
                                   width: 1.2.w,
                                 ),
                               ),
                               child: Text(
                                 'Neutral',
                                 style: TextStyle(
-                                  color: context.colors.primary,
+                                  color: context.colors.secondary,
                                   fontSize: 12.sp,
                                   fontWeight: FontWeight.w600,
                                 ),

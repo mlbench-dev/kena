@@ -90,8 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Stack(
                           children: [
                             CircleAvatar(
-                              radius: 41,
-                              backgroundColor: context.colors.primary,
+                              radius: 42,
+                              backgroundColor: context.colors.tertiary,
                               child: CircleAvatar(
                                 radius: 40,
                                 backgroundColor: Color(0xFF475569),
@@ -147,7 +147,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 10.h),
                         ProfileMenuTile(
-                          icon: Assets.icons.pen2.svg(),
+                          icon: Assets.icons.pen2.svg(
+                            color: context.colors.tertiary,
+                          ),
                           text: "Edit Profile",
                           onTap: () {
                             Navigator.pushNamed(
@@ -158,7 +160,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 10.h),
                         ProfileMenuTile(
-                          icon: Assets.icons.lockIcon.svg(),
+                          icon: Assets.icons.lockIcon.svg(
+                            color: context.colors.tertiary,
+                          ),
                           text: "Change Password",
                           onTap: () {
                             Navigator.pushNamed(
@@ -169,7 +173,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 10.h),
                         ProfileMenuTile(
-                          icon: Assets.icons.iconsProductSubscriptions.svg(),
+                          icon: Assets.icons.iconsProductSubscriptions.svg(
+                            color: context.colors.tertiary,
+                          ),
                           text: "Subscription Plan",
                           onTap: () {
                             if (!context
@@ -191,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ProfileMenuTile(
                           icon: Icon(
                             Icons.description_outlined,
-                            color: context.colors.primary,
+                            color: context.colors.tertiary,
                           ),
                           text: "Terms & Conditions",
                           onTap: () => openLegalUrl(
@@ -203,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ProfileMenuTile(
                           icon: Icon(
                             Icons.privacy_tip_outlined,
-                            color: context.colors.primary,
+                            color: context.colors.tertiary,
                           ),
                           text: "Privacy Policy",
                           onTap: () => openLegalUrl(
@@ -213,6 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 20.h),
                         ProfileMenuTile(
+                          sufix: SizedBox.shrink(),
                           icon: Assets.icons.trashBin.svg(),
                           text: "Delete Account",
                           textColor: Colors.red,
@@ -405,7 +412,7 @@ class DeleteAccountDialog extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   label: "Yes Delete",
                   onPressed: () => _authService.deleteAccount(context),
-                  backgroundColor: context.colors.primary,
+                  backgroundColor: context.colors.tertiary,
                 ),
               ),
             ],

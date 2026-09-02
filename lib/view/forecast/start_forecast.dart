@@ -246,7 +246,7 @@ class _StartForecastScreenState extends State<StartForecastScreen> {
                   width: double.infinity,
                   height: 46.h,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFBCE8A2),
+                    color: context.colors.secondary,
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Center(
@@ -267,6 +267,7 @@ class _StartForecastScreenState extends State<StartForecastScreen> {
                 width: double.infinity,
                 height: 46.h,
                 child: MyButton(
+                  backgroundColor: context.colors.primary,
                   fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                   label: "Select a previous forecast",

@@ -427,7 +427,11 @@ class _CommentInputBar extends StatelessWidget {
               padding: EdgeInsets.only(bottom: 12.w, right: 10.w),
               child: isSending
                   ? LoadingWidget(size: 20, color: context.colors.primary)
-                  : Assets.icons.send.svg(width: 24.w, height: 24.h),
+                  : Assets.icons.send.svg(
+                      width: 24.w,
+                      height: 24.h,
+                      color: context.colors.primary,
+                    ),
             ),
           ),
         ],

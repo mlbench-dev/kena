@@ -1317,7 +1317,7 @@ class _StopSharingDialogState extends State<_StopSharingDialog> {
           MyButton(
             label: 'Stop Sharing ',
             isLoading: _isStoppingAll,
-            backgroundColor: const Color(0xFFFF0000),
+            backgroundColor: context.colors.tertiary,
             textColor: context.colors.background,
             // borderColor: context.colors.error,
             fontWeight: FontWeight.w600,
@@ -1426,7 +1426,26 @@ class _StopSharingDialogState extends State<_StopSharingDialog> {
                               color: Colors.white,
                             ),
                           )
-                        : Icon(Icons.remove, size: 14.sp, color: Colors.white),
+                        : Container(
+                            width:
+                                24, // Set equal width and height to keep it a perfect circle
+                            height: 24,
+                            alignment: Alignment
+                                .center, // Centers the child inside the container
+                            decoration: BoxDecoration(
+                              color: context.colors.background,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: context.colors.tertiary,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.remove,
+                              size: 14.sp,
+                              color: context.colors.tertiary,
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -1501,8 +1520,9 @@ class ActivityTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.r),
         border: Border.all(
           color: isChecked
-              ? context.colors.primary
+              ? context.colors.tertiary
               : context.colors.textSecondary.withValues(alpha: 0.3),
+          width: 1,
         ),
       ),
       child: Row(
@@ -1514,7 +1534,7 @@ class ActivityTile extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                color: const Color(0xFF1B4332),
+                color: context.colors.tertiary,
                 fontWeight: FontWeight.w400,
                 fontSize: 14.sp,
               ),
@@ -1535,7 +1555,7 @@ class ActivityTile extends StatelessWidget {
                     vertical: 4.h,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFCAEAC7),
+                    color: context.colors.secondary.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Row(
@@ -1544,13 +1564,13 @@ class ActivityTile extends StatelessWidget {
                       Icon(
                         Icons.check,
                         size: 16.sp,
-                        color: context.colors.primary,
+                        color: context.colors.tertiary,
                       ),
                       SizedBox(width: 4.w),
                       Text(
                         'Done',
                         style: TextStyle(
-                          color: context.colors.primary,
+                          color: context.colors.tertiary,
                           fontWeight: FontWeight.w600,
                           fontSize: 13.sp,
                         ),

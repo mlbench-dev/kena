@@ -124,7 +124,7 @@ class _EmotionStatusCard extends StatelessWidget {
                       backgroundColor: context.colors.background,
                       child: Icon(
                         Icons.check,
-                        color: context.colors.primary,
+                        color: context.colors.tertiary,
                         size: 12.r,
                       ),
                     ),

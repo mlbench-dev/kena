@@ -19,8 +19,7 @@ class CustomBarChart extends StatelessWidget {
   final List<ChartDataModel> dataList;
 
   // Customizable design arguments
-  final Color achievedColor;
-  final Color goalColor;
+
   final double?
   customBarWidth; // Pass a manual width if you don't want dynamic sizing
   final List<String>
@@ -30,8 +29,6 @@ class CustomBarChart extends StatelessWidget {
   const CustomBarChart({
     super.key,
     required this.dataList,
-    this.achievedColor = const Color(0xFF1B4D3E), // Default Dark Green
-    this.goalColor = const Color(0xFFC2D6CE), // Default Light Sage Green
     this.customBarWidth,
     this.highlightedLabels = const [], // Default empty list (no highlights)
     this.highlightColor = const Color(0xFFE91E63), // Default Pink accent
@@ -166,13 +163,15 @@ class CustomBarChart extends StatelessWidget {
               BarChartRodData(
                 fromY: 0,
                 toY: data.achievedValue,
-                color: achievedColor,
+                color: context.colors.secondary, // Deep Dark Green
                 width: finalBarWidth,
                 borderRadius: BorderRadius.circular(20),
                 backDrawRodData: BackgroundBarChartRodData(
                   show: true,
                   toY: data.goalValue,
-                  color: goalColor,
+                  color: context.colors.secondary.withValues(
+                    alpha: 0.3,
+                  ), // Light Sage Green
                 ),
               ),
             ],

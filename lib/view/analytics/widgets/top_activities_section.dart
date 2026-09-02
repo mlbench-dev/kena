@@ -61,6 +61,44 @@ class _TopActivitiesFlSectionState extends State<TopActivitiesFlSection> {
               fontFamily: "Inter",
             ),
           ),
+          SizedBox(height: 4.h),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              CircleAvatar(
+                radius: 4.r,
+                backgroundColor: context.colors.secondary.withValues(
+                  alpha: 0.3,
+                ),
+              ),
+              SizedBox(width: 6.w),
+              Text(
+                "Goal",
+                style: context.typography.body.copyWith(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: context.colors.textPrimary,
+                  fontFamily: "Inter",
+                ),
+              ),
+              SizedBox(width: 12.w),
+              CircleAvatar(
+                radius: 4.r,
+                backgroundColor: context.colors.secondary,
+              ),
+              SizedBox(width: 6.w),
+              Text(
+                "Achieved",
+                style: context.typography.body.copyWith(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: context.colors.textPrimary,
+                  fontFamily: "Inter",
+                ),
+              ),
+            ],
+          ),
           SizedBox(height: 14.h),
           // Activity List Builder
           ListView.separated(
@@ -74,17 +112,21 @@ class _TopActivitiesFlSectionState extends State<TopActivitiesFlSection> {
 
               // Dynamic color resolution for the filled bar
               final Color baseBarColor =
-                  item.barColor ?? const Color(0xFF68B93C);
+                  item.barColor ??
+                  context
+                      .colors
+                      .secondary; // Default to secondary color if not provided
               final Color activeBarColor = item.barColor != null
                   ? Color.alphaBlend(
-                      Colors.white.withOpacity(0.2),
+                      Colors.white.withValues(alpha: 0.2),
                       item.barColor!,
                     )
-                  : const Color(0xFF4CAF50);
+                  : context.colors.secondary;
 
               // 💡 Dynamic color resolution for the background track bar
               final Color baseTrackColor =
-                  item.trackingBarColor ?? const Color(0xFFC2D6CE);
+                  item.trackingBarColor ??
+                  context.colors.secondary.withValues(alpha: 0.3);
 
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
@@ -133,12 +175,11 @@ class _TopActivitiesFlSectionState extends State<TopActivitiesFlSection> {
                                     vertical: 2.h,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1B4D3E),
+                                    color: context.colors.secondary,
                                     borderRadius: BorderRadius.circular(4.r),
                                   ),
                                   child: Text(
-                                    item.displayValue ??
-                                        "${item.currentDays} days",
+                                    item.displayValue ?? "${item.currentDays}%",
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.w700,
@@ -148,14 +189,13 @@ class _TopActivitiesFlSectionState extends State<TopActivitiesFlSection> {
                                   ),
                                 )
                               : Text(
-                                  item.displayValue != null
-                                      ? "${item.currentDays.toInt()}%"
-                                      : "${item.maxDays.toInt()} days",
+                                  item.displayValue ??
+                                      "${item.currentDays.toInt()}%",
                                   key: ValueKey('max_$index'),
                                   style: context.typography.body.copyWith(
                                     fontSize: 12.sp,
                                     fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF1B4D3E),
+                                    color: context.colors.textPrimary,
                                     fontFamily: "Inter",
                                   ),
                                 ),

@@ -7,11 +7,11 @@ import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
+import 'package:kena_emotional_journey/model/community/user_community.dart';
 import 'package:kena_emotional_journey/model/user/users_model.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:kena_emotional_journey/model/community/user_community.dart';
 import 'package:kena_emotional_journey/view/community/my_community_screen.dart'
     as comm_screen;
 import 'package:kena_emotional_journey/view/community/widgets/user_profile_shimmer.dart';
@@ -254,7 +254,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                   fillColor: Color(0xFFf5f5f7),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return '${selectedType} is required.';
+                      return '$selectedType is required.';
                     }
                     return null;
                   },
@@ -353,7 +353,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                   width: double.infinity,
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
-                    color: context.colors.textSecondary.withOpacity(0.1),
+                    color: context.colors.textSecondary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: (isLoading && members.isEmpty)
@@ -384,8 +384,8 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                             style: context.typography.headline.copyWith(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w500,
-                              color: context.colors.textSecondary.withOpacity(
-                                0.9,
+                              color: context.colors.textSecondary.withValues(
+                                alpha: 0.9,
                               ),
                             ),
                           ),
@@ -397,7 +397,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                   padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
                     color: Color(0xFFEAF5EF),
-                    border: Border.all(color: context.colors.primary),
+                    border: Border.all(color: context.colors.textSecondary),
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Column(
@@ -408,7 +408,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                         style: context.typography.headline.copyWith(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
-                          color: context.colors.primary,
+                          color: context.colors.textPrimary,
                           fontFamily: "sfpro",
                         ),
                       ),
@@ -515,7 +515,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
                           borderRadius: BorderRadius.circular(12),
                           color: selectedType == "Username"
                               ? Colors.transparent
-                              : Colors.grey.withOpacity(0.2),
+                              : Colors.grey.withValues(alpha: 0.2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -559,7 +559,7 @@ class _AnimatedToggleState extends State<AnimatedToggle> {
                           borderRadius: BorderRadius.circular(12),
                           color: selectedType == "Email"
                               ? Colors.transparent
-                              : Colors.grey.withOpacity(0.2),
+                              : Colors.grey.withValues(alpha: 0.2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,

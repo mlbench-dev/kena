@@ -756,14 +756,14 @@ class _AspirationalEmotionsState extends State<AspirationalEmotions>
                                     padding: EdgeInsets.all(6.w),
                                     child:
                                         LoadingAnimationWidget.staggeredDotsWave(
-                                          color: const Color(0xFFa30558),
+                                          color: context.colors.tertiary,
                                           size: 18.w,
                                         ),
                                   )
                                 : Icon(
                                     Icons.file_upload_outlined,
                                     size: 21.w,
-                                    color: const Color(0xFFa30558),
+                                    color: context.colors.tertiary,
                                   ),
                           ),
                         ),

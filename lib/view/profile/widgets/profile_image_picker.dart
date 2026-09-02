@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -132,16 +133,22 @@ class _ImagePickerAvatarState extends State<ImagePickerAvatar> {
           ),
           Positioned(
             bottom: 0,
-            right: 0,
+            right: 5.w,
             child: IconButton.filled(
               onPressed: _isBusy || widget.readOnly
                   ? null
                   : () => _pickAndUploadImage(context),
-              icon: Icon(Icons.edit, color: context.colors.background),
+              icon: Icon(
+                Icons.edit,
+                color: context.colors.background,
+                size: 17.w,
+              ),
               style: IconButton.styleFrom(
-                backgroundColor: context.colors.primary,
+                backgroundColor: context.colors.tertiary,
                 foregroundColor: context.colors.surface,
-                padding: EdgeInsets.all(8.w),
+                padding: EdgeInsets.all(4.w),
+                minimumSize: Size(30.w, 30.w),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
             ),
           ),

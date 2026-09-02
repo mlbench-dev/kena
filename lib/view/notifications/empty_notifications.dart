@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 
@@ -11,9 +12,9 @@ class EmptyNotificationsScreen extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Assets.icons.notifications.svg(
-            width: 64,
-            height: 64,
+          Assets.icons.pushNotif.svg(
+            width: 200.w,
+            height: 200.h,
             // colorFilter: ColorFilter.mode(
             //   context.colors.textSecondary,
             //   BlendMode.srcIn,
@@ -23,18 +24,8 @@ class EmptyNotificationsScreen extends StatelessWidget {
           Text(
             'No Notifications Yet',
             style: context.typography.title.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "You're all caught up!\nWe'll notify you when something arrives.",
-            textAlign: TextAlign.center,
-            style: context.typography.body.copyWith(
-              fontSize: 14,
-              color: context.colors.textSecondary,
-              height: 1.6,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

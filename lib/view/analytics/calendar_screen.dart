@@ -230,7 +230,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final aspirationalEmotions = _selectedDayData?.aspirationalEmotions ?? [];
     return EmotionsSectionCard(
       title: "Aspirational Emotions",
-      titleColor: const Color(0xFFD108A5),
+      titleColor: context.colors.secondary,
       titleFontSize: 16.sp,
       showEmptyState: true,
       emptyText: "No emotions recorded",
@@ -276,7 +276,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final actualEmotions = _selectedDayData?.actual ?? [];
     return EmotionsSectionCard(
       title: "Actual",
-      titleColor: const Color(0xFFD108A5),
+      titleColor: context.colors.secondary,
       titleFontSize: 16.sp,
       showEmptyState: true,
       emptyText: "No emotions recorded",

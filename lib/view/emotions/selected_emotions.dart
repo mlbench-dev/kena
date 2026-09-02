@@ -686,7 +686,7 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
     return EmotionsSectionCard(
       title: "Core Emotions",
       titleColor: context.colors.textPrimary,
-      titleFontSize: 16.sp,
+      titleFontSize: 14.sp,
       isEditMode: _isToday ? isCoreEditMode : false,
       onToggleEdit: _isToday
           ? (value) {
@@ -749,8 +749,8 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
   Widget _aspirationEmotionBox(BuildContext context) {
     return EmotionsSectionCard(
       title: "Aspirational Emotions",
-      titleColor: const Color(0xFFD108A5),
-      titleFontSize: 16.sp,
+      titleColor: context.colors.textPrimary,
+      titleFontSize: 14.sp,
       isEditMode: _isToday ? isAspirationEditMode : false,
       onToggleEdit: _isToday
           ? (value) {

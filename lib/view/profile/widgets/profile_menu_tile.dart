@@ -39,7 +39,7 @@ class ProfileMenuTile extends StatelessWidget {
                 text,
                 style: context.typography.label.copyWith(
                   fontSize: 16.sp,
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.w500,
                   color: textColor ?? context.colors.textPrimary,
                   fontFamily: "sfpro",
                 ),
@@ -51,7 +51,7 @@ class ProfileMenuTile extends StatelessWidget {
             else
               Icon(
                 Icons.arrow_forward_ios_rounded,
-                color: context.colors.primary,
+                color: context.colors.textPrimary,
                 size: 18.sp,
               ),
           ],

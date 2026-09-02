@@ -369,6 +369,7 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               ),
               SizedBox(height: 10.h),
               MyTextField(
+                fillColor: context.colors.textSecondary.withValues(alpha: 0.08),
                 controller: _planController,
                 hint: 'Write your plan here and/or curate activities below...',
                 maxLines: 4,
@@ -895,10 +896,10 @@ class ActivityCheckbox extends StatelessWidget {
         height: 20.w,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: isChecked ? context.colors.primary : Colors.transparent,
+          color: isChecked ? context.colors.tertiary : Colors.transparent,
           border: Border.all(
             color: isChecked
-                ? context.colors.primary
+                ? context.colors.tertiary
                 : context.colors.textSecondary.withValues(alpha: 0.3),
             width: isChecked ? 2.w : 1.5.w,
           ),

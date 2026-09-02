@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
@@ -340,7 +339,7 @@ class _TopToggleBarState extends State<TopToggleBar> {
                           borderRadius: BorderRadius.circular(12),
                           color: selectedType == "Me"
                               ? Colors.transparent
-                              : Colors.grey.withOpacity(0.2),
+                              : Colors.grey.withValues(alpha: 0.2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -379,7 +378,7 @@ class _TopToggleBarState extends State<TopToggleBar> {
                           borderRadius: BorderRadius.circular(12),
                           color: selectedType == "Friends"
                               ? Colors.transparent
-                              : Colors.grey.withOpacity(0.2),
+                              : Colors.grey.withValues(alpha: 0.2),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
