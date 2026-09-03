@@ -126,6 +126,7 @@ flutter:
   assets:
     - .env
     - assets/icons/
+    - assets/icons/logo/
     - assets/images/
     - assets/json/map_styles/night_theme.json
 

@@ -24,8 +24,14 @@ class $AssetsIconsGen {
   SvgGenImage get cryingFace =>
       const SvgGenImage('assets/icons/Crying Face.svg');
 
+  /// File path: assets/icons/Ellipse.svg
+  SvgGenImage get ellipse => const SvgGenImage('assets/icons/Ellipse.svg');
+
   /// File path: assets/icons/Google.svg
   SvgGenImage get google => const SvgGenImage('assets/icons/Google.svg');
+
+  /// File path: assets/icons/Group.svg
+  SvgGenImage get group => const SvgGenImage('assets/icons/Group.svg');
 
   /// File path: assets/icons/HomeIcon.svg
   SvgGenImage get homeIcon => const SvgGenImage('assets/icons/HomeIcon.svg');
@@ -59,6 +65,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/User Rounded.svg
   SvgGenImage get userRounded =>
       const SvgGenImage('assets/icons/User Rounded.svg');
+
+  /// File path: assets/icons/Vectors.svg
+  SvgGenImage get vectors => const SvgGenImage('assets/icons/Vectors.svg');
 
   /// File path: assets/icons/activity.svg
   SvgGenImage get activity => const SvgGenImage('assets/icons/activity.svg');
@@ -139,6 +148,9 @@ class $AssetsIconsGen {
   SvgGenImage get lockOutline =>
       const SvgGenImage('assets/icons/lock_outline.svg');
 
+  /// Directory path: assets/icons/logo
+  $AssetsIconsLogoGen get logo => const $AssetsIconsLogoGen();
+
   /// File path: assets/icons/notifications.svg
   SvgGenImage get notifications =>
       const SvgGenImage('assets/icons/notifications.svg');
@@ -208,7 +220,9 @@ class $AssetsIconsGen {
   List<dynamic> get values => [
     button,
     cryingFace,
+    ellipse,
     google,
+    group,
     homeIcon,
     letter,
     lock,
@@ -219,6 +233,7 @@ class $AssetsIconsGen {
     smilingEyes,
     trashBin,
     userRounded,
+    vectors,
     activity,
     analytic,
     apple,
@@ -440,6 +455,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/Glowing_Star.png
   AssetGenImage get glowingStar =>
       const AssetGenImage('assets/images/Glowing_Star.png');
+
+  /// File path: assets/images/Group.png
+  AssetGenImage get group => const AssetGenImage('assets/images/Group.png');
 
   /// File path: assets/images/Heartbreak.png
   AssetGenImage get heartbreak =>
@@ -727,6 +745,7 @@ class $AssetsImagesGen {
     gemStone,
     glassesOnFace,
     glowingStar,
+    group,
     heartbreak,
     huggingFace,
     icon,
@@ -800,6 +819,26 @@ class $AssetsJsonGen {
 
   /// Directory path: assets/json/map_styles
   $AssetsJsonMapStylesGen get mapStyles => const $AssetsJsonMapStylesGen();
+}
+
+class $AssetsIconsLogoGen {
+  const $AssetsIconsLogoGen();
+
+  /// File path: assets/icons/logo/icon.png
+  AssetGenImage get icon => const AssetGenImage('assets/icons/logo/icon.png');
+
+  /// File path: assets/icons/logo/icon_foreground.png
+  AssetGenImage get iconForeground =>
+      const AssetGenImage('assets/icons/logo/icon_foreground.png');
+
+  /// File path: assets/icons/logo/logo.svg
+  SvgGenImage get logo => const SvgGenImage('assets/icons/logo/logo.svg');
+
+  /// File path: assets/icons/logo/play.png
+  AssetGenImage get play => const AssetGenImage('assets/icons/logo/play.png');
+
+  /// List of all assets
+  List<dynamic> get values => [icon, iconForeground, logo, play];
 }
 
 class $AssetsJsonMapStylesGen {

@@ -40,7 +40,7 @@ import 'package:kena_emotional_journey/view/notifications/notifications_screen.d
 // import 'package:kena_emotional_journey/view/pro_tip/tip_screen.dart';
 import 'package:kena_emotional_journey/view/profile/edit_profile.dart';
 import 'package:kena_emotional_journey/view/profile/profile.dart';
-import 'package:kena_emotional_journey/view/splash/splash_view.dart';
+import 'package:kena_emotional_journey/view/splash/splash_screen.dart';
 // KenaSplashScreen replaces the old SplashView (see splash_view.dart).
 import 'package:kena_emotional_journey/view/subscription/active_subscription_screen.dart';
 import 'package:kena_emotional_journey/view/subscription/free_trail.dart';
@@ -50,7 +50,8 @@ class Routes {
   static String initialRoute() => RoutesName.splash;
   // static String initialRoute() => RoutesName.noConnection;
   static final Map<String, WidgetBuilder> _routes = {
-    RoutesName.splash: (_) => const KenaSplashScreen(),
+    // RoutesName.splash: (_) => const KenaSplashScreen(),
+    RoutesName.splash: (_) => const SplashScreen(),
     // RoutesName.welcome: (_) => const WelcomeScreen(),
     // RoutesName.noConnection: (_) => const NoConnectionScreen(),
     RoutesName.userSignup: (_) => const UserSignupScreen(),
