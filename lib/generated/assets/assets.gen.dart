@@ -69,11 +69,19 @@ class $AssetsIconsGen {
   /// File path: assets/icons/Vectors.svg
   SvgGenImage get vectors => const SvgGenImage('assets/icons/Vectors.svg');
 
+  /// File path: assets/icons/activities_section.svg
+  SvgGenImage get activitiesSection =>
+      const SvgGenImage('assets/icons/activities_section.svg');
+
   /// File path: assets/icons/activity.svg
   SvgGenImage get activity => const SvgGenImage('assets/icons/activity.svg');
 
   /// File path: assets/icons/analytic.svg
   SvgGenImage get analytic => const SvgGenImage('assets/icons/analytic.svg');
+
+  /// File path: assets/icons/analytics_section.svg
+  SvgGenImage get analyticsSection =>
+      const SvgGenImage('assets/icons/analytics_section.svg');
 
   /// File path: assets/icons/apple.svg
   SvgGenImage get apple => const SvgGenImage('assets/icons/apple.svg');
@@ -83,6 +91,10 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/aspire.svg
   SvgGenImage get aspire => const SvgGenImage('assets/icons/aspire.svg');
+
+  /// File path: assets/icons/aspire_section.svg
+  SvgGenImage get aspireSection =>
+      const SvgGenImage('assets/icons/aspire_section.svg');
 
   /// File path: assets/icons/bell.svg
   SvgGenImage get bell => const SvgGenImage('assets/icons/bell.svg');
@@ -112,11 +124,19 @@ class $AssetsIconsGen {
   SvgGenImage get circleEdits =>
       const SvgGenImage('assets/icons/circle_edits.svg');
 
+  /// File path: assets/icons/circle_section.svg
+  SvgGenImage get circleSection =>
+      const SvgGenImage('assets/icons/circle_section.svg');
+
   /// File path: assets/icons/crown.svg
   SvgGenImage get crown => const SvgGenImage('assets/icons/crown.svg');
 
   /// File path: assets/icons/daily_puls.svg
   SvgGenImage get dailyPuls => const SvgGenImage('assets/icons/daily_puls.svg');
+
+  /// File path: assets/icons/daily_section.svg
+  SvgGenImage get dailySection =>
+      const SvgGenImage('assets/icons/daily_section.svg');
 
   /// File path: assets/icons/edit_circle.svg
   SvgGenImage get editCircle =>
@@ -150,6 +170,10 @@ class $AssetsIconsGen {
 
   /// Directory path: assets/icons/logo
   $AssetsIconsLogoGen get logo => const $AssetsIconsLogoGen();
+
+  /// File path: assets/icons/notification-nobg.svg
+  SvgGenImage get notificationNobg =>
+      const SvgGenImage('assets/icons/notification-nobg.svg');
 
   /// File path: assets/icons/notifications.svg
   SvgGenImage get notifications =>
@@ -234,11 +258,14 @@ class $AssetsIconsGen {
     trashBin,
     userRounded,
     vectors,
+    activitiesSection,
     activity,
     analytic,
+    analyticsSection,
     apple,
     appleLogo,
     aspire,
+    aspireSection,
     bell,
     bellIcon,
     bin,
@@ -248,8 +275,10 @@ class $AssetsIconsGen {
     chats,
     circle,
     circleEdits,
+    circleSection,
     crown,
     dailyPuls,
+    dailySection,
     editCircle,
     googleIcon,
     graph,
@@ -258,6 +287,7 @@ class $AssetsIconsGen {
     kena,
     locationRequest,
     lockOutline,
+    notificationNobg,
     notifications,
     notshare,
     oulineSadEmoji,
@@ -575,6 +605,17 @@ class $AssetsImagesGen {
   AssetGenImage get zanyFace =>
       const AssetGenImage('assets/images/Zany_Face .png');
 
+  /// File path: assets/images/activities.png
+  AssetGenImage get activities =>
+      const AssetGenImage('assets/images/activities.png');
+
+  /// File path: assets/images/analytics.png
+  AssetGenImage get analytics =>
+      const AssetGenImage('assets/images/analytics.png');
+
+  /// File path: assets/images/aspire.png
+  AssetGenImage get aspire => const AssetGenImage('assets/images/aspire.png');
+
   /// File path: assets/images/attitude face.png
   AssetGenImage get attitudeFace =>
       const AssetGenImage('assets/images/attitude face.png');
@@ -596,6 +637,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/chat.png
   AssetGenImage get chat => const AssetGenImage('assets/images/chat.png');
 
+  /// File path: assets/images/circle.png
+  AssetGenImage get circle => const AssetGenImage('assets/images/circle.png');
+
   /// File path: assets/images/circle_edit.png
   AssetGenImage get circleEdit =>
       const AssetGenImage('assets/images/circle_edit.png');
@@ -613,6 +657,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/crying.png
   AssetGenImage get crying => const AssetGenImage('assets/images/crying.png');
+
+  /// File path: assets/images/daily_puls.png
+  AssetGenImage get dailyPuls =>
+      const AssetGenImage('assets/images/daily_puls.png');
 
   /// File path: assets/images/disconnected.png
   AssetGenImage get disconnected =>
@@ -776,17 +824,22 @@ class $AssetsImagesGen {
     twoHearts,
     woozyFace,
     zanyFace,
+    activities,
+    analytics,
+    aspire,
     attitudeFace,
     batteryCharge,
     batteryLow,
     bike,
     bulb,
     chat,
+    circle,
     circleEdit,
     comments,
     community,
     cross,
     crying,
+    dailyPuls,
     disconnected,
     google,
     heartsFace,
