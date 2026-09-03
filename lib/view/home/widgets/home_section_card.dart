@@ -37,10 +37,10 @@ class HomeSectionCard extends StatelessWidget {
         opacity: isDisabled ? 0.5 : 1,
         child: Stack(
           children: [
-            background.image(),
+            background.image(width: double.infinity, fit: BoxFit.fitWidth),
             Positioned.fill(
               child: Padding(
-                padding: EdgeInsets.only(left: 8.w, right: 18.h),
+                padding: EdgeInsets.only(left: 8.w, right: 18.w),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

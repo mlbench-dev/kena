@@ -359,7 +359,7 @@ class _CommentInputBar extends StatelessWidget {
         left: 16.w,
         right: 12.w,
         top: 10.h,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 14.h,
+        bottom: MediaQuery.of(context).padding.bottom + 14.h,
       ),
       decoration: BoxDecoration(
         color: Colors.white,

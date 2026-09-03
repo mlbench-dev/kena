@@ -6,13 +6,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kena_emotional_journey/app/data/exception/app_exceptions.dart';
 import 'package:kena_emotional_journey/app/utils/enums.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:kena_emotional_journey/model/user/users_model.dart';
 import 'package:kena_emotional_journey/repository/user_auth_repo.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/push_notifications_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class OAuthService {
   final String tag = 'OAuthService';
@@ -152,10 +152,9 @@ class OAuthService {
     try {
       final scopes = <String>['email', 'profile'];
 
-      final googleUser = await _googleSignIn.authenticate();
-      if (googleUser == null) return; // user canceled
+      final googleUser = await _googleSignIn.authenticate(); // user canceled
 
-      final googleAuth = await googleUser.authentication;
+      final googleAuth = googleUser.authentication;
       final idToken = googleAuth.idToken;
       // final accessToken = googleAuth.accessToken;
 
@@ -179,7 +178,7 @@ class OAuthService {
 
       if (!context.mounted) return;
 
-      userOAuth(
+      await userOAuth(
         context,
         providerName: 'google',
         token: idToken,
@@ -304,9 +303,9 @@ class OAuthService {
         'provider': providerName,
         'provider_id': token,
         'platform': platform,
-        if (name != null) 'name': name,
-        if (photoUrl != null) 'photoUrl': photoUrl,
-        if (fcmToken != null) 'fcmToken': fcmToken,
+        'name': ?name,
+        'photoUrl': ?photoUrl,
+        'fcmToken': ?fcmToken,
       };
 
       // final response =

@@ -43,7 +43,7 @@ class AllTimeProgressCard extends StatelessWidget {
               Text(
                 lable,
                 style: context.typography.body.copyWith(
-                  fontSize: 18.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w600,
                   color: context.colors.textPrimary,
                   fontFamily: "sfpro",

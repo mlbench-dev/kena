@@ -468,22 +468,20 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(),
-            SizedBox(height: 10.h),
-            _buildDescription(),
-            SizedBox(height: 10.h),
-            _buildMembersSection(),
-            const Spacer(),
-            _buildSendButton(),
-          ],
-        ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTitle(),
+          SizedBox(height: 10.h),
+          _buildDescription(),
+          SizedBox(height: 10.h),
+          _buildMembersSection(),
+          SizedBox(height: 20.h),
+          _buildSendButton(),
+        ],
       ),
     );
   }

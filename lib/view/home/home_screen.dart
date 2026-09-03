@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
@@ -277,7 +278,23 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           body: Stack(
             children: [
               Positioned(left: 0, top: 0, child: Assets.icons.vectors.svg()),
-              Positioned(left: 98, top: 50, child: Assets.icons.ellipse.svg()),
+              Positioned(
+                left: 98,
+                top: 50,
+                child: Animate(
+                  onPlay: (c) => c.repeat(reverse: true),
+                  effects: [
+                    MoveEffect(
+                      begin: Offset.zero,
+                      end: const Offset(0, 10),
+                      duration: 4.seconds,
+                      curve: Curves.easeInOut,
+                    ),
+                  ],
+                  child: Assets.icons.ellipse.svg(),
+                ),
+              ),
+
               Positioned(
                 left: 30,
                 right: 30,
@@ -327,32 +344,34 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                           ),
                         ),
                         SizedBox(width: 10.w),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 210.w,
-                              child: Text(
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                "${getGreeting()}, ${user?.username}",
+                                // "${getGreeting()}, ${user?.username}",
+                                "Hey, ${user?.username}",
                                 style: context.typography.headline.copyWith(
                                   color: context.colors.textPrimary,
                                   fontSize: 18.sp,
                                 ),
                               ),
-                            ),
-                            Text(
-                              "Your emotional journey continues.",
-                              style: context.typography.label.copyWith(
-                                fontSize: 12.sp,
-                                color: context.colors.textSecondary,
+                              Text(
+                                "Your emotional journey continues.",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.typography.label.copyWith(
+                                  fontSize: 10.5.sp,
+                                  color: context.colors.textSecondary,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        const Spacer(),
+                        SizedBox(width: 8.w),
                         GestureDetector(
                           onTap: () {
                             if (!context
