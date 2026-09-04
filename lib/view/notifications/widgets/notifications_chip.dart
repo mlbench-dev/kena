@@ -32,6 +32,8 @@ class NotificationsChip extends StatefulWidget {
   final String? type;
   final String? createdAt;
   final String? notificationId;
+  final String? entryOwnerId;
+  final String? communityId;
   final bool initiallySubmitted;
   final Future<bool> Function(String option)? onOptionSelected;
 
@@ -43,6 +45,8 @@ class NotificationsChip extends StatefulWidget {
     this.type,
     this.createdAt,
     this.notificationId,
+    this.entryOwnerId,
+    this.communityId,
     this.initiallySubmitted = false,
     this.onOptionSelected,
   });
@@ -54,6 +58,7 @@ class NotificationsChip extends StatefulWidget {
 class _NotificationsChipState extends State<NotificationsChip> {
   bool _isSubmitting = false;
   bool _isCheckingForecast = false;
+  bool _isOpeningCommentTarget = false;
   late bool _isSubmitted = widget.initiallySubmitted;
   // bool isQuickCheckIn = false;
 
@@ -167,6 +172,7 @@ class _NotificationsChipState extends State<NotificationsChip> {
         (widget.type == 'midday_checkin' ||
             widget.type == 'daily_pulse_nudge') &&
         _isCheckingForecast;
+    final bool isOpeningCommentTarget = _isOpeningCommentTarget;
 
     return GestureDetector(
       onTap: () async {
@@ -206,6 +212,21 @@ class _NotificationsChipState extends State<NotificationsChip> {
               arguments: {'isFromHome': true},
             );
           }
+        } else if (NotificationRouteResolver.hasFeedTarget(
+          widget.type,
+          entryOwnerId: widget.entryOwnerId,
+          communityId: widget.communityId,
+        )) {
+          if (_isOpeningCommentTarget) return;
+          setState(() => _isOpeningCommentTarget = true);
+          await NotificationRouteResolver.openFeedTarget(
+            context,
+            type: widget.type,
+            entryOwnerId: widget.entryOwnerId!,
+            communityId: widget.communityId!,
+          );
+          if (!mounted) return;
+          setState(() => _isOpeningCommentTarget = false);
         } else {
           Navigator.pushNamed(context, config.route);
         }
@@ -230,7 +251,8 @@ class _NotificationsChipState extends State<NotificationsChip> {
                       ? null
                       : (isForecastLoading ||
                             endDayReflectionLoading ||
-                            isForecastCheckLoading)
+                            isForecastCheckLoading ||
+                            isOpeningCommentTarget)
                       ? SizedBox(
                           width: 16.w,
                           height: 16.w,
@@ -257,6 +279,25 @@ class _NotificationsChipState extends State<NotificationsChip> {
                       width: 10.w,
                       height: 10.w,
                       child: FittedBox(child: config.icon),
+                    ),
+                  ),
+                ),
+              if (hasImage && isOpeningCommentTarget)
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SizedBox(
+                        width: 16.w,
+                        height: 16.w,
+                        child: LoadingAnimationWidget.staggeredDotsWave(
+                          color: Colors.white,
+                          size: 16.w,
+                        ),
+                      ),
                     ),
                   ),
                 ),

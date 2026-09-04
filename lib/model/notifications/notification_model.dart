@@ -98,12 +98,23 @@ class NotificationPayload {
   final String? inviteId;
   final String? inviterUserId;
 
+  /// Id of the feed entry a `community_comment` / `community_like`
+  /// notification refers to (matches the `entryOwnerId` used by the feed
+  /// comments API). Not present for other notification types.
+  final String? entryOwnerId;
+
+  /// The feed entry's day (e.g. `daily`/`weekly` scope), sent alongside
+  /// [entryOwnerId] for comment/like notifications.
+  final String? day;
+
   NotificationPayload({
     this.inviteToken,
     this.communityId,
     this.memberUserId,
     this.inviteId,
     this.inviterUserId,
+    this.entryOwnerId,
+    this.day,
   });
 
   factory NotificationPayload.fromJson(Map<String, dynamic> json) =>

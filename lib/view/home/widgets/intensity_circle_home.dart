@@ -59,7 +59,7 @@ class IntensityCircleHome extends StatelessWidget {
                   color: context.colors.background,
                 ),
                 child: Center(
-                  child: imageUrl != null
+                  child: (imageUrl?.isNotEmpty ?? false)
                       ? ClipOval(
                           child: Image.network(
                             imageUrl!,

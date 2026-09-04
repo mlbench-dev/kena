@@ -66,7 +66,7 @@ class IntensityCircle extends StatelessWidget {
                   color: cardColor ?? Colors.white,
                 ),
                 child: Center(
-                  child: imageUrl != null
+                  child: (imageUrl?.isNotEmpty ?? false)
                       ? ClipOval(
                           child: Image.network(
                             imageUrl!,

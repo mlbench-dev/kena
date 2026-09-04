@@ -127,8 +127,13 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
     }
 
     final feedPeriod = _weeklyFeedData?.data?.firstOrNull;
-    final summary = feedPeriod?.summary;
-    final insights = feedPeriod?.insights;
+
+    if (feedPeriod == null || (feedPeriod.data?.isEmpty ?? true)) {
+      return EmptyFeedScreen(isStopSharing: false);
+    }
+
+    final summary = feedPeriod.summary;
+    final insights = feedPeriod.insights;
 
     return SingleChildScrollView(
       child: Padding(

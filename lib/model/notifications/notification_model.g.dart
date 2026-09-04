@@ -93,6 +93,8 @@ NotificationPayload _$NotificationPayloadFromJson(Map<String, dynamic> json) =>
       memberUserId: json['memberUserId'] as String?,
       inviteId: json['inviteId'] as String?,
       inviterUserId: json['inviterUserId'] as String?,
+      entryOwnerId: json['entryOwnerId'] as String?,
+      day: json['day'] as String?,
     );
 
 Map<String, dynamic> _$NotificationPayloadToJson(
@@ -103,4 +105,6 @@ Map<String, dynamic> _$NotificationPayloadToJson(
   'memberUserId': instance.memberUserId,
   'inviteId': instance.inviteId,
   'inviterUserId': instance.inviterUserId,
+  'entryOwnerId': instance.entryOwnerId,
+  'day': instance.day,
 };

@@ -6,5 +6,3 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await bootstrap(() => App());
 }
-
-///Hello, this is the main entry point of the application. It initializes the Flutter framework and runs the app.

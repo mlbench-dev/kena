@@ -199,6 +199,12 @@ class _AspirationalEmotionsState extends State<AspirationalEmotions>
               ? matchedSub.emojiBuilder(28.w, 28.h)
               : matchedCategory.emojiBuilder(28.w, 28.h);
 
+          // Backend sends "" (not null) when no image was uploaded.
+          final sanitizedImageUrl =
+              (aspirationEmotion.imageUrl?.isNotEmpty ?? false)
+              ? aspirationEmotion.imageUrl
+              : null;
+
           _selectedEmotions.add(
             SelectedAspirationalEmotion(
               key: key,
@@ -208,13 +214,12 @@ class _AspirationalEmotionsState extends State<AspirationalEmotions>
               subEmotionTitle: resolvedSubTitle,
               subEmotionEmoji: resolvedSubEmoji,
               intensity: aspirationEmotion.intensity ?? 5,
-              uploadedImageUrl: aspirationEmotion.imageUrl,
+              uploadedImageUrl: sanitizedImageUrl,
             ),
           );
 
-          if (aspirationEmotion.imageUrl != null) {
-            _categoryImages[matchedCategory.title] =
-                aspirationEmotion.imageUrl!;
+          if (sanitizedImageUrl != null) {
+            _categoryImages[matchedCategory.title] = sanitizedImageUrl;
           }
 
           // keep sub-emotion selection state for expanded panel

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:kena_emotional_journey/app/components/delete_confirmation_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_bottom_sheet.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
@@ -119,6 +120,7 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
         data?.aspirationEmotions ?? [],
       );
       _activities = List<Activity>.from(data?.activities ?? []);
+      reassessDate = DateTime.tryParse(data?.aspirationReassessDate ?? '');
       _isLoading = false;
     });
   }
@@ -428,6 +430,7 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
                     ),
                     SizedBox(height: 10.h),
                     DateTimeField(
+                      initialDate: reassessDate,
                       onDateSelected: (date) {
                         reassessDate = date;
                       },
@@ -452,14 +455,30 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
                         setState(() {
                           _isSavingReviewDate = true;
                         });
-                        await _service.reviewDate(
-                          context: context,
-                          reviewDate: reassessDate!,
-                        );
-                        if (mounted) {
-                          setState(() {
-                            _isSavingReviewDate = false;
-                          });
+                        final emotions = _aspirationEmotions
+                            .map(
+                              (e) => {
+                                'key': e.key,
+                                'intensity': e.intensity,
+                                if (e.imageUrl != null) 'imageUrl': e.imageUrl,
+                              },
+                            )
+                            .toList();
+                        final success = await _userHomeService
+                            .addAspirationalEmotions(
+                              context: context,
+                              emotions: emotions,
+                              reassessDate: reassessDate,
+                            );
+                        if (!mounted) return;
+                        if (success) {
+                          await _load(_selectedDate);
+                          if (!mounted) return;
+                        }
+                        setState(() {
+                          _isSavingReviewDate = false;
+                        });
+                        if (success) {
                           context.flushBarSuccessMessage(
                             message: 'Review date set successfully',
                           );
@@ -725,7 +744,7 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
               showImage: true,
               isDisabled: _isAnyEmotionTileLoading,
               onEditImageTap: () => _handleCoreImageEdit(index, emotion),
-              onDeleteTap: () => _handleCoreEmotionDelete(index, emotion),
+              onDeleteTap: () => _confirmDeleteCoreEmotion(index, emotion),
             ),
             if (_loadingCoreIndex == index)
               Positioned.fill(
@@ -789,7 +808,8 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
               showImage: true,
               isDisabled: _isAnyEmotionTileLoading,
               onEditImageTap: () => _handleAspirationImageEdit(index, emotion),
-              onDeleteTap: () => _handleAspirationEmotionDelete(index, emotion),
+              onDeleteTap: () =>
+                  _confirmDeleteAspirationEmotion(index, emotion),
             ),
             if (_loadingAspirationIndex == index)
               Positioned.fill(
@@ -833,6 +853,17 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
     await _updateCoreEmotions();
 
     setState(() => _loadingCoreIndex = null);
+  }
+
+  void _confirmDeleteCoreEmotion(int index, CoreEmotion emotion) {
+    MyDialogBox.show(
+      context,
+      child: DeleteConfirmationDialog(
+        title: "Delete Emotion",
+        message: "Are you sure you want to delete this emotion?",
+        onConfirm: () => _handleCoreEmotionDelete(index, emotion),
+      ),
+    );
   }
 
   Future<void> _handleCoreEmotionDelete(int index, CoreEmotion emotion) async {
@@ -887,6 +918,17 @@ class _SelectedEmotionsScreenState extends State<SelectedEmotionsScreen> {
     await _updateAspirationEmotions();
 
     setState(() => _loadingAspirationIndex = null);
+  }
+
+  void _confirmDeleteAspirationEmotion(int index, AspirationEmotion emotion) {
+    MyDialogBox.show(
+      context,
+      child: DeleteConfirmationDialog(
+        title: "Delete Emotion",
+        message: "Are you sure you want to delete this emotion?",
+        onConfirm: () => _handleAspirationEmotionDelete(index, emotion),
+      ),
+    );
   }
 
   Future<void> _handleAspirationEmotionDelete(

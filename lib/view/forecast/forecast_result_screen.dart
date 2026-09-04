@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:kena_emotional_journey/app/components/delete_confirmation_dialog.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_circle_checkbox.dart';
@@ -323,6 +324,17 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
     }
   }
 
+  void _confirmDeleteForecastEmotion(int index, Emotion emotion) {
+    MyDialogBox.show(
+      context,
+      child: DeleteConfirmationDialog(
+        title: "Delete Emotion",
+        message: "Are you sure you want to delete this emotion?",
+        onConfirm: () => _handleForecastEmotionDelete(index, emotion),
+      ),
+    );
+  }
+
   Future<void> _handleForecastEmotionDelete(int index, Emotion emotion) async {
     final key = emotion.key;
     if (key == null || key.isEmpty) return;
@@ -603,7 +615,7 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
               showImage: true,
               isDisabled: _loadingEmotionIndex != null,
               onEditImageTap: () => _handleForecastImageEdit(index, emotion),
-              onDeleteTap: () => _handleForecastEmotionDelete(index, emotion),
+              onDeleteTap: () => _confirmDeleteForecastEmotion(index, emotion),
             ),
             if (_loadingEmotionIndex == index)
               Positioned.fill(

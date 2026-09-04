@@ -64,7 +64,7 @@ class IntensityCircleAnalytics extends StatelessWidget {
                 /// Content (Image + Text Overlay)
                 child: Center(
                   child: FittedBox(
-                    child: imageUrl != null
+                    child: (imageUrl?.isNotEmpty ?? false)
                         ? Stack(
                             alignment: Alignment.center,
                             children: [

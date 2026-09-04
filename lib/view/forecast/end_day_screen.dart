@@ -219,7 +219,10 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
           subEmotionTitle: category.title,
           subEmotionEmoji: category.emojiBuilder(28.w, 28.h),
           intensity: emotion.intensity ?? 3,
-          uploadedImageUrl: emotion.imageUrl,
+          // Backend sends "" (not null) when no image was uploaded.
+          uploadedImageUrl: (emotion.imageUrl?.isNotEmpty ?? false)
+              ? emotion.imageUrl
+              : null,
         );
       }
 
@@ -233,7 +236,9 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
           subEmotionTitle: sub.title,
           subEmotionEmoji: sub.emojiBuilder(28.w, 28.h),
           intensity: emotion.intensity ?? 3,
-          uploadedImageUrl: emotion.imageUrl,
+          uploadedImageUrl: (emotion.imageUrl?.isNotEmpty ?? false)
+              ? emotion.imageUrl
+              : null,
         );
       }
     }

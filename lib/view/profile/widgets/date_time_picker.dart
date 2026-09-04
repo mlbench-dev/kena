@@ -6,7 +6,8 @@ import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 
 class DateTimeField extends StatefulWidget {
   final Function(DateTime)? onDateSelected;
-  const DateTimeField({super.key, required this.onDateSelected});
+  final DateTime? initialDate;
+  const DateTimeField({super.key, required this.onDateSelected, this.initialDate});
 
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
@@ -17,12 +18,37 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
   DateTime? selectedDateTime;
 
+  @override
+  void initState() {
+    super.initState();
+    _applyInitialDate(widget.initialDate);
+  }
+
+  @override
+  void didUpdateWidget(covariant DateTimeField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialDate != oldWidget.initialDate) {
+      _applyInitialDate(widget.initialDate);
+    }
+  }
+
+  void _applyInitialDate(DateTime? date) {
+    selectedDateTime = date;
+    _controller.text = date != null
+        ? DateFormat('yyyy-MM-dd').format(date)
+        : '';
+  }
+
   Future<void> _pickDateTime() async {
     // 1. Pick Date
+    final now = DateTime.now();
+    final initial = selectedDateTime != null && selectedDateTime!.isAfter(now)
+        ? selectedDateTime!
+        : now;
     DateTime? date = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: initial,
+      firstDate: now,
       lastDate: DateTime(2100),
     );
 

@@ -159,6 +159,11 @@ class _CoreEmotionsState extends State<CoreEmotions> with EmotionSearchMixin {
               ? matchedSub.emojiBuilder(28.w, 28.h)
               : matchedCategory.emojiBuilder(28.w, 28.h);
 
+          // Backend sends "" (not null) when no image was uploaded.
+          final sanitizedImageUrl = (ce.imageUrl?.isNotEmpty ?? false)
+              ? ce.imageUrl
+              : null;
+
           _selectedEmotions.add(
             SelectedCoreEmotion(
               key: key,
@@ -168,12 +173,12 @@ class _CoreEmotionsState extends State<CoreEmotions> with EmotionSearchMixin {
               subEmotionTitle: resolvedSubTitle,
               subEmotionEmoji: resolvedSubEmoji,
               intensity: ce.intensity ?? 5,
-              uploadedImageUrl: ce.imageUrl,
+              uploadedImageUrl: sanitizedImageUrl,
             ),
           );
 
-          if (ce.imageUrl != null) {
-            _categoryImages[matchedCategory.title] = ce.imageUrl!;
+          if (sanitizedImageUrl != null) {
+            _categoryImages[matchedCategory.title] = sanitizedImageUrl;
           }
 
           // keep sub-emotion selection state for expanded panel

@@ -65,7 +65,9 @@ class _ResetPasswordState extends State<ResetPassword> {
                         fontWeight: FontWeight.w400,
                         fontSize: 14.sp,
                         // fontFamily: 'sfpro',
-                        color: context.colors.textSecondary.withOpacity(0.8),
+                        color: context.colors.textSecondary.withValues(
+                          alpha: 0.8,
+                        ),
                       ),
                     ),
                     SizedBox(height: 30.h),
@@ -112,7 +114,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                             if (value == null || value.isEmpty) {
                               return 'Password is required.';
                             } else if (!value.passwordValidator()) {
-                              return 'Password must be at least 8 characters long.';
+                              return 'Password must contain 8 characters and at least one uppercase letter, one number, and one special character.';
                             }
                             return null;
                           },

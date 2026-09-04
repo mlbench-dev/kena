@@ -38,6 +38,21 @@ class UserNotificationsRepository {
     );
   }
 
+  //getNotificationSettings
+  Future<Map<String, dynamic>> getSettings() async {
+    return api.get(url: AppUrl.notificationSettings);
+  }
+
+  //updateNotificationSettings
+  Future<Map<String, dynamic>> updateSettings({
+    required bool notificationsEnabled,
+  }) async {
+    return api.patch(
+      url: AppUrl.notificationSettings,
+      data: {'notificationsEnabled': notificationsEnabled},
+    );
+  }
+
   //sendNotification
   Future<Map<String, dynamic>> sendNotification({
     required String receiverId, //to which receiver notification is sent

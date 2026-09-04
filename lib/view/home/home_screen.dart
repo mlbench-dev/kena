@@ -9,10 +9,7 @@ import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/no_internet_dialog.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
-import 'package:kena_emotional_journey/app/utils/tour_controller.dart';
-import 'package:kena_emotional_journey/app/utils/tour_manager.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
@@ -21,8 +18,6 @@ import 'package:kena_emotional_journey/services/common/push_notifications_servic
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
 import 'package:kena_emotional_journey/view/home/widgets/home_section_card.dart';
-import 'package:kena_emotional_journey/view/pro_tip/pro_tip_manager.dart';
-import 'package:kena_emotional_journey/view/pro_tip/widget/pro_tips_dialog_box.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,14 +36,14 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool _hasPaidSubscription = false;
 
   // Tour keys for onboarding
-  final GlobalKey _aspireKey = GlobalKey();
-  final GlobalKey _forecastKey = GlobalKey();
-  final GlobalKey _activitiesKey = GlobalKey();
-  final GlobalKey _analyticsKey = GlobalKey();
-  final GlobalKey _communityKey = GlobalKey();
+  // final GlobalKey _aspireKey = GlobalKey();
+  // final GlobalKey _forecastKey = GlobalKey();
+  // final GlobalKey _activitiesKey = GlobalKey();
+  // final GlobalKey _analyticsKey = GlobalKey();
+  // final GlobalKey _communityKey = GlobalKey();
 
-  bool _isTourActive = false;
-  TourHandle? _tourHandle;
+  // final bool _isTourActive = false;
+  // TourHandle? _tourHandle;
 
   @override
   void initState() {
@@ -64,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     // Start the onboarding tour after widget is built. The pro tip check is
     // chained to run only once the tour has finished (or immediately if the
     // tour has already been shown before), so the two never overlap.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _startOnboardingTour());
+    // WidgetsBinding.instance.addPostFrameCallback((_) => _startOnboardingTour());
   }
 
   @override
@@ -72,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) {
       _fetchUnreadCount();
       _loadSubscriptionBadgeState();
-      if (!_isTourActive) _checkProTip();
+      // if (!_isTourActive) _checkProTip();
     }
   }
 
@@ -85,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _tourHandle?.cancel();
+    // _tourHandle?.cancel();
     _foregroundMessageSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -105,52 +100,52 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _startOnboardingTour() async {
-    if (!mounted) return;
-    final alreadyShown = await OnboardingTourService().isTourShown(
-      TourSections.onboarding,
-    );
-    if (!mounted) return;
-    if (alreadyShown) {
-      _checkProTip();
-      return;
-    }
+  // Future<void> _startOnboardingTour() async {
+  //   if (!mounted) return;
+  //   final alreadyShown = await OnboardingTourService().isTourShown(
+  //     TourSections.onboarding,
+  //   );
+  //   if (!mounted) return;
+  //   if (alreadyShown) {
+  //     _checkProTip();
+  //     return;
+  //   }
 
-    _isTourActive = true;
-    _tourHandle = TourController.start(
-      context: context,
-      sectionKey: TourSections.onboarding,
-      targetKeys: [
-        _aspireKey,
-        _forecastKey,
-        _activitiesKey,
-        _analyticsKey,
-        _communityKey,
-      ],
-      onComplete: () {
-        _isTourActive = false;
-        _checkProTip();
-      },
-    );
-  }
+  //   _isTourActive = true;
+  //   _tourHandle = TourController.start(
+  //     context: context,
+  //     sectionKey: TourSections.onboarding,
+  //     targetKeys: [
+  //       _aspireKey,
+  //       _forecastKey,
+  //       _activitiesKey,
+  //       _analyticsKey,
+  //       _communityKey,
+  //     ],
+  //     onComplete: () {
+  //       _isTourActive = false;
+  //       _checkProTip();
+  //     },
+  //   );
+  // }
 
-  Future<void> _checkProTip() async {
-    final tip = await ProTipManager.getNextDueTip();
-    if (tip != null && mounted) {
-      await ProTipManager.markTipAsShown(tip.id);
-      if (!mounted) return;
-      MyDialogBox.show(
-        context,
-        child: ProTipsDialogBox(
-          title: tip.title,
-          description: tip.description,
-          buttonLabel: tip.buttonLabel,
-          icon: tip.iconBuilder(),
-          onButtonPressed: () => Navigator.of(context).pop(),
-        ),
-      );
-    }
-  }
+  // Future<void> _checkProTip() async {
+  //   final tip = await ProTipManager.getNextDueTip();
+  //   if (tip != null && mounted) {
+  //     await ProTipManager.markTipAsShown(tip.id);
+  //     if (!mounted) return;
+  //     MyDialogBox.show(
+  //       context,
+  //       child: ProTipsDialogBox(
+  //         title: tip.title,
+  //         description: tip.description,
+  //         buttonLabel: tip.buttonLabel,
+  //         icon: tip.iconBuilder(),
+  //         onButtonPressed: () => Navigator.of(context).pop(),
+  //       ),
+  //     );
+  //   }
+  // }
 
   String getGreeting() {
     final hour = DateTime.now().hour;
@@ -294,7 +289,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   child: Assets.icons.ellipse.svg(),
                 ),
               ),
-
               Positioned(
                 left: 30,
                 right: 30,

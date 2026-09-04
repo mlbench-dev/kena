@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kena_emotional_journey/app/utils/service_error_handler.dart';
 import 'package:kena_emotional_journey/model/notifications/notification_model.dart';
+import 'package:kena_emotional_journey/repository/user/user_notifications_repo.dart';
 import 'package:kena_emotional_journey/repository/user_home_repo.dart';
 
 class NotificationsService {
   static const String tag = '[NotificationsService]';
   final UserHomeRepository _userHomeRepo = UserHomeRepository();
+  final UserNotificationsRepository _userNotificationsRepo =
+      UserNotificationsRepository();
 
   ///
   ///Get Notifications
@@ -42,6 +45,40 @@ class NotificationsService {
       // Silently fail for background polling — don't show flashbar to user
       debugPrint('[$tag] ⚠️ getUnreadNotificationCount failed silently: $e');
       return 0;
+    }
+  }
+
+  ///
+  ///Get Notification Settings
+  ///
+  Future<bool?> getNotificationSettings({required BuildContext context}) async {
+    try {
+      final response = await _userNotificationsRepo.getSettings();
+      return response['notificationsEnabled'] as bool?;
+    } catch (e) {
+      // Fail silently — used to prefill UI toggle state
+      debugPrint('[$tag] ⚠️ getNotificationSettings failed silently: $e');
+      return null;
+    }
+  }
+
+  ///
+  ///Update Notification Settings
+  ///
+  Future<bool> updateNotificationSettings({
+    required BuildContext context,
+    required bool notificationsEnabled,
+  }) async {
+    try {
+      await _userNotificationsRepo.updateSettings(
+        notificationsEnabled: notificationsEnabled,
+      );
+      return true;
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHandler.handle(context, e, serviceName: tag);
+      }
+      return false;
     }
   }
 

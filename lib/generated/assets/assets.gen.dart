@@ -27,9 +27,6 @@ class $AssetsIconsGen {
   /// File path: assets/icons/Ellipse.svg
   SvgGenImage get ellipse => const SvgGenImage('assets/icons/Ellipse.svg');
 
-  /// File path: assets/icons/Google.svg
-  SvgGenImage get google => const SvgGenImage('assets/icons/Google.svg');
-
   /// File path: assets/icons/Group.svg
   SvgGenImage get group => const SvgGenImage('assets/icons/Group.svg');
 
@@ -55,10 +52,6 @@ class $AssetsIconsGen {
   /// File path: assets/icons/PushNotif.svg
   SvgGenImage get pushNotif => const SvgGenImage('assets/icons/PushNotif.svg');
 
-  /// File path: assets/icons/SmilingEyes.svg
-  SvgGenImage get smilingEyes =>
-      const SvgGenImage('assets/icons/SmilingEyes.svg');
-
   /// File path: assets/icons/Trash Bin.svg
   SvgGenImage get trashBin => const SvgGenImage('assets/icons/Trash Bin.svg');
 
@@ -69,19 +62,11 @@ class $AssetsIconsGen {
   /// File path: assets/icons/Vectors.svg
   SvgGenImage get vectors => const SvgGenImage('assets/icons/Vectors.svg');
 
-  /// File path: assets/icons/activities_section.svg
-  SvgGenImage get activitiesSection =>
-      const SvgGenImage('assets/icons/activities_section.svg');
-
   /// File path: assets/icons/activity.svg
   SvgGenImage get activity => const SvgGenImage('assets/icons/activity.svg');
 
   /// File path: assets/icons/analytic.svg
   SvgGenImage get analytic => const SvgGenImage('assets/icons/analytic.svg');
-
-  /// File path: assets/icons/analytics_section.svg
-  SvgGenImage get analyticsSection =>
-      const SvgGenImage('assets/icons/analytics_section.svg');
 
   /// File path: assets/icons/apple.svg
   SvgGenImage get apple => const SvgGenImage('assets/icons/apple.svg');
@@ -91,10 +76,6 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/aspire.svg
   SvgGenImage get aspire => const SvgGenImage('assets/icons/aspire.svg');
-
-  /// File path: assets/icons/aspire_section.svg
-  SvgGenImage get aspireSection =>
-      const SvgGenImage('assets/icons/aspire_section.svg');
 
   /// File path: assets/icons/bell.svg
   SvgGenImage get bell => const SvgGenImage('assets/icons/bell.svg');
@@ -111,32 +92,14 @@ class $AssetsIconsGen {
   /// File path: assets/icons/chat.svg
   SvgGenImage get chat => const SvgGenImage('assets/icons/chat.svg');
 
-  /// File path: assets/icons/chatnew.svg
-  SvgGenImage get chatnew => const SvgGenImage('assets/icons/chatnew.svg');
-
-  /// File path: assets/icons/chats.svg
-  SvgGenImage get chats => const SvgGenImage('assets/icons/chats.svg');
-
   /// File path: assets/icons/circle.svg
   SvgGenImage get circle => const SvgGenImage('assets/icons/circle.svg');
-
-  /// File path: assets/icons/circle_edits.svg
-  SvgGenImage get circleEdits =>
-      const SvgGenImage('assets/icons/circle_edits.svg');
-
-  /// File path: assets/icons/circle_section.svg
-  SvgGenImage get circleSection =>
-      const SvgGenImage('assets/icons/circle_section.svg');
 
   /// File path: assets/icons/crown.svg
   SvgGenImage get crown => const SvgGenImage('assets/icons/crown.svg');
 
   /// File path: assets/icons/daily_puls.svg
   SvgGenImage get dailyPuls => const SvgGenImage('assets/icons/daily_puls.svg');
-
-  /// File path: assets/icons/daily_section.svg
-  SvgGenImage get dailySection =>
-      const SvgGenImage('assets/icons/daily_section.svg');
 
   /// File path: assets/icons/edit_circle.svg
   SvgGenImage get editCircle =>
@@ -159,10 +122,6 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/kena.svg
   SvgGenImage get kena => const SvgGenImage('assets/icons/kena.svg');
-
-  /// File path: assets/icons/location_request.svg
-  SvgGenImage get locationRequest =>
-      const SvgGenImage('assets/icons/location_request.svg');
 
   /// File path: assets/icons/lock_outline.svg
   SvgGenImage get lockOutline =>
@@ -199,20 +158,8 @@ class $AssetsIconsGen {
   /// File path: assets/icons/profile.svg
   SvgGenImage get profile => const SvgGenImage('assets/icons/profile.svg');
 
-  /// File path: assets/icons/push notifications.png
-  AssetGenImage get pushNotifications =>
-      const AssetGenImage('assets/icons/push notifications.png');
-
-  /// File path: assets/icons/push_notification.png
-  AssetGenImage get pushNotification =>
-      const AssetGenImage('assets/icons/push_notification.png');
-
   /// File path: assets/icons/send.svg
   SvgGenImage get send => const SvgGenImage('assets/icons/send.svg');
-
-  /// File path: assets/icons/send_message.svg
-  SvgGenImage get sendMessage =>
-      const SvgGenImage('assets/icons/send_message.svg');
 
   /// File path: assets/icons/share.svg
   SvgGenImage get share => const SvgGenImage('assets/icons/share.svg');
@@ -220,22 +167,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/sharing.svg
   SvgGenImage get sharing => const SvgGenImage('assets/icons/sharing.svg');
 
-  /// File path: assets/icons/shop.svg
-  SvgGenImage get shop => const SvgGenImage('assets/icons/shop.svg');
-
-  /// File path: assets/icons/signals.svg
-  SvgGenImage get signals => const SvgGenImage('assets/icons/signals.svg');
-
-  /// File path: assets/icons/ui_edit.svg
-  SvgGenImage get uiEdit => const SvgGenImage('assets/icons/ui_edit.svg');
-
   /// File path: assets/icons/user_placeholder.png
   AssetGenImage get userPlaceholder =>
       const AssetGenImage('assets/icons/user_placeholder.png');
-
-  /// File path: assets/icons/waving_hand.svg
-  SvgGenImage get wavingHand =>
-      const SvgGenImage('assets/icons/waving_hand.svg');
 
   /// File path: assets/icons/word.svg
   SvgGenImage get word => const SvgGenImage('assets/icons/word.svg');
@@ -245,7 +179,6 @@ class $AssetsIconsGen {
     button,
     cryingFace,
     ellipse,
-    google,
     group,
     homeIcon,
     letter,
@@ -254,38 +187,28 @@ class $AssetsIconsGen {
     pen2,
     personsContainer,
     pushNotif,
-    smilingEyes,
     trashBin,
     userRounded,
     vectors,
-    activitiesSection,
     activity,
     analytic,
-    analyticsSection,
     apple,
     appleLogo,
     aspire,
-    aspireSection,
     bell,
     bellIcon,
     bin,
     calendar,
     chat,
-    chatnew,
-    chats,
     circle,
-    circleEdits,
-    circleSection,
     crown,
     dailyPuls,
-    dailySection,
     editCircle,
     googleIcon,
     graph,
     homeOutline,
     iconsProductSubscriptions,
     kena,
-    locationRequest,
     lockOutline,
     notificationNobg,
     notifications,
@@ -295,17 +218,10 @@ class $AssetsIconsGen {
     penOutline,
     premium,
     profile,
-    pushNotifications,
-    pushNotification,
     send,
-    sendMessage,
     share,
     sharing,
-    shop,
-    signals,
-    uiEdit,
     userPlaceholder,
-    wavingHand,
     word,
   ];
 }
@@ -316,17 +232,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/ Dizzy.png
   AssetGenImage get aDizzy => const AssetGenImage('assets/images/ Dizzy.png');
 
-  /// File path: assets/images/ Face Exhaling.png
-  AssetGenImage get aFaceExhaling =>
-      const AssetGenImage('assets/images/ Face Exhaling.png');
-
   /// File path: assets/images/ Face With Monocle.png
   AssetGenImage get aFaceWithMonocle =>
       const AssetGenImage('assets/images/ Face With Monocle.png');
-
-  /// File path: assets/images/ Face With Open Mouth.png
-  AssetGenImage get aFaceWithOpenMouth =>
-      const AssetGenImage('assets/images/ Face With Open Mouth.png');
 
   /// File path: assets/images/ Face With Symbols On Mouth.png
   AssetGenImage get aFaceWithSymbolsOnMouth =>
@@ -344,17 +252,9 @@ class $AssetsImagesGen {
   AssetGenImage get aHighVoltage =>
       const AssetGenImage('assets/images/ High_Voltage .png');
 
-  /// File path: assets/images/ Person Facepalming.png
-  AssetGenImage get aPersonFacepalming =>
-      const AssetGenImage('assets/images/ Person Facepalming.png');
-
   /// File path: assets/images/ Rainbow.png
   AssetGenImage get aRainbow =>
       const AssetGenImage('assets/images/ Rainbow.png');
-
-  /// File path: assets/images/ Two_Hearts.png
-  AssetGenImage get aTwoHearts =>
-      const AssetGenImage('assets/images/ Two_Hearts.png');
 
   /// File path: assets/images/Amazing.png
   AssetGenImage get amazing => const AssetGenImage('assets/images/Amazing.png');
@@ -391,14 +291,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/Cherry.png
   AssetGenImage get cherry => const AssetGenImage('assets/images/Cherry.png');
 
-  /// File path: assets/images/Clapping.png
-  AssetGenImage get clapping =>
-      const AssetGenImage('assets/images/Clapping.png');
-
-  /// File path: assets/images/Confounded Face.png
-  AssetGenImage get confoundedFace =>
-      const AssetGenImage('assets/images/Confounded Face.png');
-
   /// File path: assets/images/Crown.png
   AssetGenImage get crown => const AssetGenImage('assets/images/Crown.png');
 
@@ -426,10 +318,6 @@ class $AssetsImagesGen {
   AssetGenImage get dottedLineFace =>
       const AssetGenImage('assets/images/Dotted Line Face.png');
 
-  /// File path: assets/images/Expressionless Face.png
-  AssetGenImage get expressionlessFace =>
-      const AssetGenImage('assets/images/Expressionless Face.png');
-
   /// File path: assets/images/Eye.png
   AssetGenImage get eye => const AssetGenImage('assets/images/Eye.png');
 
@@ -445,10 +333,6 @@ class $AssetsImagesGen {
   AssetGenImage get faceWithSteamFromNose =>
       const AssetGenImage('assets/images/Face With Steam From Nose.png');
 
-  /// File path: assets/images/Face With Tongue.png
-  AssetGenImage get faceWithTongue =>
-      const AssetGenImage('assets/images/Face With Tongue.png');
-
   /// File path: assets/images/Face With Unimpressed.png
   AssetGenImage get faceWithUnimpressed =>
       const AssetGenImage('assets/images/Face With Unimpressed.png');
@@ -456,10 +340,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/Face Without Mouth.png
   AssetGenImage get faceWithoutMouth =>
       const AssetGenImage('assets/images/Face Without Mouth.png');
-
-  /// File path: assets/images/Face uncomfortable.png
-  AssetGenImage get faceUncomfortable =>
-      const AssetGenImage('assets/images/Face uncomfortable.png');
 
   /// File path: assets/images/Fearful_Face.png
   AssetGenImage get fearfulFace =>
@@ -503,14 +383,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/Joker.png
   AssetGenImage get joker => const AssetGenImage('assets/images/Joker.png');
 
-  /// File path: assets/images/Light Bulb.png
-  AssetGenImage get lightBulb =>
-      const AssetGenImage('assets/images/Light Bulb.png');
-
-  /// File path: assets/images/Loudly Crying.png
-  AssetGenImage get loudlyCrying =>
-      const AssetGenImage('assets/images/Loudly Crying.png');
-
   /// File path: assets/images/Man Bowing.png
   AssetGenImage get manBowing =>
       const AssetGenImage('assets/images/Man Bowing.png');
@@ -527,19 +399,12 @@ class $AssetsImagesGen {
   AssetGenImage get performingArts =>
       const AssetGenImage('assets/images/Performing_Arts.png');
 
-  /// File path: assets/images/Persons.png
-  AssetGenImage get persons => const AssetGenImage('assets/images/Persons.png');
-
   /// File path: assets/images/Pleading Face.png
   AssetGenImage get pleadingFace =>
       const AssetGenImage('assets/images/Pleading Face.png');
 
   /// File path: assets/images/Rage.png
   AssetGenImage get rage => const AssetGenImage('assets/images/Rage.png');
-
-  /// File path: assets/images/Raising Hands .png
-  AssetGenImage get raisingHands =>
-      const AssetGenImage('assets/images/Raising Hands .png');
 
   /// File path: assets/images/Relieved_Face.png
   AssetGenImage get relievedFace =>
@@ -560,10 +425,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/Sleeping Face.png
   AssetGenImage get sleepingFace =>
       const AssetGenImage('assets/images/Sleeping Face.png');
-
-  /// File path: assets/images/Sleepy Face with drop.png
-  AssetGenImage get sleepyFaceWithDrop =>
-      const AssetGenImage('assets/images/Sleepy Face with drop.png');
 
   /// File path: assets/images/Slightly Smiling Face.png
   AssetGenImage get slightlySmilingFace =>
@@ -597,10 +458,6 @@ class $AssetsImagesGen {
   AssetGenImage get twoHearts =>
       const AssetGenImage('assets/images/Two Hearts.png');
 
-  /// File path: assets/images/Woozy Face.png
-  AssetGenImage get woozyFace =>
-      const AssetGenImage('assets/images/Woozy Face.png');
-
   /// File path: assets/images/Zany_Face .png
   AssetGenImage get zanyFace =>
       const AssetGenImage('assets/images/Zany_Face .png');
@@ -628,9 +485,6 @@ class $AssetsImagesGen {
   AssetGenImage get batteryLow =>
       const AssetGenImage('assets/images/battery_low.png');
 
-  /// File path: assets/images/bike.png
-  AssetGenImage get bike => const AssetGenImage('assets/images/bike.png');
-
   /// File path: assets/images/bulb.png
   AssetGenImage get bulb => const AssetGenImage('assets/images/bulb.png');
 
@@ -640,10 +494,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/circle.png
   AssetGenImage get circle => const AssetGenImage('assets/images/circle.png');
 
-  /// File path: assets/images/circle_edit.png
-  AssetGenImage get circleEdit =>
-      const AssetGenImage('assets/images/circle_edit.png');
-
   /// File path: assets/images/comments.png
   AssetGenImage get comments =>
       const AssetGenImage('assets/images/comments.png');
@@ -652,9 +502,6 @@ class $AssetsImagesGen {
   AssetGenImage get community =>
       const AssetGenImage('assets/images/community.png');
 
-  /// File path: assets/images/cross.png
-  AssetGenImage get cross => const AssetGenImage('assets/images/cross.png');
-
   /// File path: assets/images/crying.png
   AssetGenImage get crying => const AssetGenImage('assets/images/crying.png');
 
@@ -662,27 +509,12 @@ class $AssetsImagesGen {
   AssetGenImage get dailyPuls =>
       const AssetGenImage('assets/images/daily_puls.png');
 
-  /// File path: assets/images/disconnected.png
-  AssetGenImage get disconnected =>
-      const AssetGenImage('assets/images/disconnected.png');
-
-  /// File path: assets/images/google.png
-  AssetGenImage get google => const AssetGenImage('assets/images/google.png');
-
   /// File path: assets/images/hearts_Face.png
   AssetGenImage get heartsFace =>
       const AssetGenImage('assets/images/hearts_Face.png');
 
   /// File path: assets/images/home.png
   AssetGenImage get home => const AssetGenImage('assets/images/home.png');
-
-  /// File path: assets/images/icon copy.png
-  AssetGenImage get iconCopy =>
-      const AssetGenImage('assets/images/icon copy.png');
-
-  /// File path: assets/images/icon_splash.png
-  AssetGenImage get iconSplash =>
-      const AssetGenImage('assets/images/icon_splash.png');
 
   /// File path: assets/images/insights.png
   AssetGenImage get insights =>
@@ -695,25 +527,11 @@ class $AssetsImagesGen {
   AssetGenImage get lionFace =>
       const AssetGenImage('assets/images/lion_face.png');
 
-  /// File path: assets/images/location_permission_required.png
-  AssetGenImage get locationPermissionRequired =>
-      const AssetGenImage('assets/images/location_permission_required.png');
-
   /// File path: assets/images/people.png
   AssetGenImage get people => const AssetGenImage('assets/images/people.png');
 
   /// File path: assets/images/profile.png
   AssetGenImage get profile => const AssetGenImage('assets/images/profile.png');
-
-  /// File path: assets/images/shocked.png
-  AssetGenImage get shocked => const AssetGenImage('assets/images/shocked.png');
-
-  /// File path: assets/images/shop_marker.png
-  AssetGenImage get shopMarker =>
-      const AssetGenImage('assets/images/shop_marker.png');
-
-  /// File path: assets/images/skip.png
-  AssetGenImage get skip => const AssetGenImage('assets/images/skip.png');
 
   /// File path: assets/images/smile.png
   AssetGenImage get smile => const AssetGenImage('assets/images/smile.png');
@@ -726,15 +544,9 @@ class $AssetsImagesGen {
   AssetGenImage get threeDay =>
       const AssetGenImage('assets/images/three_day.png');
 
-  /// File path: assets/images/truck.png
-  AssetGenImage get truck => const AssetGenImage('assets/images/truck.png');
-
   /// File path: assets/images/two_weeks.png
   AssetGenImage get twoWeeks =>
       const AssetGenImage('assets/images/two_weeks.png');
-
-  /// File path: assets/images/upload.png
-  AssetGenImage get upload => const AssetGenImage('assets/images/upload.png');
 
   /// File path: assets/images/week.png
   AssetGenImage get week => const AssetGenImage('assets/images/week.png');
@@ -749,16 +561,12 @@ class $AssetsImagesGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     aDizzy,
-    aFaceExhaling,
     aFaceWithMonocle,
-    aFaceWithOpenMouth,
     aFaceWithSymbolsOnMouth,
     aFoldedHands,
     aHandshake,
     aHighVoltage,
-    aPersonFacepalming,
     aRainbow,
-    aTwoHearts,
     amazing,
     angryFace,
     angryRedFace,
@@ -768,8 +576,6 @@ class $AssetsImagesGen {
     brain,
     celebration,
     cherry,
-    clapping,
-    confoundedFace,
     crown,
     cryingCat,
     cryingFace,
@@ -777,15 +583,12 @@ class $AssetsImagesGen {
     disappointedFace,
     dizzyFaceCrossOnEye,
     dottedLineFace,
-    expressionlessFace,
     eye,
     faceWithEyebrow,
     faceWithPeekingEye,
     faceWithSteamFromNose,
-    faceWithTongue,
     faceWithUnimpressed,
     faceWithoutMouth,
-    faceUncomfortable,
     fearfulFace,
     fire,
     flexed,
@@ -798,22 +601,17 @@ class $AssetsImagesGen {
     huggingFace,
     icon,
     joker,
-    lightBulb,
-    loudlyCrying,
     manBowing,
     meltingFace,
     partyPopper,
     performingArts,
-    persons,
     pleadingFace,
     rage,
-    raisingHands,
     relievedFace,
     sadFace,
     salutingFace,
     shakingFace,
     sleepingFace,
-    sleepyFaceWithDrop,
     slightlySmilingFace,
     smilingFaceWithSmilingEyes,
     smilingFace,
@@ -822,7 +620,6 @@ class $AssetsImagesGen {
     thinkingFace,
     thoughtBalloon,
     twoHearts,
-    woozyFace,
     zanyFace,
     activities,
     analytics,
@@ -830,37 +627,24 @@ class $AssetsImagesGen {
     attitudeFace,
     batteryCharge,
     batteryLow,
-    bike,
     bulb,
     chat,
     circle,
-    circleEdit,
     comments,
     community,
-    cross,
     crying,
     dailyPuls,
-    disconnected,
-    google,
     heartsFace,
     home,
-    iconCopy,
-    iconSplash,
     insights,
     kia,
     lionFace,
-    locationPermissionRequired,
     people,
     profile,
-    shocked,
-    shopMarker,
-    skip,
     smile,
     smileOverhand,
     threeDay,
-    truck,
     twoWeeks,
-    upload,
     week,
     worriedFace,
     yoga,

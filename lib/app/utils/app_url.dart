@@ -273,6 +273,8 @@ class AppUrl {
       '$baseUrl/api/auth/user/push-notification';
   static const String registerFcmToken =
       '$baseUrl/api/notifications/fcm-token/register';
+  static const String notificationSettings =
+      '$baseUrl/api/notifications/settings';
   // static const String pushNotificationVendor =
   //     '$baseUrl/auth/vendor/push-notification'; //Not implemented on backend
 }

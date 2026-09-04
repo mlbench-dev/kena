@@ -178,7 +178,10 @@ class _ForecastScreenState extends State<ForecastScreen>
               subEmotion?.emojiBuilder(28.w, 28.h) ??
               category.emojiBuilder(28.w, 28.h),
           intensity: e.intensity ?? 1,
-          uploadedImageUrl: e.imageUrl,
+          // Backend sends "" (not null) when no image was uploaded.
+          uploadedImageUrl: (e.imageUrl?.isNotEmpty ?? false)
+              ? e.imageUrl
+              : null,
         ),
       );
     }
@@ -606,7 +609,10 @@ class _ForecastScreenState extends State<ForecastScreen>
                                             ),
                                           ),
                                           child: Center(
-                                            child: e.uploadedImageUrl != null
+                                            child:
+                                                (e.uploadedImageUrl
+                                                        ?.isNotEmpty ??
+                                                    false)
                                                 ? ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(

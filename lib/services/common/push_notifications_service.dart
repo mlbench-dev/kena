@@ -248,13 +248,33 @@ class PushNotificationsService {
 
   void _handleNotificationNavigation(RemoteMessage message) {
     final type = message.data['type'] as String?;
-    final route = NotificationRouteResolver.routeForType(
-      type,
-      communityId: _session.communityId,
-    );
+    final entryOwnerId = message.data['entryOwnerId'] as String?;
+    final communityId =
+        (message.data['communityId'] as String?) ?? _session.communityId;
 
     // Defer navigation to after the current frame to avoid _debugLocked
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      if (NotificationRouteResolver.hasFeedTarget(
+        type,
+        entryOwnerId: entryOwnerId,
+        communityId: communityId,
+      )) {
+        final context = App.navigatorKey.currentContext;
+        if (context != null) {
+          NotificationRouteResolver.openFeedTarget(
+            context,
+            type: type,
+            entryOwnerId: entryOwnerId!,
+            communityId: communityId!,
+          );
+        }
+        return;
+      }
+
+      final route = NotificationRouteResolver.routeForType(
+        type,
+        communityId: _session.communityId,
+      );
       App.navigatorKey.currentState?.pushNamed(route);
     });
   }

@@ -362,6 +362,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             type: notification.type,
                             createdAt: notification.createdAt,
                             notificationId: notification.id,
+                            entryOwnerId: notification.data?.entryOwnerId,
+                            communityId: notification.data?.communityId,
                             initiallySubmitted: _answeredCheckInIds.contains(
                               notification.id,
                             ),
