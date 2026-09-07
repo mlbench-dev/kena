@@ -81,7 +81,10 @@ class _SelectTodayForecastState extends State<SelectTodayForecast> {
     setState(() => _isSaving = false);
 
     if (success) {
-      context.flushBarSuccessMessage(message: "Forecast saved successfully!");
+      await context.flushBarSuccessMessage(
+        message: "Forecast saved successfully",
+      );
+      if (!mounted) return;
       Navigator.of(
         context,
       ).pushNamedAndRemoveUntil(RoutesName.homeScreen, (route) => false);

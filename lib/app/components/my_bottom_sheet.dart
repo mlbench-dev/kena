@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:kena_emotional_journey/app/components/global_unfocus_keyboard.dart';
 import 'package:kena_emotional_journey/app/styles/app_radiuses.dart';
-import 'package:flutter/material.dart';
 
 class MyBottomSheet extends StatelessWidget {
   const MyBottomSheet({required this.child, super.key});
@@ -48,7 +48,9 @@ class MyBottomSheet extends StatelessWidget {
       ),
       child: Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
+          bottom:
+              MediaQuery.of(context).viewInsets.bottom +
+              MediaQuery.of(context).padding.bottom,
         ),
         child: child,
       ),
