@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
-import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart';
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
+import 'package:kena_emotional_journey/provider/weekly_sharing_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/thought_monitoring_widget.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.dart';
@@ -17,6 +17,7 @@ import 'package:kena_emotional_journey/view/community/widgets/user_profile_shimm
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class WeeklyOverall extends StatefulWidget {
   const WeeklyOverall({super.key});
@@ -165,15 +166,9 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     ];
   }
 
-  Future<void> _onShareWithCircleTap() async {
-    await MyDialogBox.show(
-      context,
-      child: ShareWeeklyDialog(parentContext: context),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final sharing = context.watch<WeeklySharingController>();
     if (_isLoading) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -329,12 +324,24 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
                   ),
                 ),
                 SizedBox(height: 10.h),
-                MyButton(
-                  label: "Share with Circle",
-                  backgroundColor: context.colors.primary,
-                  textColor: context.colors.background,
-                  onPressed: _onShareWithCircleTap,
-                ),
+                sharing.isShared
+                    ? MyButton(
+                        label: sharing.isStopping
+                            ? "Stopping..."
+                            : "Stop Sharing",
+                        backgroundColor: context.colors.error,
+                        textColor: context.colors.background,
+                        isLoading: sharing.isStopping,
+                        onPressed: sharing.isStopping
+                            ? null
+                            : () => sharing.stopSharing(context),
+                      )
+                    : MyButton(
+                        label: "Share with Circle",
+                        backgroundColor: context.colors.primary,
+                        textColor: context.colors.background,
+                        onPressed: () => sharing.startSharing(context),
+                      ),
               ],
             ),
           ),
@@ -451,7 +458,7 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
     setState(() => _isSending = false);
 
     if (success) {
-      Navigator.pop(context);
+      Navigator.pop(context, true);
       if (widget.parentContext.mounted) {
         widget.parentContext.flushBarSuccessMessage(
           message: 'Weekly forecast shared successfully!',

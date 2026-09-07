@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
-import 'package:kena_emotional_journey/app/components/loading_widget.dart';
-import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
-import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
-import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/weekly_feed_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart'
     hide Forecast;
+import 'package:kena_emotional_journey/provider/weekly_sharing_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:kena_emotional_journey/view/analytics/weekly_overall.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/prediction_insights.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/progress_card.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/top_activities_section.dart';
 import 'package:kena_emotional_journey/view/community/empty_feed_screen.dart';
+import 'package:kena_emotional_journey/view/community/widgets/sharing_toggle_button.dart';
 import 'package:kena_emotional_journey/view/community/widgets/weekly_feeds_shimmer.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
+import 'package:provider/provider.dart';
 
 class WeeklyFeeds extends StatefulWidget {
   const WeeklyFeeds({
@@ -37,7 +35,6 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
   final UserHomeService _service = UserHomeService();
   WeeklyFeedModel? _weeklyFeedData;
   bool _isLoading = true;
-  bool _isStopping = false;
 
   @override
   void initState() {
@@ -69,52 +66,19 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
         _weeklyFeedData = data;
         _isLoading = false;
       });
-    }
-  }
 
-  Future<void> _stopSharingWeekly() async {
-    // Get list of shared members first
-    final sharedResult = await _service.getSharedMembers(context: context);
-    if (!mounted) return;
-
-    final userIds =
-        sharedResult?.data?.map((m) => m.id).whereType<String>().toList() ?? [];
-    if (userIds.isEmpty) {
-      context.flushBarErrorMessage(message: 'No shared members found');
-      return;
-    }
-
-    setState(() => _isStopping = true);
-
-    final today = DateTime.now().toIso8601String().split('T')[0];
-    final success = await _service.stopSharingWeeklyForecast(
-      userIds: userIds,
-      endDate: today,
-      context: context,
-    );
-
-    if (!mounted) return;
-    setState(() => _isStopping = false);
-
-    if (success) {
-      context.flushBarSuccessMessage(
-        message: 'Stopped sharing weekly forecast',
-      );
-      await _loadWeeklyFeed();
+      // Keep the shared "am I sharing my weekly forecast" status in sync
+      // with what this scope's own feed just reported.
+      if (widget.scope == 'me') {
+        context.read<WeeklySharingController>().syncSharedStatus(
+          _isWeeklyShared,
+        );
+      }
     }
   }
 
   bool get _isWeeklyShared =>
       _weeklyFeedData?.data?.firstOrNull?.isWeeklyShared == true;
-
-  Future<void> _startSharingWeekly() async {
-    await MyDialogBox.show(
-      context,
-      child: ShareWeeklyDialog(parentContext: context),
-    );
-    if (!mounted) return;
-    await _loadWeeklyFeed();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,6 +98,7 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
 
     final summary = feedPeriod.summary;
     final insights = feedPeriod.insights;
+    final sharing = context.watch<WeeklySharingController>();
 
     return SingleChildScrollView(
       child: Padding(
@@ -142,81 +107,15 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (widget.scope == 'me')
-              _isWeeklyShared
-                  ? GestureDetector(
-                      onTap: _isStopping ? null : _stopSharingWeekly,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (_isStopping)
-                            SizedBox(
-                              width: 18.w,
-                              height: 18.h,
-                              child: LoadingWidget(
-                                color: context.colors.error,
-                                size: 2,
-                              ),
-                            )
-                          else
-                            Assets.icons.notshare.svg(
-                              height: 18.h,
-                              width: 18.w,
-                            ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            _isStopping ? "Stopping..." : "Stop Sharing",
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.red,
-                              fontFamily: "sfpro",
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          width: 98.w,
-                          height: 27.h,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: context.colors.primary,
-                              padding: EdgeInsets.symmetric(horizontal: 4.w),
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                            ),
-                            onPressed: _startSharingWeekly,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Assets.icons.sharing.svg(
-                                  height: 14.h,
-                                  width: 14.w,
-                                ),
-                                SizedBox(width: 4.w),
-                                Flexible(
-                                  child: Text(
-                                    "Start Sharing",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: context.typography.body.copyWith(
-                                      color: context.colors.background,
-                                      fontSize: 9.sp,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: SharingToggleButton(
+                  isShared: sharing.isShared,
+                  isBusy: sharing.isStopping,
+                  onStart: () => sharing.startSharing(context),
+                  onStop: () => sharing.stopSharing(context),
+                ),
+              ),
             if (widget.scope == 'me') SizedBox(height: 16.h),
             PredictionInsightsCard(
               summary: {

@@ -13,6 +13,7 @@ import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/community/comments_screen.dart';
 import 'package:kena_emotional_journey/view/community/empty_feed_screen.dart';
 import 'package:kena_emotional_journey/view/community/widgets/feed_shimmer_loading.dart';
+import 'package:kena_emotional_journey/view/community/widgets/sharing_toggle_button.dart';
 import 'package:kena_emotional_journey/view/emotions/widgets/image_zoom_viewer.dart'
     show ImageZoomViewer;
 import 'package:kena_emotional_journey/view/forecast/forecast_result_screen.dart'
@@ -80,11 +81,15 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
     }
   }
 
-  Future<void> _loadFeed() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
+  /// [silent] fetches fresh data in the background without showing the
+  /// full-screen shimmer, so the list doesn't visibly reload.
+  Future<void> _loadFeed({bool silent = false}) async {
+    if (!silent) {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+    }
     try {
       final scope = widget.feedScope.toLowerCase() == 'friends'
           ? 'friends'
@@ -130,11 +135,34 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
     );
 
     if (!mounted) return;
-    setState(() => _isStoppingAll = false);
-    if (!success) return;
+    if (!success) {
+      setState(() => _isStoppingAll = false);
+      return;
+    }
+
+    // Update sharing status in place instead of reloading the whole feed.
+    setState(() {
+      _isStoppingAll = false;
+      _feeds = _feeds
+          .map(
+            (f) => DailyFeedData(
+              id: f.id,
+              day: f.day,
+              createdAt: f.createdAt,
+              author: f.author,
+              forecast: f.forecast,
+              reflection: f.reflection,
+              isForecastShared: false,
+              isReflectionShared: f.isReflectionShared,
+              likesCount: f.likesCount,
+              likedByMe: f.likedByMe,
+              commentsCount: f.commentsCount,
+            ),
+          )
+          .toList();
+    });
 
     context.flushBarSuccessMessage(message: 'Stopped sharing with everyone');
-    await _init();
   }
 
   Future<void> _onStartSharing() async {
@@ -142,7 +170,8 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
       context,
       child: InviteFriendsDialog(parentContext: context),
     );
-    await _loadFeed();
+    // Refresh sharing status quietly (no full-screen shimmer reload).
+    await _loadFeed(silent: true);
   }
 
   @override
@@ -378,112 +407,12 @@ class _FeedCardState extends State<FeedCard> {
             ),
             if (widget.isStopSharing) Spacer(),
             if (widget.isStopSharing) ...[
-              if (widget.isStopping)
-                SizedBox(
-                  width: 18.w,
-                  height: 18.h,
-                  child: LoadingWidget(color: context.colors.error, size: 2),
-                )
-              else if (widget.isForecastShared)
-                GestureDetector(
-                  onTap: widget.onStopSharing,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Assets.icons.notshare.svg(height: 18.h, width: 18.w),
-                      SizedBox(width: 8.w),
-                      Text(
-                        "Stop Sharing",
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.red,
-                          fontFamily: "sfpro",
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              else ...[
-                SizedBox(
-                  width: 98.w,
-                  height: 27.h,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: context.colors.tertiary,
-                      padding: EdgeInsets.symmetric(horizontal: 4.w),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    ),
-                    onPressed: widget.onStartSharing,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Assets.icons.sharing.svg(height: 14.h, width: 14.w),
-                        SizedBox(width: 4.w),
-                        Flexible(
-                          child: Text(
-                            "Start Sharing",
-                            overflow: TextOverflow.ellipsis,
-                            style: context.typography.body.copyWith(
-                              color: context.colors.background,
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5.w),
-                GestureDetector(
-                  onTap: () {
-                    MyDialogBox.show(
-                      context,
-                      child: Padding(
-                        padding: EdgeInsets.all(16.w),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Sharing Forecast",
-                              style: context.typography.title.copyWith(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              "When you share your forecast, you decide who in your community circle can see your daily emotional updates and journal entries.",
-                              textAlign: TextAlign.center,
-                              style: context.typography.body.copyWith(
-                                fontSize: 13.sp,
-                                color: context.colors.textSecondary,
-                              ),
-                            ),
-                            SizedBox(height: 16.h),
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text(
-                                "Got it",
-                                style: TextStyle(color: context.colors.primary),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  child: Icon(
-                    Icons.info_outline,
-                    color: context.colors.tertiary,
-                  ),
-                ),
-              ],
+              SharingToggleButton(
+                isShared: widget.isForecastShared,
+                isBusy: widget.isStopping,
+                onStart: widget.onStartSharing,
+                onStop: widget.onStopSharing,
+              ),
               SizedBox(width: 15.w),
               GestureDetector(
                 onTap: () {
