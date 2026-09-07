@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart'
+    show CupertinoSliverRefreshControl, RefreshIndicatorMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
@@ -16,6 +18,7 @@ import 'package:kena_emotional_journey/view/community/widgets/sharing_toggle_but
 import 'package:kena_emotional_journey/view/community/widgets/weekly_feeds_shimmer.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class WeeklyFeeds extends StatefulWidget {
@@ -100,93 +103,127 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
     final insights = feedPeriod.insights;
     final sharing = context.watch<WeeklySharingController>();
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (widget.scope == 'me')
-              Align(
-                alignment: Alignment.centerRight,
-                child: SharingToggleButton(
-                  isShared: sharing.isShared,
-                  isBusy: sharing.isStopping,
-                  onStart: () => sharing.startSharing(context),
-                  onStop: () => sharing.stopSharing(context),
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: _loadWeeklyFeed,
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                // Fade in while dragging; stay fully visible once the
+                // refresh actually starts (armed/refresh/done).
+                final progress = refreshState == RefreshIndicatorMode.drag
+                    ? (pulledExtent / refreshTriggerPullDistance).clamp(
+                        0.0,
+                        1.0,
+                      )
+                    : 1.0;
+                return Center(
+                  child: Opacity(
+                    opacity: progress,
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: context.colors.primary,
+                      size: 32.sp,
+                    ),
+                  ),
+                );
+              },
+        ),
+        SliverPadding(
+          padding: EdgeInsets.all(16.w),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate([
+              if (widget.scope == 'me')
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SharingToggleButton(
+                    isShared: sharing.isShared,
+                    isBusy: sharing.isStopping,
+                    onStart: () => sharing.startSharing(context),
+                    onStop: () => sharing.stopSharing(context),
+                  ),
+                ),
+              if (widget.scope == 'me') SizedBox(height: 16.h),
+              PredictionInsightsCard(
+                summary: {
+                  'predictionAccuracyPercent':
+                      summary?.predictionInsights?.accuracyPercent ?? 0,
+                  // 'daysForecasted':
+                  //     summary?.predictionInsights?.daysForecasted ?? 0,
+                  'daysReflected':
+                      summary?.predictionInsights?.daysForecasted ?? 0,
+                  'daysActualRecorded':
+                      summary?.predictionInsights?.daysActualRecorded ?? 0,
+                },
+              ),
+              SizedBox(height: 16.h),
+              AllTimeProgressCard(
+                currentProgress: (insights?.planUseful?.percent ?? 0)
+                    .toDouble(),
+                goalValue: 100,
+                lable: 'Plan useful',
+                hidebottomLabel: false,
+              ),
+              SizedBox(height: 16.h),
+              PerformanceDeviationChart(
+                data: _buildDeviationChartData(
+                  insights?.worseBetterVsGoal?.dailyValues,
                 ),
               ),
-            if (widget.scope == 'me') SizedBox(height: 16.h),
-            PredictionInsightsCard(
-              summary: {
-                'predictionAccuracyPercent':
-                    summary?.predictionInsights?.accuracyPercent ?? 0,
-                // 'daysForecasted':
-                //     summary?.predictionInsights?.daysForecasted ?? 0,
-                'daysReflected':
-                    summary?.predictionInsights?.daysForecasted ?? 0,
-                'daysActualRecorded':
-                    summary?.predictionInsights?.daysActualRecorded ?? 0,
-              },
-            ),
-            SizedBox(height: 16.h),
-            AllTimeProgressCard(
-              currentProgress: (insights?.planUseful?.percent ?? 0).toDouble(),
-              goalValue: 100,
-              lable: 'Plan useful',
-              hidebottomLabel: false,
-            ),
-            SizedBox(height: 16.h),
-            PerformanceDeviationChart(
-              data: _buildDeviationChartData(
-                insights?.worseBetterVsGoal?.dailyValues,
+              SizedBox(height: 16.h),
+              Text(
+                "Forecast vs Actual emotions",
+                style: context.typography.body.copyWith(
+                  fontFamily: 'Inter',
+                  fontSize: 17.sp,
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.textPrimary,
+                ),
               ),
-            ),
-            SizedBox(height: 16.h),
-            Text(
-              "Forecast vs Actual emotions",
-              style: context.typography.body.copyWith(
-                fontFamily: 'Inter',
-                fontSize: 17.sp,
-                fontWeight: FontWeight.w600,
-                color: context.colors.textPrimary,
+              SizedBox(height: 8.h),
+              Text(
+                "Forecast vs Actual comparison and how many days in the period.",
+                style: context.typography.body.copyWith(
+                  fontFamily: 'Inter',
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w400,
+                  color: context.colors.textSecondary,
+                ),
               ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              "Forecast vs Actual comparison and how many days in the period.",
-              style: context.typography.body.copyWith(
-                fontFamily: 'Inter',
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w400,
-                color: context.colors.textSecondary,
+              SizedBox(height: 16.h),
+              _buildEmotionsSection(
+                context,
+                title: 'Top 3 Forecast Emotions',
+                emotions: _buildEmotionsFromApi(
+                  summary?.forecastVsActual?.forecast,
+                ),
               ),
-            ),
-            SizedBox(height: 16.h),
-            _buildEmotionsSection(
-              context,
-              title: 'Top 3 Forecast Emotions',
-              emotions: _buildEmotionsFromApi(
-                summary?.forecastVsActual?.forecast,
+              SizedBox(height: 16.h),
+              _buildEmotionsSection(
+                context,
+                title: 'Top 3 Actual Emotions',
+                emotions: _buildEmotionsFromApi(
+                  summary?.forecastVsActual?.actual,
+                ),
               ),
-            ),
-            SizedBox(height: 16.h),
-            _buildEmotionsSection(
-              context,
-              title: 'Top 3 Actual Emotions',
-              emotions: _buildEmotionsFromApi(
-                summary?.forecastVsActual?.actual,
+              SizedBox(height: 16.h),
+              TopActivitiesFlSection(
+                activities: _buildActivitiesFromApi(summary?.topActivities),
               ),
-            ),
-            SizedBox(height: 16.h),
-            TopActivitiesFlSection(
-              activities: _buildActivitiesFromApi(summary?.topActivities),
-            ),
-            SizedBox(height: 16.h),
-            const BannerAdWidget(),
-          ],
+              SizedBox(height: 16.h),
+              const BannerAdWidget(),
+            ]),
+          ),
         ),
-      ),
+      ],
     );
   }
 

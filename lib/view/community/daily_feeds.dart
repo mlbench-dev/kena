@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart'
+    show CupertinoSliverRefreshControl, RefreshIndicatorMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +21,7 @@ import 'package:kena_emotional_journey/view/emotions/widgets/image_zoom_viewer.d
 import 'package:kena_emotional_journey/view/forecast/forecast_result_screen.dart'
     show InviteFriendsDialog;
 import 'package:like_button/like_button.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
@@ -182,103 +185,127 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
       return EmptyFeedScreen(isStopSharing: false);
     }
 
-    return RefreshIndicator(
-      onRefresh: refresh,
-      child: CustomScrollView(
-        slivers: [
-          if (_isLoading)
-            const SliverToBoxAdapter(child: FeedsShimmer())
-          else if (_error != null)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.wifi_off_rounded,
-                      size: 48.sp,
-                      color: context.colors.textSecondary,
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(
+        parent: AlwaysScrollableScrollPhysics(),
+      ),
+      slivers: [
+        CupertinoSliverRefreshControl(
+          onRefresh: refresh,
+          builder:
+              (
+                context,
+                refreshState,
+                pulledExtent,
+                refreshTriggerPullDistance,
+                refreshIndicatorExtent,
+              ) {
+                // Fade in while dragging; stay fully visible once the
+                // refresh actually starts (armed/refresh/done).
+                final progress = refreshState == RefreshIndicatorMode.drag
+                    ? (pulledExtent / refreshTriggerPullDistance).clamp(
+                        0.0,
+                        1.0,
+                      )
+                    : 1.0;
+                return Center(
+                  child: Opacity(
+                    opacity: progress,
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: context.colors.primary,
+                      size: 32.sp,
                     ),
-                    SizedBox(height: 12.h),
-                    Text(
-                      "Couldn't load feed",
-                      style: context.typography.headline.copyWith(
-                        fontSize: 16.sp,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    TextButton(
-                      onPressed: _loadFeed,
-                      child: Text(
-                        "Try again",
-                        style: TextStyle(color: context.colors.primary),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else if (_feeds.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.people_outline_rounded,
-                      size: 56.sp,
-                      color: context.colors.textSecondary.withValues(
-                        alpha: 0.4,
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    Text(
-                      "No posts yet",
-                      style: context.typography.headline.copyWith(
-                        fontSize: 16.sp,
-                        color: context.colors.textSecondary,
-                      ),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      "Your circle hasn't shared anything today.",
-                      style: context.typography.body.copyWith(
-                        fontSize: 13.sp,
-                        color: context.colors.textSecondary.withValues(
-                          alpha: 0.6,
-                        ),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final item = _feeds[index];
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: 8.h,
-                  ),
-                  child: FeedCard(
-                    data: item,
-                    communityId: widget.communityId,
-                    isStopSharing: widget.isStopSharing,
-                    isForecastShared: item.isForecastShared ?? false,
-                    onStopSharing: _isStoppingAll ? null : _stopSharingWithAll,
-                    onStartSharing: _onStartSharing,
-                    isStopping: _isStoppingAll,
                   ),
                 );
-              }, childCount: _feeds.length),
+              },
+        ),
+        if (_isLoading)
+          const SliverToBoxAdapter(child: FeedsShimmer())
+        else if (_error != null)
+          SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.wifi_off_rounded,
+                    size: 48.sp,
+                    color: context.colors.textSecondary,
+                  ),
+                  SizedBox(height: 12.h),
+                  Text(
+                    "Couldn't load feed",
+                    style: context.typography.headline.copyWith(
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  SizedBox(height: 8.h),
+                  TextButton(
+                    onPressed: _loadFeed,
+                    child: Text(
+                      "Try again",
+                      style: TextStyle(color: context.colors.primary),
+                    ),
+                  ),
+                ],
+              ),
             ),
+          )
+        else if (_feeds.isEmpty)
+          SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.people_outline_rounded,
+                    size: 56.sp,
+                    color: context.colors.textSecondary.withValues(alpha: 0.4),
+                  ),
+                  SizedBox(height: 12.h),
+                  Text(
+                    "No posts yet",
+                    style: context.typography.headline.copyWith(
+                      fontSize: 16.sp,
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    "Your circle hasn't shared anything today.",
+                    style: context.typography.body.copyWith(
+                      fontSize: 13.sp,
+                      color: context.colors.textSecondary.withValues(
+                        alpha: 0.6,
+                      ),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          )
+        else
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final item = _feeds[index];
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                child: FeedCard(
+                  data: item,
+                  communityId: widget.communityId,
+                  isStopSharing: widget.isStopSharing,
+                  isForecastShared: item.isForecastShared ?? false,
+                  onStopSharing: _isStoppingAll ? null : _stopSharingWithAll,
+                  onStartSharing: _onStartSharing,
+                  isStopping: _isStoppingAll,
+                ),
+              );
+            }, childCount: _feeds.length),
+          ),
 
-          SliverToBoxAdapter(child: SizedBox(height: 24.h)),
-        ],
-      ),
+        SliverToBoxAdapter(child: SizedBox(height: 24.h)),
+      ],
     );
   }
 }
