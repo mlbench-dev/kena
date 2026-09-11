@@ -418,18 +418,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            IgnorePointer(
-                              ignoring: isAppleLoading,
-                              child: NativeLiquidGlassAppleButton(
-                                width: 60.w,
-                                height: 60.w,
-                                onPressed: _handleAppleLogin,
+                            Opacity(
+                              opacity: isAppleLoading ? 0 : 1,
+                              child: IgnorePointer(
+                                ignoring: isAppleLoading,
+                                child: NativeLiquidGlassAppleButton(
+                                  width: 60.w,
+                                  height: 60.w,
+                                  onPressed: _handleAppleLogin,
+                                ),
                               ),
                             ),
                             if (isAppleLoading)
                               LoadingWidget(
                                 size: 18.sp,
-                                color: context.colors.primary,
+                                color: context.colors.textSecondary,
                               ),
                           ],
                         ),
@@ -478,7 +481,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                         child: isGoogleLoading
                                             ? LoadingWidget(
                                                 size: 18.sp,
-                                                color: context.colors.primary,
+                                                color: context
+                                                    .colors
+                                                    .textSecondary,
                                               )
                                             : SizedBox(
                                                 width: 22.w,

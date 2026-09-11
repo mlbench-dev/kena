@@ -610,7 +610,8 @@ class _ForecastScreenState extends State<ForecastScreen>
                                           ),
                                           child: Center(
                                             child:
-                                                (e.uploadedImageUrl
+                                                (e
+                                                        .uploadedImageUrl
                                                         ?.isNotEmpty ??
                                                     false)
                                                 ? ClipRRect(
@@ -1236,10 +1237,16 @@ class EmotionsCard extends StatelessWidget {
           children: [
             emoji,
             const Spacer(),
-            Text(
-              title,
-              style: context.typography.body.copyWith(
-                color: context.colors.textPrimary,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  style: context.typography.body.copyWith(
+                    color: context.colors.textPrimary,
+                  ),
+                ),
               ),
             ),
           ],

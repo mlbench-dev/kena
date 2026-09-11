@@ -108,13 +108,36 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
     }
   }
 
+  /// Display name for a plan — uses the backend-provided product name
+  /// (e.g. "Kena Premium Annual") when available, falling back to a
+  /// generic Monthly/Annual label derived from the billing interval.
+  String _getPlanDisplayName(int index) {
+    final apiName = availablePlans[index]['name'] as String?;
+    if (apiName != null && apiName.isNotEmpty) return apiName;
+
+    return (availablePlans[index]['interval'] as String?)?.toLowerCase() ==
+            'year'
+        ? 'Annual'
+        : 'Monthly';
+  }
+
+  /// Price text for a plan. iOS uses hardcoded StoreKit prices ($9.99/mo,
+  /// $99.99/yr) since Apple pricing is fixed per product, independent of
+  /// the backend-reported currency/amount used on Android.
+  String _getPlanPriceText(int index) {
+    if (Platform.isIOS) {
+      final interval = (availablePlans[index]['interval'] as String?)
+          ?.toLowerCase();
+      return interval == 'year' ? '\$99.99' : '\$9.99';
+    }
+    return '${_getCurrencySymbol(availablePlans[index]['currency'] as String? ?? 'KES')}${availablePlans[index]['unitAmountDecimal'] as String? ?? '0.00'}';
+  }
+
   String _getPaidFeaturesTitle() {
-    final planName = selectedIndex >= 0 && selectedIndex < availablePlans.length
-        ? (availablePlans[selectedIndex]['name'] as String? ?? '').toLowerCase()
-        : '';
-    return planName.contains('month')
-        ? 'Monthly includes:'
-        : 'Annual includes:';
+    if (selectedIndex < 0 || selectedIndex >= availablePlans.length) {
+      return 'Includes:';
+    }
+    return '${_getPlanDisplayName(selectedIndex)} includes:';
   }
 
   List<String> _getFeatures({required bool isFreemium}) {
@@ -125,10 +148,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
       'Comprehensive list of emotions',
       'Visualisation of emotions',
       'Journaling & Notes',
-      'Limited activities (10 max)',
-      'Limited analytics (Week & month only)',
-      'Limited community features',
-      'All the above',
+      'Full activities',
       'Full community features',
       'Detailed analytics',
       'Search by body sensations',
@@ -305,15 +325,9 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                             for (int i = 0; i < availablePlans.length; i++)
                               _buildPlanOption(
                                 isSelected: selectedIndex == i,
-                                name:
-                                    (availablePlans[i]['interval'] as String?)
-                                            ?.toLowerCase() ==
-                                        'year'
-                                    ? 'Annual'
-                                    : 'Monthly',
+                                name: _getPlanDisplayName(i),
                                 description: 'Best for getting started',
-                                priceText:
-                                    '${_getCurrencySymbol(availablePlans[i]['currency'] as String? ?? 'KES')}${availablePlans[i]['unitAmountDecimal'] as String? ?? '0.00'}',
+                                priceText: _getPlanPriceText(i),
                                 intervalText:
                                     '/${availablePlans[i]['interval'] as String? ?? 'month'}',
                                 onTap: () {
@@ -364,10 +378,10 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                       GestureDetector(
                         onTap: () => openLegalUrl(
                           context,
-                          ExternalLinks.kenaTermsAndConditions,
+                          ExternalLinks.standardEULATerms,
                         ),
                         child: Text(
-                          'Terms & Conditions',
+                          'Terms of Use',
                           style: TextStyle(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,

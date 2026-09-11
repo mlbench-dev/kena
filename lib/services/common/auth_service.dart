@@ -439,8 +439,7 @@ class AuthService {
         final hasSubscription =
             subscriptionStatus != null &&
             (subscriptionStatus['isActive'] == true ||
-                subscriptionStatus['isTrial'] == true ||
-                subscriptionStatus['hasSubscription'] == true);
+                subscriptionStatus['isTrial'] == true);
 
         if (hasSubscription) {
           debugPrint('[$tag] User has subscription, going to home');
@@ -581,8 +580,7 @@ class AuthService {
           final hasSubscription =
               subscriptionStatus != null &&
               (subscriptionStatus['isActive'] == true ||
-                  subscriptionStatus['isTrial'] == true ||
-                  subscriptionStatus['hasSubscription'] == true);
+                  subscriptionStatus['isTrial'] == true);
 
           if (!context.mounted) return;
 
@@ -600,8 +598,7 @@ class AuthService {
             );
             Future.delayed(Duration.zero, () {
               if (!context.mounted) return;
-              // goToSubscriptionPlan(context);
-              goToUserHome(context);
+              goToSubscriptionPlan(context);
             });
           }
         } on UnauthorizedException {

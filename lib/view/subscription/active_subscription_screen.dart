@@ -7,8 +7,10 @@ import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
+import 'package:kena_emotional_journey/app/utils/app_constants.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/model/subscription/subscription_model.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -150,14 +152,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     return 'Subscription Plan';
   }
 
-  String _getFeaturesTitle() {
-    if (_isFreemium) return 'Freemium includes:';
-    if (_subscriptionType?.toLowerCase() == 'monthly' ||
-        _price?.interval?.toLowerCase() == 'month') {
-      return 'Monthly includes:';
-    }
-    return 'Annual includes:';
-  }
+  String _getFeaturesTitle() => '${_getPlanName()} includes:';
 
   List<String> _getFeatures() {
     return [
@@ -167,10 +162,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
       'Comprehensive list of emotions',
       'Visualisation of emotions',
       'Journaling & Notes',
-      'Limited activities (10 max)',
-      'Limited analytics (Week & month only)',
-      'Limited community features',
-      'All the above',
+      'Full activities',
       'Full community features',
       'Detailed analytics',
       'Search by body sensations',
@@ -187,10 +179,21 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     return _status?.toUpperCase() ?? 'Unknown';
   }
 
-  /// Get price display from API data
+  /// Get price display from API data.
+  /// Shown during trial too — Apple requires the price the user will be
+  /// charged to be visible on the subscription screen, not hidden until
+  /// the trial ends.
   String _getPriceText() {
-    // Don't show price during trial
-    if (_isTrial) return '';
+    // iOS uses hardcoded StoreKit prices ($9.99/mo, $99.99/yr) since Apple
+    // pricing is fixed per product, independent of the backend-reported
+    // currency/amount used on Android.
+    if (Platform.isIOS) {
+      final interval = _price?.interval?.toLowerCase();
+      final subType = _subscriptionType?.toLowerCase();
+      if (interval == null && subType == null) return '';
+      final isAnnual = interval == 'year' || subType == 'annual';
+      return isAnnual ? '\$99.99' : '\$9.99';
+    }
 
     // Use actual price from API
     if (_price != null) {
@@ -236,8 +239,6 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
 
   /// Get billing interval text from API data
   String _getBillingInterval() {
-    if (_isTrial) return '/trial';
-
     final interval = _price?.interval?.toLowerCase();
     if (interval != null && interval.isNotEmpty) {
       return '/$interval';
@@ -276,10 +277,18 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
     }
 
     if (_isTrial) {
+      // No auto-renewal happens at trial end — the user must subscribe
+      // manually, so this only discloses the price, never a renewal promise.
+      final priceText = _getPriceText();
+      final intervalText = _getBillingInterval();
+      final billingLine = priceText.isNotEmpty
+          ? ' Subscribe for $priceText$intervalText to continue after your trial ends.'
+          : '';
+
       if (_daysRemaining != null) {
-        return 'You have $_daysRemaining days remaining in your trial period. Your subscription will start after the trial ends.';
+        return 'You have $_daysRemaining days remaining in your trial period.$billingLine';
       }
-      return 'Your trial period is active. Subscribe to continue enjoying all features.';
+      return 'Your trial period is active.$billingLine';
     }
 
     if (_cancelAtPeriodEnd) {
@@ -388,7 +397,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
         leading: BackButton(color: context.colors.textPrimary),
         centerTitle: true,
         title: Text(
-          "Subscription Plan",
+          _isLoading ? "Subscription Plan" : _getPlanName(),
           style: context.typography.title.copyWith(
             color: const Color(0xFF172A2B),
             fontSize: 20,
@@ -543,6 +552,53 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                         PlanSection(
                           title: _getFeaturesTitle(),
                           items: _getFeatures(),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.h),
+
+                    /// 🔹 Terms of Use & Privacy Policy
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () => openLegalUrl(
+                            context,
+                            ExternalLinks.standardEULATerms,
+                          ),
+                          child: Text(
+                            'Terms of Use',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          'and',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: context.colors.textSecondary,
+                          ),
+                        ),
+                        SizedBox(width: 8.w),
+                        GestureDetector(
+                          onTap: () => openLegalUrl(
+                            context,
+                            ExternalLinks.kenaPrivacyPolicy,
+                          ),
+                          child: Text(
+                            'Privacy Policy',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w600,
+                              color: context.colors.primary,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
                       ],
                     ),

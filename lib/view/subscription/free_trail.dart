@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/utils/app_constants.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 
 class FreeTrailScreen extends StatelessWidget {
@@ -204,6 +206,53 @@ class FreeTrailScreen extends StatelessWidget {
                     color: Colors.grey,
                     fontSize: 13.sp,
                   ),
+                ),
+
+                SizedBox(height: 12.h),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => openLegalUrl(
+                        context,
+                        ExternalLinks.standardEULATerms,
+                      ),
+                      child: Text(
+                        'Terms of Use',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: context.colors.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'and',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: context.colors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    GestureDetector(
+                      onTap: () => openLegalUrl(
+                        context,
+                        ExternalLinks.kenaPrivacyPolicy,
+                      ),
+                      child: Text(
+                        'Privacy Policy',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: context.colors.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
                 SizedBox(height: 30.h), // Bottom safety margin

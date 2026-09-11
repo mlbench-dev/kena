@@ -166,15 +166,17 @@ class CurrencyConstants {
 }
 
 class ExternalLinks {
-  static const String estheticPrivacyPolicy =
-      'https://estheticmatch.com/privacy_policy';
-  static const String estheticTermsAndCondition =
-      'https://estheticmatch.com/terms&conditions';
+  // static const String estheticPrivacyPolicy =
+  //     'https://estheticmatch.com/privacy_policy';
+  // static const String estheticTermsAndCondition =
+  //     'https://estheticmatch.com/terms&conditions';
   static const String appleTermsOfService =
       'https://www.apple.com/legal/internet-services/itunes/dev/stdeula'; //apple End User License Agreement (EULA) or Terms of Service
 
   static const String kenaTermsAndConditions =
       'https://kena.life/terms-and-conditions';
+  static const String standardEULATerms =
+      'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
   static const String kenaPrivacyPolicy = 'https://kena.life/privacy-policy';
 }
 

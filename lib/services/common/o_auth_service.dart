@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -247,7 +248,7 @@ class OAuthService {
                 ),
               )
             : null,
-      );
+      ).timeout(const Duration(seconds: 30));
 
       debugPrint('🍏 Apple Identity Token: ${credential.identityToken}');
 
@@ -268,11 +269,17 @@ class OAuthService {
 
       // ✅ Call Backend OAuth with platform
 
-      userOAuth(
+      await userOAuth(
         context,
         providerName: 'apple',
         token: idToken,
         platform: platform,
+      );
+    } on TimeoutException catch (e) {
+      debugPrint('❌ Apple Sign-In timed out: $e');
+      if (!context.mounted) return;
+      context.flushBarErrorMessage(
+        message: 'Apple sign-in timed out. Please try again.',
       );
     } catch (e) {
       debugPrint('❌ Apple Sign-In failed: $e');
@@ -341,8 +348,7 @@ class OAuthService {
         final hasSubscription =
             subscriptionStatus != null &&
             (subscriptionStatus['isActive'] == true ||
-                subscriptionStatus['isTrial'] == true ||
-                subscriptionStatus['hasSubscription'] == true);
+                subscriptionStatus['isTrial'] == true);
 
         if (hasSubscription) {
           debugPrint('[$tag] User has subscription, going to home');
