@@ -438,7 +438,8 @@ class AuthService {
             .getCurrentSubscriptionStatus();
         final hasSubscription =
             subscriptionStatus != null &&
-            (subscriptionStatus['isActive'] == true ||
+            (subscriptionStatus['isEntitled'] == true ||
+                subscriptionStatus['isActive'] == true ||
                 subscriptionStatus['isTrial'] == true);
 
         if (hasSubscription) {
@@ -579,7 +580,8 @@ class AuthService {
               .getCurrentSubscriptionStatus();
           final hasSubscription =
               subscriptionStatus != null &&
-              (subscriptionStatus['isActive'] == true ||
+              (subscriptionStatus['isEntitled'] == true ||
+                  subscriptionStatus['isActive'] == true ||
                   subscriptionStatus['isTrial'] == true);
 
           if (!context.mounted) return;

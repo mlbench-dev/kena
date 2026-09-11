@@ -347,7 +347,8 @@ class OAuthService {
             .getCurrentSubscriptionStatus();
         final hasSubscription =
             subscriptionStatus != null &&
-            (subscriptionStatus['isActive'] == true ||
+            (subscriptionStatus['isEntitled'] == true ||
+                subscriptionStatus['isActive'] == true ||
                 subscriptionStatus['isTrial'] == true);
 
         if (hasSubscription) {
