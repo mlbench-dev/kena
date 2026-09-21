@@ -102,6 +102,11 @@ class AuthService {
     );
   }
 
+  /// which persists and checks the same flag.
+  static bool _hasAccess(Map<String, dynamic>? status) {
+    return status?['isEntitled'] == true;
+  }
+
   static void goToOtpVerification(
     BuildContext context, {
     required String email,
@@ -425,22 +430,21 @@ class AuthService {
 
       // Check if user has subscription after login
       try {
-        // 1. Check local freemium flag first (instant — no network)
-        final isFreemium = await SubscriptionCacheService().isFreemiumActive();
-        if (isFreemium) {
-          debugPrint('[$tag] User is on Freemium, going to home');
+        // 1. Check local cache first (instant — no network). The cache is
+        // keyed off the backend's `isEntitled` flag, so this stays in sync
+        // with the live check below.
+        final locallyValid = await SubscriptionCacheService()
+            .isSubscriptionValid();
+        if (locallyValid) {
+          debugPrint('[$tag] Cache entitled, going to home');
           if (context.mounted) goToUserHome(context);
           return;
         }
 
-        // 2. Check backend for paid / trial subscription
+        // 2. Check backend for entitlement (paid / trial / freemium / comp)
         final subscriptionStatus = await PaystackSubscriptionService()
             .getCurrentSubscriptionStatus();
-        final hasSubscription =
-            subscriptionStatus != null &&
-            (subscriptionStatus['isEntitled'] == true ||
-                subscriptionStatus['isActive'] == true ||
-                subscriptionStatus['isTrial'] == true);
+        final hasSubscription = _hasAccess(subscriptionStatus);
 
         if (hasSubscription) {
           debugPrint('[$tag] User has subscription, going to home');
@@ -578,11 +582,7 @@ class AuthService {
         try {
           final subscriptionStatus = await PaystackSubscriptionService()
               .getCurrentSubscriptionStatus();
-          final hasSubscription =
-              subscriptionStatus != null &&
-              (subscriptionStatus['isEntitled'] == true ||
-                  subscriptionStatus['isActive'] == true ||
-                  subscriptionStatus['isTrial'] == true);
+          final hasSubscription = _hasAccess(subscriptionStatus);
 
           if (!context.mounted) return;
 

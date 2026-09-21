@@ -156,7 +156,7 @@ class FreeTrailScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        "21-Day Free Trial",
+                        "7-Days Free Trial",
                         style: context.typography.title.copyWith(
                           color: context.colors.tertiary,
                           fontWeight: FontWeight.w600,

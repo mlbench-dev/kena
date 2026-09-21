@@ -35,39 +35,32 @@ class SubscriptionCacheService {
   static const _kLastSyncedAt = 'sub_last_synced_at';
   // Freemium flag — user explicitly chose the free tier (ads shown)
   static const _kIsFreemium = 'sub_is_freemium';
+  // Entitlement flag — the backend's single source of truth for "does this
+  // user get app access". Superset of isActive: true for active/trialing
+  // plans AND for freemium/comp access.
+  static const _kIsEntitled = 'sub_is_entitled';
 
   // ──────────────────────────────────────────────────────────
   // READ — cached status (fast, no network)
   // ──────────────────────────────────────────────────────────
 
-  /// Returns true when the user has a subscription that:
-  ///   • is marked active / trial / hasSubscription in the cache, OR
-  ///   • the user explicitly selected the Freemium plan, AND
-  ///   • has not passed its expiry date (if one is stored).
+  /// Returns true when the cached `isEntitled` flag is set and (for plans
+  /// that carry an expiry, i.e. not freemium/comp) that expiry hasn't
+  /// passed yet.
   ///
-  /// Freemium counts as a valid "subscription" for app-access purposes,
-  /// but ads are still shown for freemium users (see [isFreemiumActive]).
+  /// This must gate on `isEntitled` alone — not a local mix of isActive /
+  /// isTrial / isFreemium — so this check always agrees with the live
+  /// backend check in AuthService.
   Future<bool> isSubscriptionValid() async {
     try {
-      // Freemium users always have valid access
-      final isFreemium = await _localStorage.readValue(_kIsFreemium) == 'true';
-      if (isFreemium) {
-        log('[SubscriptionCache] Freemium plan active — access granted');
-        return true;
-      }
-
-      final isActive = await _localStorage.readValue(_kIsActive) == 'true';
-      final isTrial = await _localStorage.readValue(_kIsTrial) == 'true';
-      final hasSubscription =
-          await _localStorage.readValue(_kHasSubscription) == 'true';
-
-      // If none of the flags are set the cache is empty / user never subscribed
-      if (!isActive && !isTrial && !hasSubscription) {
-        log('[SubscriptionCache] No cached subscription flags');
+      final isEntitled = await _localStorage.readValue(_kIsEntitled) == 'true';
+      if (!isEntitled) {
+        log('[SubscriptionCache] Not entitled — no cached access');
         return false;
       }
 
-      // Time-based expiry check — works offline
+      // Time-based expiry check — works offline (paid/trial plans only;
+      // freemium/comp access has no expiry and is trusted until the next sync)
       final expiryStr = await _localStorage.readValue(_kExpiryDate);
       if (expiryStr != null && expiryStr.isNotEmpty) {
         try {
@@ -79,13 +72,12 @@ class SubscriptionCacheService {
           );
           return stillValid;
         } catch (_) {
-          // If parsing fails, fall through to flag-based check
+          // If parsing fails, fall through to trusting the entitlement flag
         }
       }
 
-      // No expiry date stored — trust the cached flags
-      log('[SubscriptionCache] No expiry date cached; trusting flags');
-      return isActive || isTrial || hasSubscription;
+      log('[SubscriptionCache] Entitled, no expiry cached — access granted');
+      return true;
     } catch (e) {
       log('[SubscriptionCache] Error reading cache: $e');
       return false;
@@ -173,8 +165,10 @@ class SubscriptionCacheService {
       final hasSubscription = backendData['hasSubscription'] == true;
       final status = backendData['status']?.toString() ?? '';
       final plan = backendData['subscriptionType']?.toString() ?? '';
+      final isEntitled = backendData['isEntitled'] == true;
 
-      // Auto-detect freemium from backend response
+      // Auto-detect freemium from backend response (drives ad display only —
+      // see isFreemiumActive/isEntitled for the access-gating flag)
       final isFreemium = status == 'freemium' || plan == 'freemium';
 
       // Derive expiry date from any available field
@@ -192,6 +186,7 @@ class SubscriptionCacheService {
         _localStorage.setValue(_kPlan, plan),
         _localStorage.setValue(_kExpiryDate, expiryDate),
         _localStorage.setValue(_kIsFreemium, isFreemium.toString()),
+        _localStorage.setValue(_kIsEntitled, isEntitled.toString()),
         _localStorage.setValue(
           _kLastSyncedAt,
           DateTime.now().toIso8601String(),
@@ -203,7 +198,7 @@ class SubscriptionCacheService {
         '[SubscriptionCache] Saved — '
         'isActive=$isActive, isTrial=$isTrial, '
         'hasSubscription=$hasSubscription, isFreemium=$isFreemium, '
-        'expiry=$expiryDate',
+        'isEntitled=$isEntitled, expiry=$expiryDate',
       );
     } catch (e) {
       log('[SubscriptionCache] Error saving to cache: $e');
@@ -223,6 +218,7 @@ class SubscriptionCacheService {
         _localStorage.setValue(_kIsActive, 'false'),
         _localStorage.setValue(_kIsTrial, 'false'),
         _localStorage.setValue(_kHasSubscription, 'false'),
+        _localStorage.setValue(_kIsEntitled, 'true'),
         _localStorage.setValue(_kStatus, 'freemium'),
         _localStorage.setValue(_kPlan, 'freemium'),
         _localStorage.setValue(
@@ -250,6 +246,7 @@ class SubscriptionCacheService {
       _localStorage.clearValue(_kExpiryDate),
       _localStorage.clearValue(_kLastSyncedAt),
       _localStorage.clearValue(_kIsFreemium),
+      _localStorage.clearValue(_kIsEntitled),
       _localStorage.clearValue('sub_cache_json'),
     ]);
     log('[SubscriptionCache] Cache cleared');
