@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/emotions/emotion_category.dart';
 
@@ -159,6 +158,12 @@ class EmotionsList {
           title: "Regret",
           emojiBuilder: (w, h) =>
               Assets.images.sadFace.image(width: w, height: h),
+        ),
+        SubEmotion(
+          key: "apathetic",
+          title: "Apathetic",
+          emojiBuilder: (w, h) =>
+              Assets.images.yawning.image(width: w, height: h),
         ),
       ],
     ),
@@ -422,6 +427,12 @@ class EmotionsList {
           title: "Pensive",
           emojiBuilder: (w, h) =>
               Assets.images.flower.image(width: w, height: h),
+        ),
+        SubEmotion(
+          key: "bashful",
+          title: "Bashful",
+          emojiBuilder: (w, h) =>
+              Assets.images.flushed.image(width: w, height: h),
         ),
       ],
     ),

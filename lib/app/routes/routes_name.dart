@@ -49,6 +49,7 @@ class RoutesName {
   static const String activeSubscription = 'active_subscription_screen';
   static const String subscriptionPlan = 'subscription_plan_screen';
   static const String notificationsScreen = 'notifications_screen';
+  static const String notificationsSettings = 'notifications_settings_screen';
   // Subscription
   static const String freeTrail = 'free_trail_screen';
 
@@ -71,6 +72,7 @@ class RoutesName {
   //Notification
   static const String notificationScreen = 'notifications_screen';
   static const String notificationPerefrences = 'notifications_perefernces';
+  static const String setTime = 'set_time_screen';
 
   // Search
   // static const String userSearch = 'user_search';

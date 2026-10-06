@@ -14,8 +14,10 @@ class MyTextField extends StatelessWidget {
     this.keyboardType,
     this.obscureText = false,
     this.readOnly = false, // ← NEW: Defaults to false
+    this.enabled = true,
     this.errorText,
-    // this.textCapitalization = TextCapitalization.words,
+    this.textCapitalization = TextCapitalization.none,
+    this.validator,
     this.textInputAction = TextInputAction.done,
     this.textAlign = TextAlign.start,
     this.maxLength,
@@ -41,8 +43,10 @@ class MyTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool obscureText;
   final bool readOnly; // ← NEW: Final variable
+  final bool enabled;
   final String? errorText;
-  // final TextCapitalization textCapitalization;
+  final TextCapitalization textCapitalization;
+  final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final TextAlign textAlign;
   final int? maxLength;
@@ -69,14 +73,16 @@ class MyTextField extends StatelessWidget {
     final defaultFocusedBorderColor =
         focusedBorderColor ?? context.colors.inputBorder;
 
-    return TextField(
-      onSubmitted: onSubmitted,
+    return TextFormField(
+      onFieldSubmitted: onSubmitted,
+      validator: validator,
+      enabled: enabled,
       inputFormatters: inputFormatters,
       controller: controller,
       readOnly: readOnly, // ← NEW: Applied to the TextField
       cursorColor: context.colors.inputIcon,
       cursorErrorColor: context.colors.error,
-      textCapitalization: TextCapitalization.none,
+      textCapitalization: textCapitalization,
       textInputAction: textInputAction,
       textAlign: textAlign,
       keyboardType: keyboardType,
@@ -106,7 +112,7 @@ class MyTextField extends StatelessWidget {
                 ),
               );
             }
-            if (maxLength != null && maxLength! > 0) {
+            if (maxLength != null && maxLength > 0) {
               return Padding(
                 padding: const EdgeInsets.only(top: 4.0),
                 child: Text(

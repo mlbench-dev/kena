@@ -10,6 +10,7 @@ import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.d
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/analytics_model.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/analytics/alltime_activities.dart';
@@ -106,6 +107,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             onTap: () {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
+          ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
           ),
         ],
       ),

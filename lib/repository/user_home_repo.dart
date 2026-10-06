@@ -577,6 +577,7 @@ class UserHomeRepository {
   }
 
   //add End of Day Reflection
+  // data may include "checkInType" ("quick" | "full") and "checkInAnswers"
   Future<Map<String, dynamic>> endOfDay({
     required Map<String, dynamic> data, // 👈 generic
   }) async {
@@ -618,6 +619,13 @@ class UserHomeRepository {
     required Map<String, dynamic> data, // 👈 generic
   }) async {
     return _apiServices.post(url: AppUrl.createCommunity, data: data);
+  }
+
+  //Set Reminder
+  Future<Map<String, dynamic>> reminderSet({
+    required Map<String, dynamic> data, // 👈 generic
+  }) async {
+    return _apiServices.post(url: AppUrl.reminderSet, data: data);
   }
 
   //update Activity

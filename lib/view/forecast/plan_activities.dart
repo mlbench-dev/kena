@@ -14,6 +14,7 @@ import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/forecast_plan_activities.dart';
 import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/add_activity_bottom_sheet.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -318,11 +319,17 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
           ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
+          ),
         ],
       ),
       appBar: AppBar(
         title: Text(
-          'Todays plan & activities',
+          'Expected truth',
           style: context.typography.title.copyWith(
             fontSize: 20.sp,
             fontFamily: 'sfpro',
@@ -356,10 +363,11 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20.h),
               Text(
-                'How will you tackle today’s emotional forecast e.g. umbrella for the rain? What small steps bring you closer to your goals e.g. seeds for the garden?',
+                'Meeting X will be frustrating or annoying.',
                 style: context.typography.body.copyWith(
                   fontSize: 14.sp,
                   fontFamily: 'sfpro',
@@ -371,7 +379,7 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               MyTextField(
                 fillColor: context.colors.textSecondary.withValues(alpha: 0.08),
                 controller: _planController,
-                hint: 'Write your plan here and/or curate activities below...',
+                hint: 'Write your plan thinking: Truth - Plan - Result',
                 maxLines: 4,
               ),
               SizedBox(height: 20.h),

@@ -14,6 +14,7 @@ import 'package:kena_emotional_journey/model/forecast/forecast_history_model.dar
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart'
     as forecast;
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
@@ -197,6 +198,12 @@ class _PreviousForecastScreenState extends State<PreviousForecastScreen> {
             onTap: () {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
+          ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
           ),
         ],
       ),

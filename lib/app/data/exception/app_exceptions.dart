@@ -11,6 +11,9 @@ class AppException implements Exception {
   /// User-friendly message for UI
   String get userMessage => _message ?? 'Something went wrong';
 
+  /// Raw response body, when the exception came from an HTTP response
+  String? get rawBody => _rawBody;
+
   /// Developer-friendly debug info
   String get debugMessage {
     return '$_prefix: ${_message ?? 'No message'}'
@@ -24,7 +27,11 @@ class AppException implements Exception {
 /// Exception class representing a fetch data error during communication.
 class FetchDataException extends AppException {
   FetchDataException([String? responseBody])
-    : super(_extractMessage(responseBody), 'Error During Communication');
+    : super(
+        _extractMessage(responseBody),
+        'Error During Communication',
+        responseBody,
+      );
 
   static String _extractMessage(String? responseBody) {
     try {

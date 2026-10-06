@@ -17,6 +17,7 @@ import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/activites/activity_frequency_model.dart';
 import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/thought_monitoring_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -400,6 +401,12 @@ class _ChooseActivityState extends State<ChooseActivity> {
             onTap: () {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
+          ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
           ),
         ],
       ),

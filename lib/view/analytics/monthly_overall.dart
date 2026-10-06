@@ -77,7 +77,8 @@ class _MonthlyOverallState extends State<MonthlyOverall> {
         key: f.key,
         title: f.name,
         imageUrl: f.imageUrl,
-        intensity: f.count,
+        intensity: f.intensity,
+        count: f.count,
       );
     }).toList();
   }
@@ -90,7 +91,8 @@ class _MonthlyOverallState extends State<MonthlyOverall> {
         key: a.key,
         title: a.name,
         imageUrl: a.imageUrl,
-        intensity: a.count,
+        intensity: a.intensity,
+        count: a.count,
       );
     }).toList();
   }
@@ -229,12 +231,14 @@ class _MonthlyOverallState extends State<MonthlyOverall> {
             context,
             title: 'Top 3 Forecast Emotions',
             emotions: forecastEmotions,
+            showCount: true,
           ),
           SizedBox(height: 16.h),
           _buildEmotionsSection(
             context,
             title: 'Top 3 Actual Emotions',
             emotions: actualEmotions,
+            showCount: true,
           ),
           SizedBox(height: 16.h),
           Row(
@@ -294,6 +298,7 @@ class _MonthlyOverallState extends State<MonthlyOverall> {
     required String title,
     required List<Emotion> emotions,
     bool showForecastActualRange = false,
+    bool showCount = false,
   }) {
     final emotionsToShow = emotions.take(3).toList();
 
@@ -309,6 +314,7 @@ class _MonthlyOverallState extends State<MonthlyOverall> {
           showImage: true,
           showDenominator: false,
           showForecastActualRange: showForecastActualRange,
+          showCount: showCount,
         );
       }).toList(),
     );

@@ -86,6 +86,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/bin.svg
   SvgGenImage get bin => const SvgGenImage('assets/icons/bin.svg');
 
+  /// File path: assets/icons/bxs_bell.svg
+  SvgGenImage get bxsBell => const SvgGenImage('assets/icons/bxs_bell.svg');
+
   /// File path: assets/icons/calendar.svg
   SvgGenImage get calendar => const SvgGenImage('assets/icons/calendar.svg');
 
@@ -167,6 +170,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/sharing.svg
   SvgGenImage get sharing => const SvgGenImage('assets/icons/sharing.svg');
 
+  /// File path: assets/icons/time-filled.svg
+  SvgGenImage get timeFilled =>
+      const SvgGenImage('assets/icons/time-filled.svg');
+
   /// File path: assets/icons/user_placeholder.png
   AssetGenImage get userPlaceholder =>
       const AssetGenImage('assets/icons/user_placeholder.png');
@@ -198,6 +205,7 @@ class $AssetsIconsGen {
     bell,
     bellIcon,
     bin,
+    bxsBell,
     calendar,
     chat,
     circle,
@@ -221,6 +229,7 @@ class $AssetsIconsGen {
     send,
     share,
     sharing,
+    timeFilled,
     userPlaceholder,
     word,
   ];
@@ -509,6 +518,9 @@ class $AssetsImagesGen {
   AssetGenImage get dailyPuls =>
       const AssetGenImage('assets/images/daily_puls.png');
 
+  /// File path: assets/images/flushed.png
+  AssetGenImage get flushed => const AssetGenImage('assets/images/flushed.png');
+
   /// File path: assets/images/hearts_Face.png
   AssetGenImage get heartsFace =>
       const AssetGenImage('assets/images/hearts_Face.png');
@@ -554,6 +566,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/worried face.png
   AssetGenImage get worriedFace =>
       const AssetGenImage('assets/images/worried face.png');
+
+  /// File path: assets/images/yawning.png
+  AssetGenImage get yawning => const AssetGenImage('assets/images/yawning.png');
 
   /// File path: assets/images/yoga.png
   AssetGenImage get yoga => const AssetGenImage('assets/images/yoga.png');
@@ -634,6 +649,7 @@ class $AssetsImagesGen {
     community,
     crying,
     dailyPuls,
+    flushed,
     heartsFace,
     home,
     insights,
@@ -647,6 +663,7 @@ class $AssetsImagesGen {
     twoWeeks,
     week,
     worriedFace,
+    yawning,
     yoga,
   ];
 }

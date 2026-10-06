@@ -18,9 +18,10 @@ import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_notes.dart';
-import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
+// import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/image_picker.dart';
 import 'package:kena_emotional_journey/services/common/upload_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -75,9 +76,9 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   void initState() {
     super.initState();
     _forecastNotesFuture = _fetchForecastNotes();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startOnboardingTour();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _startOnboardingTour();
+    // });
     _load();
     AdMobService.loadInterstitialAd();
     // Delay to allow ad to load before showing
@@ -95,14 +96,14 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
     super.dispose();
   }
 
-  void _startOnboardingTour() {
-    if (!mounted) return;
-    _tourHandle = TourController.start(
-      context: context,
-      sectionKey: TourSections.onboarding,
-      targetKeys: [shareForecast],
-    );
-  }
+  // void _startOnboardingTour() {
+  //   if (!mounted) return;
+  //   _tourHandle = TourController.start(
+  //     context: context,
+  //     sectionKey: TourSections.onboarding,
+  //     targetKeys: [shareForecast],
+  //   );
+  // }
 
   // =========================================================
   // DATA FETCHING
@@ -416,6 +417,12 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
             onTap: () {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
+          ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
           ),
         ],
       ),

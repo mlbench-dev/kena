@@ -84,6 +84,7 @@ class AuthService {
       RoutesName.homeScreen,
       (route) => false,
     );
+    PushNotificationsService.setupInteractedMessage();
   }
 
   static void goToFreeTrail(BuildContext context) {

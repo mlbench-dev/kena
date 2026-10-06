@@ -111,4 +111,25 @@ class PaystackSubscriptionRepository {
     );
     return response;
   }
+
+  /// Submit a refund request for review by an admin
+  Future<Map<String, dynamic>> requestRefund({required String reason}) async {
+    final response = await _apiServices.post(
+      url: AppUrl.subscriptionRefund,
+      data: {'reason': reason},
+    );
+    return response;
+  }
+
+  /// Get the subscription along with its latest refund request
+  Future<Map<String, dynamic>> getRefundStatus() async {
+    final response = await _apiServices.get(url: AppUrl.subscriptionRefund);
+    return response;
+  }
+
+  /// Withdraw a refund request that is still pending review
+  Future<Map<String, dynamic>> withdrawRefund() async {
+    final response = await _apiServices.delete(url: AppUrl.subscriptionRefund);
+    return response;
+  }
 }

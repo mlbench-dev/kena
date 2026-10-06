@@ -329,6 +329,8 @@ class UserHomeService {
     required bool planUseful,
     required String planFeedback,
     required int compareToForecast,
+    String? checkInType, // "quick" or "full"
+    Map<String, String>? checkInAnswers,
   }) async {
     try {
       final now = DateTime.now();
@@ -341,6 +343,8 @@ class UserHomeService {
         "wentAsForecast": wentAsForecast,
         "planUseful": planUseful,
         "compareToForecast": compareToForecast,
+        "checkInType": ?checkInType,
+        "checkInAnswers": ?checkInAnswers,
       };
 
       await _userHomeRepo.endOfDay(data: data);
@@ -2001,6 +2005,38 @@ class UserHomeService {
       return null;
     }
   }
+
+  // Set Reminder for forecast and End Day
+  Future<String?> setReminderForecastEndDay({
+    required BuildContext context,
+    required String dailyPulseTime,
+    required String eodTime,
+  }) async {
+    try {
+      final data = {"dailyPulseTime": dailyPulseTime, "eodTime": eodTime};
+
+      final response = await _userHomeRepo.reminderSet(data: data);
+
+      if (response['success'] == true) {
+        return response['message']?.toString();
+      } else {
+        if (context.mounted) {
+          ErrorHandler.handle(
+            context,
+            response['message'] ?? 'Unknown error',
+            serviceName: tag,
+          );
+        }
+        return null;
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHandler.handle(context, e, serviceName: tag);
+      }
+      return null;
+    }
+  }
+
   //   //go to vendor search
 
   //   // Search Vendors Service

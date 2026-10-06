@@ -62,6 +62,7 @@ Emotion _$EmotionFromJson(Map<String, dynamic> json) => Emotion(
   intensity: json['intensity'] as num?,
   imageUrl: json['imageUrl'] as String?,
   title: json['title'] as String?,
+  count: (json['count'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$EmotionToJson(Emotion instance) => <String, dynamic>{
@@ -69,6 +70,7 @@ Map<String, dynamic> _$EmotionToJson(Emotion instance) => <String, dynamic>{
   'intensity': instance.intensity,
   'imageUrl': instance.imageUrl,
   'title': instance.title,
+  'count': instance.count,
 };
 
 Activity _$ActivityFromJson(Map<String, dynamic> json) => Activity(

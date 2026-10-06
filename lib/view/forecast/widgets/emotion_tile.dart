@@ -19,6 +19,7 @@ class EmotionTile extends StatelessWidget {
   isDisabled; // optional: blocks edit/delete taps, e.g. while another tile's image uploads
   final bool showDenominator;
   final bool showForecastActualRange;
+  final bool showCount;
   const EmotionTile({
     super.key,
     required this.emotion,
@@ -29,11 +30,13 @@ class EmotionTile extends StatelessWidget {
     this.isDisabled = false,
     this.showDenominator = true,
     this.showForecastActualRange = false,
+    this.showCount = false,
   });
   @override
   Widget build(BuildContext context) {
     final emotionName = EmotionsList.getTitleByKey(emotion.key ?? '');
     final intensity = _formatIntensity(emotion.intensity);
+    final countLabel = "${emotion.count ?? 0}";
 
     return SizedBox(
       width: 99.w,
@@ -55,9 +58,11 @@ class EmotionTile extends StatelessWidget {
           _buildImageContainer(context),
           SizedBox(height: 5.h),
           Text(
-            showForecastActualRange
-                ? "$intensity-5"
-                : (showDenominator ? "$intensity/5" : intensity),
+            showCount
+                ? countLabel
+                : (showForecastActualRange
+                      ? "$intensity-5"
+                      : (showDenominator ? "$intensity/5" : intensity)),
             style: context.typography.body.copyWith(
               color: context.colors.secondary,
               fontWeight: FontWeight.w500,

@@ -161,6 +161,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         SizedBox(height: 10.h),
                         ProfileMenuTile(
+                          icon: Assets.icons.bxsBell.svg(
+                            color: context.colors.tertiary,
+                          ),
+                          text: "Notifications",
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              RoutesName.notificationsSettings,
+                            );
+                          },
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
                           icon: Assets.icons.lockIcon.svg(
                             color: context.colors.tertiary,
                           ),
@@ -192,6 +205,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               context,
                               RoutesName.activeSubscription,
                             );
+                          },
+                        ),
+                        SizedBox(height: 10.h),
+                        ProfileMenuTile(
+                          icon: Assets.icons.timeFilled.svg(
+                            color: context.colors.tertiary,
+                          ),
+                          text: "Set Time",
+                          onTap: () {
+                            Navigator.pushNamed(context, RoutesName.setTime);
                           },
                         ),
                         SizedBox(height: 10.h),

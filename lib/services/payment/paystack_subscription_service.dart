@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -333,6 +334,108 @@ class PaystackSubscriptionService {
     }
   }
 
+  /// Submits a refund request. On success [RefundResult.subscription] holds
+  /// the updated subscription with `refund.status == "pending_review"`.
+  Future<RefundResult> requestRefund({required String reason}) async {
+    try {
+      final response = await _repository.requestRefund(reason: reason);
+      return _toRefundResult(response);
+    } on AppException catch (e) {
+      return _refundError(e);
+    } catch (e) {
+      debugPrint('Error requesting refund: $e');
+      return const RefundResult.failure(_genericRefundError);
+    }
+  }
+
+  /// Fetches the subscription with its latest refund request and refreshes
+  /// the local cache (access can end once a refund is approved).
+  Future<RefundResult> getRefundStatus() async {
+    try {
+      final response = await _repository.getRefundStatus();
+      final result = _toRefundResult(response);
+      if (result.subscription != null) {
+        await SubscriptionCacheService().saveFromBackendResponse(
+          result.subscription!,
+        );
+      }
+      return result;
+    } on AppException catch (e) {
+      return _refundError(e);
+    } catch (e) {
+      debugPrint('Error getting refund status: $e');
+      return const RefundResult.failure(_genericRefundError);
+    }
+  }
+
+  /// Withdraws a refund request that is still `pending_review`.
+  Future<RefundResult> withdrawRefund() async {
+    try {
+      final response = await _repository.withdrawRefund();
+      return _toRefundResult(response);
+    } on AppException catch (e) {
+      return _refundError(e);
+    } catch (e) {
+      debugPrint('Error withdrawing refund: $e');
+      return const RefundResult.failure(_genericRefundError);
+    }
+  }
+
+  static const String _genericRefundError =
+      'Something went wrong. Please try again.';
+
+  RefundResult _toRefundResult(Map<String, dynamic> response) {
+    final data = _extractData(response);
+    if (data != null) return RefundResult.success(data);
+    return RefundResult.failure(
+      _refundErrorMessage(response['message']?.toString(), null),
+      code: response['message']?.toString(),
+    );
+  }
+
+  /// Error responses carry a code in `message` and, optionally, user-facing
+  /// text in `data[0].message`, which takes precedence.
+  RefundResult _refundError(AppException e) {
+    String? code = e.userMessage;
+    String? detail;
+    try {
+      final body = jsonDecode(e.rawBody ?? '') as Map<String, dynamic>;
+      code = body['message']?.toString() ?? code;
+      final data = body['data'];
+      if (data is List && data.isNotEmpty && data[0] is Map) {
+        detail = (data[0] as Map)['message']?.toString();
+      }
+    } catch (_) {}
+    debugPrint('Refund request failed: $code');
+    return RefundResult.failure(_refundErrorMessage(code, detail), code: code);
+  }
+
+  String _refundErrorMessage(String? code, String? detail) {
+    if (detail != null && detail.isNotEmpty) return detail;
+    switch (code) {
+      case 'reason_required':
+        return 'Please tell us why you want a refund (at least 3 characters).';
+      case 'apple_refund_via_app_store':
+        return 'This subscription was bought through Apple. Please request your refund from the App Store.';
+      case 'nothing_to_refund':
+        return "You're on a free trial, so there's nothing to refund. You can cancel your trial instead.";
+      case 'no_refundable_subscription':
+        return "You don't have an active paid subscription to refund.";
+      case 'refund_window_expired':
+        return 'The refund window for your last payment has passed.';
+      case 'no_refundable_payment':
+        return "We couldn't find a payment to refund.";
+      case 'refund_already_requested':
+        return 'You already have a refund request open.';
+      case 'payment_already_refunded':
+        return 'Your latest payment has already been refunded.';
+      case 'no_pending_refund_request':
+        return 'There is no pending refund request to cancel.';
+      default:
+        return _genericRefundError;
+    }
+  }
+
   bool _isSuccess(Map<String, dynamic> response) {
     return response['success'] == true || response['status'] == 200;
   }
@@ -365,6 +468,24 @@ class PaystackSubscriptionService {
       return null;
     }
   }
+}
+
+/// Outcome of a refund API call: either the updated subscription
+/// (with its `refund` object) or a user-facing error message.
+class RefundResult {
+  const RefundResult.success(this.subscription)
+    : errorMessage = null,
+      code = null;
+  const RefundResult.failure(this.errorMessage, {this.code})
+    : subscription = null;
+
+  final Map<String, dynamic>? subscription;
+  final String? errorMessage;
+
+  /// Backend error code, e.g. `refund_already_requested`.
+  final String? code;
+
+  bool get isSuccess => subscription != null;
 }
 
 // Kept as top-level functions for backward compatibility with existing call sites.

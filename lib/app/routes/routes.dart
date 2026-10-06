@@ -39,7 +39,9 @@ import 'package:kena_emotional_journey/view/home/home_screen.dart';
 import 'package:kena_emotional_journey/view/notifications/notifications_screen.dart';
 // import 'package:kena_emotional_journey/view/pro_tip/tip_screen.dart';
 import 'package:kena_emotional_journey/view/profile/edit_profile.dart';
+import 'package:kena_emotional_journey/view/profile/notifications_settings.dart';
 import 'package:kena_emotional_journey/view/profile/profile.dart';
+import 'package:kena_emotional_journey/view/profile/set_time_screen.dart';
 import 'package:kena_emotional_journey/view/splash/splash_screen.dart';
 // KenaSplashScreen replaces the old SplashView (see splash_view.dart).
 import 'package:kena_emotional_journey/view/subscription/active_subscription_screen.dart';
@@ -64,6 +66,8 @@ class Routes {
     RoutesName.myCommunity: (_) => const MyCommunityScreen(),
     RoutesName.planAndActivities: (_) => const PlanAndActivities(),
     RoutesName.frequencyScreen: (_) => const FrequencyScreen(),
+    RoutesName.notificationsSettings: (_) => const NotificationsSettings(),
+    RoutesName.setTime: (_) => const SetTimeScreen(),
     // RoutesName.tipScreen: (_) => const TipScreen(),
     // RoutesName.resetPassword: (_) => const ResetPassword(),
     RoutesName.login: (_) => const LoginScreen(),

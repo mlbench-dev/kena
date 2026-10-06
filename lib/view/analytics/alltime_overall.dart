@@ -94,6 +94,7 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
         title: f.name,
         imageUrl: f.imageUrl,
         intensity: f.intensity,
+        count: f.count,
       );
     }).toList();
   }
@@ -107,6 +108,7 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
         title: a.name,
         imageUrl: a.imageUrl,
         intensity: a.intensity,
+        count: a.count,
       );
     }).toList();
   }
@@ -245,12 +247,14 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
             context,
             title: 'Top 3 Forecast Emotions',
             emotions: forecastEmotions,
+            showCount: true,
           ),
           SizedBox(height: 16.h),
           _buildEmotionsSection(
             context,
             title: 'Top 3 Actual Emotions',
             emotions: actualEmotions,
+            showCount: true,
           ),
           SizedBox(height: 16.h),
           Row(
@@ -310,6 +314,7 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
     required String title,
     required List<Emotion> emotions,
     bool showForecastActualRange = false,
+    bool showCount = false,
   }) {
     final emotionsToShow = emotions.take(3).toList();
 
@@ -325,6 +330,7 @@ class _AlltimeOverallState extends State<AlltimeOverall> {
           showImage: true,
           showDenominator: false,
           showForecastActualRange: showForecastActualRange,
+          showCount: showCount,
         );
       }).toList(),
     );
