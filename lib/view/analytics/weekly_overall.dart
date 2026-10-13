@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart';
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/provider/weekly_sharing_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/thought_monitoring_widget.dart';
@@ -342,6 +344,9 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
                       )
                     : MyButton(
                         label: "Share with Circle",
+                        icon: context.isFreemium
+                            ? const PremiumBadgeIcon(size: 22)
+                            : null,
                         backgroundColor: context.colors.primary,
                         textColor: context.colors.background,
                         onPressed: () => sharing.startSharing(context),

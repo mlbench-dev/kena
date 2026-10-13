@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/model/analytics/month_data_model.dart';
 
@@ -43,6 +44,11 @@ class PreviousForecastCalendar extends StatefulWidget {
   final DateTime initialDate;
   final bool isAnalytics;
 
+  /// When true, browsing back past the current month is blocked and
+  /// [onLockedMonthTap] is called instead (Freemium calendar limit).
+  final bool lockPreviousMonths;
+  final VoidCallback? onLockedMonthTap;
+
   const PreviousForecastCalendar({
     super.key,
     this.onDateSelected,
@@ -50,6 +56,8 @@ class PreviousForecastCalendar extends StatefulWidget {
     this.datesWithData = const [],
     this.monthDaysData = const {},
     this.isAnalytics = false,
+    this.lockPreviousMonths = false,
+    this.onLockedMonthTap,
     required this.initialDate,
   });
 
@@ -168,6 +176,10 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
   /// Moves the day strip to the previous month. Selection is left
   /// untouched — this only changes what's being browsed.
   void previousMonth() {
+    if (_isPreviousLocked) {
+      widget.onLockedMonthTap?.call();
+      return;
+    }
     currentMonth = DateTime(currentMonth.year, currentMonth.month - 1);
     generateVisibleDays(currentMonth);
     widget.onMonthChanged?.call(currentMonth);
@@ -211,6 +223,15 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
         currentMonth.month == _today.month);
   }
 
+  /// Freemium users can't browse before the current calendar month.
+  bool get _isPreviousLocked {
+    return widget.lockPreviousMonths &&
+        !DateTime(
+          currentMonth.year,
+          currentMonth.month,
+        ).isAfter(DateTime(_today.year, _today.month));
+  }
+
   /// Centers the day strip on [selectedDate], if it's part of the
   /// currently displayed month.
   void _scrollToSelectedDate({bool animate = true}) {
@@ -249,11 +270,13 @@ class _PreviousForecastCalendarState extends State<PreviousForecastCalendar> {
           children: [
             IconButton(
               onPressed: previousMonth,
-              icon: Icon(
-                Icons.keyboard_double_arrow_left,
-                color: context.colors.tertiary,
-                size: 26.sp,
-              ),
+              icon: _isPreviousLocked
+                  ? const PremiumBadgeIcon(size: 22)
+                  : Icon(
+                      Icons.keyboard_double_arrow_left,
+                      color: context.colors.tertiary,
+                      size: 26.sp,
+                    ),
             ),
             Expanded(
               child: Center(

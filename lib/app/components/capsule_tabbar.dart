@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 
 class CapsuleTabBar extends StatelessWidget {
@@ -9,6 +10,12 @@ class CapsuleTabBar extends StatelessWidget {
   final Color inactiveTextColor;
   final double height;
 
+  /// Indexes of tabs that show a lock icon and can't be selected.
+  final Set<int> lockedTabs;
+
+  /// Called instead of switching when a locked tab is tapped.
+  final VoidCallback? onLockedTabTap;
+
   const CapsuleTabBar({
     super.key,
     required this.controller,
@@ -16,6 +23,8 @@ class CapsuleTabBar extends StatelessWidget {
     this.activeColor = const Color(0xff1b4d3e), // Default dark green
     this.inactiveTextColor = Colors.grey,
     this.height = 55.0,
+    this.lockedTabs = const {},
+    this.onLockedTabTap,
   });
 
   @override
@@ -45,7 +54,32 @@ class CapsuleTabBar extends StatelessWidget {
           ),
           overlayColor: WidgetStateProperty.all(Colors.transparent),
           dividerColor: Colors.transparent,
-          tabs: tabs.map((title) => Tab(text: title)).toList(),
+          onTap: (index) {
+            if (!lockedTabs.contains(index)) return;
+            // Undo the switch the TabBar already started.
+            controller.index = controller.previousIndex;
+            onLockedTabTap?.call();
+          },
+          tabs: [
+            for (var i = 0; i < tabs.length; i++)
+              lockedTabs.contains(i)
+                  ? Tab(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              tabs[i],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          const PremiumBadgeIcon(size: 14),
+                        ],
+                      ),
+                    )
+                  : Tab(text: tabs[i]),
+          ],
         ),
       ),
     );

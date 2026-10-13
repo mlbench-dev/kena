@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:kena_emotional_journey/app/utils/local_storage.dart';
 
 /// ============================================================
@@ -24,6 +26,11 @@ class SubscriptionCacheService {
       SubscriptionCacheService._internal();
 
   final LocalStorage _localStorage = LocalStorage();
+
+  /// Bumped after every cache write or clear so listeners (e.g.
+  /// SubscriptionProvider) can re-read the plan without each call site
+  /// having to remember to refresh them.
+  final ValueNotifier<int> changes = ValueNotifier<int>(0);
 
   // ─── Storage keys ────────────────────────────────────────
   static const _kIsActive = 'sub_is_active';
@@ -203,6 +210,7 @@ class SubscriptionCacheService {
     } catch (e) {
       log('[SubscriptionCache] Error saving to cache: $e');
     }
+    changes.value++;
   }
 
   // ──────────────────────────────────────────────────────────
@@ -230,6 +238,7 @@ class SubscriptionCacheService {
     } catch (e) {
       log('[SubscriptionCache] Error saving freemium: $e');
     }
+    changes.value++;
   }
 
   // ──────────────────────────────────────────────────────────
@@ -250,5 +259,6 @@ class SubscriptionCacheService {
       _localStorage.clearValue('sub_cache_json'),
     ]);
     log('[SubscriptionCache] Cache cleared');
+    changes.value++;
   }
 }

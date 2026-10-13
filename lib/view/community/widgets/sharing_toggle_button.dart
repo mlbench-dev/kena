@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 
 /// The "Start Sharing" / "Stop Sharing" control shared by the daily and
 /// weekly feed screens, so both look and behave identically instead of
@@ -74,7 +76,9 @@ class SharingToggleButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Assets.icons.sharing.svg(height: 14.h, width: 14.w),
+                context.isFreemium
+                    ? const PremiumBadgeIcon(size: 14)
+                    : Assets.icons.sharing.svg(height: 14.h, width: 14.w),
                 SizedBox(width: 4.w),
                 Flexible(
                   child: Text(

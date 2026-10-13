@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/capsule_tabbar.dart';
+import 'package:kena_emotional_journey/app/components/premium_dialog.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/view/analytics/alltime_overall.dart';
 import 'package:kena_emotional_journey/view/analytics/monthly_overall.dart';
@@ -26,6 +29,7 @@ class _OverallScreenState extends State<OverallScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isFreemium = context.isFreemium;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,6 +38,8 @@ class _OverallScreenState extends State<OverallScreen>
           tabs: _tabs,
           activeColor: context.colors.primary,
           inactiveTextColor: context.colors.textSecondary,
+          lockedTabs: isFreemium ? const {2} : const {},
+          onLockedTabTap: () => PremiumDialog.show(context),
         ),
         SizedBox(height: 20.h),
         AnimatedSize(
@@ -52,8 +58,12 @@ class _OverallScreenState extends State<OverallScreen>
                   // --- TAB 2: MONTHLY ---
                   MonthlyOverall(),
 
-                  // --- TAB 3: ALL TIME ---
-                  AlltimeOverall(),
+                  // --- TAB 3: ALL TIME --- (Premium only)
+                  isFreemium
+                      ? const PremiumLockedView(
+                          title: 'All Time analytics is a Premium feature',
+                        )
+                      : AlltimeOverall(),
                 ],
               );
             },

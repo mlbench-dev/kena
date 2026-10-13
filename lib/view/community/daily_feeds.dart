@@ -6,11 +6,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/daily_feed_model.dart';
 import 'package:kena_emotional_journey/model/emotions/emotions_list.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/community/comments_screen.dart';
 import 'package:kena_emotional_journey/view/community/empty_feed_screen.dart';
@@ -169,6 +171,7 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
   }
 
   Future<void> _onStartSharing() async {
+    if (!context.requirePremium(PremiumFeature.shareDailyForecast)) return;
     await MyDialogBox.show(
       context,
       child: InviteFriendsDialog(parentContext: context),

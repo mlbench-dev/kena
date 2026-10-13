@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/view/community/daily_feeds.dart';
@@ -189,6 +191,13 @@ class _FeedsScreenState extends State<FeedsScreen> {
                     communityName: widget.communityName,
                     feedScope: _feedScope,
                     isStopSharing: _feedScope == 'Me',
+                  )
+                : _feedScope != 'Me' && context.isFreemium
+                ? const SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: PremiumLockedView(
+                      title: "Friends' weekly forecasts are a Premium feature",
+                    ),
                   )
                 : WeeklyFeeds(
                     scope: _feedScope.toLowerCase(),

@@ -14,6 +14,7 @@ import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/forecast_plan_activities.dart';
 import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/add_activity_bottom_sheet.dart';
@@ -67,6 +68,21 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
   bool _isSaving = false;
   String? _errorMessage;
   final UserHomeService _service = UserHomeService();
+  // Fetched once, only for Freemium users, to enforce the activity limit.
+  Future<List<String>>? _existingActivityNames;
+
+  /// Freemium limit check: the checked activities plus [extraNames] must fit
+  /// alongside the user's existing Today and Planned activities.
+  Future<bool> _withinActivityLimit(Iterable<String> extraNames) {
+    return context.requireActivitySlots(
+      existingNames: () => _existingActivityNames ??= _service
+          .getAllActivityNames(context: context),
+      newNames: [
+        ..._activities.where((a) => a.isChecked).map((a) => a.title),
+        ...extraNames,
+      ],
+    );
+  }
 
   @override
   void initState() {
@@ -184,6 +200,8 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
       }
       return;
     }
+
+    if (!await _withinActivityLimit(const [])) return;
 
     setState(() {
       _isSaving = true;
@@ -496,6 +514,7 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
 
         onSave: (name) async {
           Navigator.pop(context);
+          if (!await _withinActivityLimit([name])) return;
           setState(() {
             final existingIndex = _activities.indexWhere(
               (item) => item.title.toLowerCase() == name.toLowerCase(),

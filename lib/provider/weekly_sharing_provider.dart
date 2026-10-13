@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/analytics/weekly_overall.dart'
     show ShareWeeklyDialog;
@@ -30,6 +32,7 @@ class WeeklySharingController extends ChangeNotifier {
   }
 
   Future<void> startSharing(BuildContext context) async {
+    if (!context.requirePremium(PremiumFeature.shareWeeklyForecast)) return;
     final shared = await MyDialogBox.show<bool>(
       context,
       child: ShareWeeklyDialog(parentContext: context),

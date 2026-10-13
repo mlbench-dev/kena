@@ -15,9 +15,11 @@ class PremiumDialog extends StatefulWidget {
   const PremiumDialog({
     super.key,
     this.features = const [
-      'Full access to activities',
-      'Complete analytics (Week & month only)',
-      'Full community features',
+      'Unlimited activities',
+      'All Time analytics & full calendar history',
+      'Search emotions by body sensation',
+      'Share your daily & weekly forecasts',
+      "View friends' weekly forecasts",
     ],
   });
 

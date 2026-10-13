@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:kena_emotional_journey/app/components/premium_dialog.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/model/analytics/analytics_calendar_model.dart';
 import 'package:kena_emotional_journey/model/analytics/month_data_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart'
     as fm;
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
@@ -137,6 +139,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
             datesWithData: _datesWithData,
             monthDaysData: _monthDaysMap,
             isAnalytics: true,
+            lockPreviousMonths: context.isFreemium,
+            onLockedMonthTap: () => PremiumDialog.show(context),
             onMonthChanged: (month) {
               if (_loadedMonth == null ||
                   _loadedMonth!.year != month.year ||

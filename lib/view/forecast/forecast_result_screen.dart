@@ -7,6 +7,7 @@ import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_circle_checkbox.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/my_text_field.dart';
@@ -19,7 +20,9 @@ import 'package:kena_emotional_journey/model/community/community_members_model.d
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_notes.dart';
 // import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/image_picker.dart';
@@ -177,6 +180,7 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   // =========================================================
 
   Future<void> _onShareWithFriendsTap() async {
+    if (!context.requirePremium(PremiumFeature.shareDailyForecast)) return;
     await MyDialogBox.show(
       context,
       child: InviteFriendsDialog(parentContext: context),
@@ -890,6 +894,7 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
       padding: EdgeInsets.all(2.w),
       child: MyButton(
         label: 'Share with Circle',
+        icon: context.isFreemium ? const PremiumBadgeIcon(size: 22) : null,
         backgroundColor: context.colors.background,
         textColor: context.colors.primary,
         borderColor: context.colors.primary,

@@ -496,7 +496,7 @@ class _CoreEmotionsState extends State<CoreEmotions> with EmotionSearchMixin {
               child: MyTextField(
                 controller: searchController,
                 key: searchKey,
-                hint: "Search by emotion name / body sensation",
+                hint: searchHint,
                 borderColor: const Color(0xFFd0d0d0),
                 fillColor: Colors.transparent,
                 hintColor: context.colors.textPrimary,

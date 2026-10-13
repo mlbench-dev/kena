@@ -1665,6 +1665,25 @@ class UserHomeService {
   //   }
   // }
 
+  /// Names of all the user's current activities, Today and Planned combined.
+  /// Used to enforce the Freemium activity limit.
+  Future<List<String>> getAllActivityNames({BuildContext? context}) async {
+    final results = await Future.wait([
+      getTodayActivities(context: context),
+      getPlannedActivities(context: context),
+    ]);
+    final today = results[0] as TodayActivityModel?;
+    final planned = results[1] as PlannedActivityModel?;
+    return [
+      for (final day in today?.data ?? const <TodayActivityData>[])
+        for (final activity in day.activities ?? const [])
+          if (activity.name != null) activity.name!,
+      for (final day in planned?.data ?? const <PlannedActivityData>[])
+        for (final activity in day.activities ?? const [])
+          if (activity.name != null) activity.name!,
+    ];
+  }
+
   // Get Today Activities
   Future<TodayActivityModel?> getTodayActivities({
     BuildContext? context,

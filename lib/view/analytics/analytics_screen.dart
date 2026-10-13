@@ -4,12 +4,15 @@ import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/capsule_tabbar.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/premium_dialog.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/analytics_model.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -203,6 +206,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                       activeColor: context.colors.primary,
                       inactiveTextColor: context.colors.textSecondary,
                       // Optional: You can easily change the color per-screen now!
+                      lockedTabs: context.isFreemium ? const {2} : const {},
+                      onLockedTabTap: () => PremiumDialog.show(context),
                     ),
 
                     AnimatedBuilder(
@@ -230,8 +235,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                               // --- TAB 2: MONTHLY ---
                               MonthlyActivities(),
 
-                              // --- TAB 3: YEARLY ---
-                              AlltimeActivities(),
+                              // --- TAB 3: YEARLY --- (Premium only)
+                              context.isFreemium
+                                  ? const PremiumLockedView(
+                                      title:
+                                          'All Time analytics is a Premium feature',
+                                    )
+                                  : AlltimeActivities(),
                             ],
                           );
                         },
