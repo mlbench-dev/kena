@@ -158,6 +158,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/premium.svg
   SvgGenImage get premium => const SvgGenImage('assets/icons/premium.svg');
 
+  /// File path: assets/icons/premium_badge.svg
+  SvgGenImage get premiumBadge =>
+      const SvgGenImage('assets/icons/premium_badge.svg');
+
   /// File path: assets/icons/profile.svg
   SvgGenImage get profile => const SvgGenImage('assets/icons/profile.svg');
 
@@ -225,6 +229,7 @@ class $AssetsIconsGen {
     pen,
     penOutline,
     premium,
+    premiumBadge,
     profile,
     send,
     share,

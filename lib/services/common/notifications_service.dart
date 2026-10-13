@@ -126,14 +126,26 @@ class NotificationsService {
     }
   }
 
-  /// Parses a 24h "HH:mm" string into a [TimeOfDay].
+  /// Formats a [TimeOfDay] as the API's 12h "h:mm AM" string, e.g. "8:00 PM".
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
+  }
+
+  /// Parses "8:00 PM" (12h) or "20:00" (24h) into a [TimeOfDay].
   TimeOfDay? _parseTime(Object? value) {
     if (value is! String) return null;
-    final parts = value.split(':');
-    if (parts.length < 2) return null;
-    final hour = int.tryParse(parts[0]);
-    final minute = int.tryParse(parts[1]);
-    if (hour == null || minute == null) return null;
+    final match = RegExp(
+      r'^\s*(\d{1,2}):(\d{2})\s*([AaPp][Mm])?\s*$',
+    ).firstMatch(value);
+    if (match == null) return null;
+    var hour = int.parse(match.group(1)!);
+    final minute = int.parse(match.group(2)!);
+    final period = match.group(3)?.toUpperCase();
+    if (period != null) hour = hour % 12 + (period == 'PM' ? 12 : 0);
+    if (hour > 23 || minute > 59) return null;
     return TimeOfDay(hour: hour, minute: minute);
   }
 
@@ -170,13 +182,11 @@ class NotificationsService {
     required TimeOfDay dailyPulseTime,
     required TimeOfDay eodTime,
   }) async {
-    String format(TimeOfDay time) =>
-        '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-
     try {
       final response = await _userNotificationsRepo.updateReminderTimes(
-        dailyPulseTime: format(dailyPulseTime),
-        eodTime: format(eodTime),
+        dailyPulseTime: _formatTime(dailyPulseTime),
+        eodTime: _formatTime(eodTime),
+        timezoneOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes,
       );
       debugPrint("🔔 Update Reminder Times Response $response");
       return true;

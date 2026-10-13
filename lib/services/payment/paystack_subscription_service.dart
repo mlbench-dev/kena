@@ -82,6 +82,43 @@ class PaystackSubscriptionService {
     ];
   }
 
+  /// Price text for a plan, e.g. "\$9.99". iOS uses hardcoded StoreKit prices
+  /// ($9.99/mo, $99.99/yr) since Apple pricing is fixed per product,
+  /// independent of the backend-reported currency/amount used on Android.
+  static String planPriceText(Map<String, dynamic> plan) {
+    final isAnnual = (plan['interval'] as String?)?.toLowerCase() == 'year';
+    if (Platform.isIOS) return isAnnual ? '\$99.99' : '\$9.99';
+
+    final currency = plan['currency'] as String? ?? 'KES';
+    final amount = plan['unitAmountDecimal'] as String? ?? '0.00';
+    return '${_currencySymbol(currency)}$amount';
+  }
+
+  static String _currencySymbol(String currency) {
+    switch (currency.toUpperCase()) {
+      case 'KES':
+        return 'KES';
+      case 'NGN':
+        return '₦';
+      case 'USD':
+        return '\$';
+      case 'GHS':
+        return 'GH₵';
+      default:
+        return '${currency.toUpperCase()} ';
+    }
+  }
+
+  /// Price text of the monthly plan from the plans API, or null if missing.
+  Future<String?> getMonthlyPriceText() async {
+    final plans = await getSubscriptionPlans();
+    final monthly = plans?.where(
+      (plan) => (plan['interval'] as String?)?.toLowerCase() == 'month',
+    );
+    if (monthly == null || monthly.isEmpty) return null;
+    return planPriceText(monthly.first);
+  }
+
   /// Get current user's subscription status and persist it to local cache.
   Future<Map<String, dynamic>?> getCurrentSubscriptionStatus() async {
     try {

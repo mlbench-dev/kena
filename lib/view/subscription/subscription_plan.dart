@@ -93,21 +93,6 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
     }
   }
 
-  String _getCurrencySymbol(String currency) {
-    switch (currency.toUpperCase()) {
-      case 'KES':
-        return 'KES';
-      case 'NGN':
-        return '₦';
-      case 'USD':
-        return '\$';
-      case 'GHS':
-        return 'GH₵';
-      default:
-        return '${currency.toUpperCase()} ';
-    }
-  }
-
   /// Display name for a plan — uses the backend-provided product name
   /// (e.g. "Kena Premium Annual") when available, falling back to a
   /// generic Monthly/Annual label derived from the billing interval.
@@ -121,17 +106,8 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
         : 'Monthly';
   }
 
-  /// Price text for a plan. iOS uses hardcoded StoreKit prices ($9.99/mo,
-  /// $99.99/yr) since Apple pricing is fixed per product, independent of
-  /// the backend-reported currency/amount used on Android.
-  String _getPlanPriceText(int index) {
-    if (Platform.isIOS) {
-      final interval = (availablePlans[index]['interval'] as String?)
-          ?.toLowerCase();
-      return interval == 'year' ? '\$99.99' : '\$9.99';
-    }
-    return '${_getCurrencySymbol(availablePlans[index]['currency'] as String? ?? 'KES')}${availablePlans[index]['unitAmountDecimal'] as String? ?? '0.00'}';
-  }
+  String _getPlanPriceText(int index) =>
+      PaystackSubscriptionService.planPriceText(availablePlans[index]);
 
   String _getPaidFeaturesTitle() {
     if (selectedIndex < 0 || selectedIndex >= availablePlans.length) {

@@ -20,8 +20,8 @@ import 'package:kena_emotional_journey/model/emotions/result_emotion_model.dart'
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart'
     as fm;
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
-import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/image_picker.dart';
 import 'package:kena_emotional_journey/services/common/upload_service.dart';
 import 'package:kena_emotional_journey/services/user/activity_service.dart';

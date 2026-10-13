@@ -68,19 +68,24 @@ class UserNotificationsRepository {
     );
   }
 
-  //getReminderTimes (times are 24h "HH:mm")
+  //getReminderTimes
   Future<Map<String, dynamic>> getReminderTimes() async {
     return api.get(url: AppUrl.reminderSet);
   }
 
-  //updateReminderTimes (times are 24h "HH:mm")
+  //updateReminderTimes (times are 12h "h:mm AM")
   Future<Map<String, dynamic>> updateReminderTimes({
     required String dailyPulseTime,
     required String eodTime,
+    required int timezoneOffsetMinutes,
   }) async {
     return api.put(
       url: AppUrl.reminderSet,
-      data: {'dailyPulseTime': dailyPulseTime, 'eodTime': eodTime},
+      data: {
+        'dailyPulseTime': dailyPulseTime,
+        'eodTime': eodTime,
+        'timezoneOffsetMinutes': timezoneOffsetMinutes,
+      },
     );
   }
 
