@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/no_internet_dialog.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
-import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:provider/provider.dart';
 
 /// Central place for the home screen's navigation actions (Aspire, Forecast,
 /// Activities, Analytics, Community) so any widget can trigger them via
@@ -48,11 +45,8 @@ class NavigationActionsController extends ChangeNotifier {
 
   /// Shows a "no internet" dialog and returns `false` when offline, so
   /// callers can bail out before hitting the network.
-  bool _requireConnection(BuildContext context) {
-    if (context.read<ConnectivityProvider>().isConnected) return true;
-    MyDialogBox.show(context, child: const NoInternetDialog());
-    return false;
-  }
+  Future<bool> _requireConnection(BuildContext context) =>
+      NoInternetDialog.guard(context);
 
   /// Fetches today's forecast and reports whether the user completed it.
   Future<bool> hasForecast(BuildContext context) async {
@@ -83,7 +77,8 @@ class NavigationActionsController extends ChangeNotifier {
 
   Future<void> onAspireTap(BuildContext context) async {
     if (_aspireLoading) return;
-    if (!_requireConnection(context)) return;
+    if (!await _requireConnection(context)) return;
+    if (!context.mounted) return;
     _setAspireLoading(true);
     try {
       final result = await _userHomeService.getUserEmotions(context: context);
@@ -114,7 +109,8 @@ class NavigationActionsController extends ChangeNotifier {
 
   Future<void> onForecastTap(BuildContext context) async {
     if (_forecastLoading) return;
-    if (!_requireConnection(context)) return;
+    if (!await _requireConnection(context)) return;
+    if (!context.mounted) return;
     _setForecastLoading(true);
 
     try {
@@ -206,18 +202,21 @@ class NavigationActionsController extends ChangeNotifier {
     }
   }
 
-  void onActivitiesTap(BuildContext context) {
-    if (!_requireConnection(context)) return;
+  Future<void> onActivitiesTap(BuildContext context) async {
+    if (!await _requireConnection(context)) return;
+    if (!context.mounted) return;
     Navigator.pushNamed(context, RoutesName.activitiesScreen);
   }
 
-  void onAnalyticsTap(BuildContext context) {
-    if (!_requireConnection(context)) return;
+  Future<void> onAnalyticsTap(BuildContext context) async {
+    if (!await _requireConnection(context)) return;
+    if (!context.mounted) return;
     Navigator.pushNamed(context, RoutesName.analyticsScreen);
   }
 
-  void onCommunityTap(BuildContext context) {
-    if (!_requireConnection(context)) return;
+  Future<void> onCommunityTap(BuildContext context) async {
+    if (!await _requireConnection(context)) return;
+    if (!context.mounted) return;
     if (_sessionController.communityId == null ||
         _sessionController.communityId!.trim().isEmpty) {
       Navigator.pushNamed(context, RoutesName.emptyCommunity);

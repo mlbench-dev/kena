@@ -28,6 +28,7 @@ import 'package:kena_emotional_journey/view/forecast/forecast_result_screen.dart
 import 'package:kena_emotional_journey/view/forecast/widgets/edit_note_dialog.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotion_tile.dart';
 import 'package:kena_emotional_journey/view/forecast/widgets/emotions_section_card.dart';
+import 'package:kena_emotional_journey/view/forecast/widgets/thought_monitoring.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -499,14 +500,28 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
             question: 'Was the plan you set useful?',
             answer: (_reality?.planUseful ?? false) ? 'Yes' : 'No',
           ),
-          SizedBox(height: 10.h),
 
-          _buildDayRating(context),
+          SizedBox(height: 10.h),
+          // _buildDayRating(context),
+          _buildCheckinSection(context),
           SizedBox(height: 16.h),
 
-          TopActivitiesFlSection(activities: _thoughtMonitoringActivities),
+          // TopActivitiesFlSection(activities: _thoughtMonitoringActivities),
+          ThoughtMonitoring(
+            positive: [27.5, 10, 41.5, 27, 27.5],
+            negative: [24, 24, 10, 8, 24],
+            neutral: [23.5, 8.5, 11.5, 6.5, 4],
+            skipped: [25, 21.5, 32, 20.5, 25],
+          ),
+          Text(
+            'Notes',
+            style: context.typography.headline.copyWith(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'sfpro',
+            ),
+          ),
           SizedBox(height: 10.h),
-
           _buildNotesInput(context),
           SizedBox(height: 10.h),
           _buildForecastNotesList(context),
@@ -531,11 +546,12 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
         BackButton(color: context.colors.textPrimary),
         Expanded(
           child: Text(
-            'Your Emotional Comparison',
+            'End of the Day Reflection',
             textAlign: TextAlign.center,
             style: context.typography.headline.copyWith(
               fontSize: 17.sp,
               fontWeight: FontWeight.w600,
+              fontFamily: 'sfpro',
             ),
           ),
         ),
@@ -557,43 +573,74 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
     );
   }
 
-  Widget _buildSectionIntro(BuildContext context) {
+  Widget _buildCheckinSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   'Forecast vs. Reality',
-        //   style: context.typography.label.copyWith(
-        //     fontSize: 16.sp,
-        //     fontWeight: FontWeight.w500,
-        //   ),
-        // ),
-        // SizedBox(height: 8.h),
-        // Text(
-        //   "Here’s how your day unfolded compared to your forecast.",
-        //   style: context.typography.body.copyWith(
-        //     fontSize: 14.sp,
-        //     color: context.colors.textSecondary,
-        //     fontWeight: FontWeight.w400,
-        //   ),
-        // ),
-        // SizedBox(height: 12.h),
-        _buildSectionLabel(context, '', context.colors.textPrimary),
+        Text(
+          ' Choose Your Check-In',
+          style: context.typography.headline.copyWith(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'sfpro',
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Text(
+          'Full',
+          style: context.typography.headline.copyWith(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'sfpro',
+          ),
+        ),
+        SizedBox(height: 10.h),
+        CheckInContainer(
+          question: 'What was pleasant, cheerful or went well today?',
+          answer:
+              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        ),
       ],
     );
   }
 
-  Widget _buildSectionLabel(BuildContext context, String text, Color color) {
-    return Text(
-      text,
-      style: context.typography.label.copyWith(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w500,
-        color: color,
-        fontFamily: 'sfpro',
-      ),
-    );
-  }
+  // Widget _buildSectionIntro(BuildContext context) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       // Text(
+  //       //   'Forecast vs. Reality',
+  //       //   style: context.typography.label.copyWith(
+  //       //     fontSize: 16.sp,
+  //       //     fontWeight: FontWeight.w500,
+  //       //   ),
+  //       // ),
+  //       // SizedBox(height: 8.h),
+  //       // Text(
+  //       //   "Here’s how your day unfolded compared to your forecast.",
+  //       //   style: context.typography.body.copyWith(
+  //       //     fontSize: 14.sp,
+  //       //     color: context.colors.textSecondary,
+  //       //     fontWeight: FontWeight.w400,
+  //       //   ),
+  //       // ),
+  //       // SizedBox(height: 12.h),
+  //       _buildSectionLabel(context, '', context.colors.textPrimary),
+  //     ],
+  //   );
+  // }
+
+  // Widget _buildSectionLabel(BuildContext context, String text, Color color) {
+  //   return Text(
+  //     text,
+  //     style: context.typography.label.copyWith(
+  //       fontSize: 16.sp,
+  //       fontWeight: FontWeight.w500,
+  //       color: color,
+  //       fontFamily: 'sfpro',
+  //     ),
+  //   );
+  // }
 
   // ── Emotion tiles ────────────────────────────────────────────────────
 
@@ -803,45 +850,45 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
 
   // ── Day rating ───────────────────────────────────────────────────────
 
-  Widget _buildDayRating(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'How did it go?',
-          style: context.typography.body.copyWith(
-            color: context.colors.textPrimary,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'sfpro',
-          ),
-        ),
-        Text(
-          'On a scale of 1 to 5, how did your day compare to the forecast?',
-          style: context.typography.body.copyWith(
-            color: context.colors.textSecondary,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w400,
-            fontFamily: 'sfpro',
-          ),
-        ),
-        SizedBox(height: 15.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: List.generate(5, (index) {
-            final value = index + 1;
-            return NumberCircle(
-              number: value,
-              isSelected: _dayRating == value,
-              onTap: () {},
-            );
-          }),
-        ),
-        SizedBox(height: 10.h),
-        _RatingLabelRow(labels: _ratingLabels),
-      ],
-    );
-  }
+  // Widget _buildDayRating(BuildContext context) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         'How did it go?',
+  //         style: context.typography.body.copyWith(
+  //           color: context.colors.textPrimary,
+  //           fontSize: 16.sp,
+  //           fontWeight: FontWeight.w600,
+  //           fontFamily: 'sfpro',
+  //         ),
+  //       ),
+  //       Text(
+  //         'On a scale of 1 to 5, how did your day compare to the forecast?',
+  //         style: context.typography.body.copyWith(
+  //           color: context.colors.textSecondary,
+  //           fontSize: 14.sp,
+  //           fontWeight: FontWeight.w400,
+  //           fontFamily: 'sfpro',
+  //         ),
+  //       ),
+  //       SizedBox(height: 15.h),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         children: List.generate(5, (index) {
+  //           final value = index + 1;
+  //           return NumberCircle(
+  //             number: value,
+  //             isSelected: _dayRating == value,
+  //             onTap: () {},
+  //           );
+  //         }),
+  //       ),
+  //       SizedBox(height: 10.h),
+  //       _RatingLabelRow(labels: _ratingLabels),
+  //     ],
+  //   );
+  // }
 
   // ── Notes ────────────────────────────────────────────────────────────
 
@@ -923,6 +970,50 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
   }
 }
 
+class CheckInContainer extends StatelessWidget {
+  final String question;
+  final String answer;
+  const CheckInContainer({
+    super.key,
+    required this.question,
+    required this.answer,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.r),
+        color: context.colors.textSecondary.withValues(alpha: 0.1),
+      ),
+      child: Column(
+        children: [
+          Text(
+            question,
+            style: context.typography.body.copyWith(
+              fontSize: 14.sp,
+              color: context.colors.textPrimary,
+              fontFamily: 'sfpro',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 5.h),
+          Text(
+            answer,
+            style: context.typography.body.copyWith(
+              fontSize: 14.sp,
+              color: context.colors.textPrimary,
+              fontFamily: 'sfpro',
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Small presentational widgets ────────────────────────────────────────
 
 /// Rounded bordered card used for "Your Plan" / similar labeled sections,
@@ -981,28 +1072,28 @@ class _InfoCard extends StatelessWidget {
   }
 }
 
-class _RatingLabelRow extends StatelessWidget {
-  final List<String> labels;
+// class _RatingLabelRow extends StatelessWidget {
+//   final List<String> labels;
 
-  const _RatingLabelRow({required this.labels});
+//   const _RatingLabelRow({required this.labels});
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        for (final label in labels)
-          Text(
-            label,
-            style: context.typography.subtitle.copyWith(
-              fontSize: 10.sp,
-              color: context.colors.textSecondary,
-            ),
-          ),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         for (final label in labels)
+//           Text(
+//             label,
+//             style: context.typography.subtitle.copyWith(
+//               fontSize: 10.sp,
+//               color: context.colors.textSecondary,
+//             ),
+//           ),
+//       ],
+//     );
+//   }
+// }
 
 /// A yes/no question with its answer, e.g. "Did it go as forecast? — Yes".
 class QuestionsCard extends StatelessWidget {
@@ -1024,7 +1115,7 @@ class QuestionsCard extends StatelessWidget {
           question,
           style: context.typography.body.copyWith(
             color: context.colors.textPrimary,
-            fontSize: 16.sp,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
             fontFamily: 'sfpro',
           ),

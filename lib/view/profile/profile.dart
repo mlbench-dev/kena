@@ -12,12 +12,11 @@ import 'package:kena_emotional_journey/app/utils/app_constants.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
 import 'package:kena_emotional_journey/view/profile/widgets/profile_menu_tile.dart';
-import 'package:provider/provider.dart';
+import 'package:kena_emotional_journey/view/subscription/active_subscription_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -191,19 +190,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: context.colors.tertiary,
                           ),
                           text: "Subscription Plan",
-                          onTap: () {
-                            if (!context
-                                .read<ConnectivityProvider>()
-                                .isConnected) {
-                              MyDialogBox.show(
-                                context,
-                                child: const NoInternetDialog(),
-                              );
-                              return;
-                            }
-                            Navigator.pushNamed(
-                              context,
-                              RoutesName.activeSubscription,
+                          onTap: () async {
+                            if (!await NoInternetDialog.guard(context)) return;
+                            if (!context.mounted) return;
+                            ActiveSubscriptionScreen.open(
+                              Navigator.of(context),
                             );
                           },
                         ),

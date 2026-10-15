@@ -120,9 +120,11 @@ class AuthService {
   }
 
   static void goToNoConnectionScreen(BuildContext context) {
-    // Do not navigate; flip provider so global overlay shows NoConnectionScreen
+    // Do not navigate; re-verify connectivity so the offline banner shows only
+    // when actually offline. A single failed request must not leave the
+    // provider stuck on `false` (the status stream only emits on change).
     if (!context.mounted) return;
-    context.read<ConnectivityProvider>().updateConnection(false);
+    context.read<ConnectivityProvider>().refresh();
   }
 
   static void goToWelcome(BuildContext context, {required String email}) {

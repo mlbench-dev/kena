@@ -91,6 +91,22 @@ class SubscriptionCacheService {
     }
   }
 
+  /// Returns true when the cached subscription is a free trial (never
+  /// Freemium). Used to open the plan screen instead of the active
+  /// subscription screen without waiting for the API.
+  Future<bool> isOnTrial() async {
+    try {
+      if (await isFreemiumActive()) return false;
+
+      final cachedSubscription = await getCachedSubscription();
+      return cachedSubscription?['isTrial'] == true ||
+          await _localStorage.readValue(_kIsTrial) == 'true';
+    } catch (e) {
+      log('[SubscriptionCache] Error reading trial flag: $e');
+      return false;
+    }
+  }
+
   /// Returns true when the user is on the Freemium plan.
   /// Used by [AdMobService] to decide whether ads should be shown.
   /// Freemium users should always see ads even though [isSubscriptionValid]

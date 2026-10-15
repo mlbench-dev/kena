@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
-import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
+import 'package:kena_emotional_journey/view/subscription/active_subscription_screen.dart';
 
 const _featuresBackgroundColor = Color(0xFFF2F3F5);
 
@@ -108,8 +108,8 @@ class _PremiumDialogState extends State<PremiumDialog> {
             textColor: Colors.white,
             fontSize: 17,
             onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(context, RoutesName.activeSubscription);
+              final navigator = Navigator.of(context)..pop();
+              ActiveSubscriptionScreen.open(navigator);
             },
           ),
         ],

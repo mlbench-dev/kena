@@ -15,10 +15,28 @@ import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.
 import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/model/subscription/subscription_model.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
+import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
+import 'package:kena_emotional_journey/view/subscription/plan_features.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ActiveSubscriptionScreen extends StatefulWidget {
   const ActiveSubscriptionScreen({super.key});
+
+  /// Opens the user's subscription page. Trial users go straight to the plan
+  /// screen (decided from the cached status), so this screen never flashes.
+  static Future<void> open(NavigatorState navigator) async {
+    final isOnTrial = await SubscriptionCacheService().isOnTrial();
+    if (!navigator.mounted) return;
+
+    if (isOnTrial) {
+      navigator.pushNamed(
+        RoutesName.subscriptionPlan,
+        arguments: {'showBackButton': true, 'isTrial': true},
+      );
+    } else {
+      navigator.pushNamed(RoutesName.activeSubscription);
+    }
+  }
 
   @override
   State<ActiveSubscriptionScreen> createState() =>
@@ -74,6 +92,18 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
               : subscription;
 
           setState(() => _applySubscriptionData(data));
+
+          // Fallback when the cached status was stale (or the screen was
+          // opened from a notification): trial users manage their plan from
+          // the plan screen instead.
+          if (_isTrial && !_isFreemium) {
+            Navigator.pushReplacementNamed(
+              context,
+              RoutesName.subscriptionPlan,
+              arguments: {'showBackButton': true, 'isTrial': true},
+            );
+            return;
+          }
         }
       } else {
         debugPrint('⚠️ No subscription data returned');
@@ -343,19 +373,14 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
 
   String _getFeaturesTitle() => '${_getPlanName()} includes:';
 
-  List<String> _getFeatures() {
+  List<PlanSection> _getFeatureSections() {
     return [
-      _isFreemium ? 'With ads' : 'Remove ads - Premium',
-      'Record core & aspirational emotions',
-      'Record Daily pulse',
-      'Comprehensive list of emotions',
-      'Visualisation of emotions',
-      'Journaling & Notes',
-      'Full activities',
-      'Full community features',
-      'Detailed analytics',
-      'Search by body sensations',
-      'Thought monitoring prompts',
+      PlanSection(title: _getFeaturesTitle(), items: PlanFeatures.base),
+      if (!_isFreemium)
+        PlanSection(
+          title: PlanFeatures.additionalTitle,
+          items: PlanFeatures.additional,
+        ),
     ];
   }
 
@@ -654,18 +679,6 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                                     fontFamily: "Raleway",
                                   ),
                                 ),
-                                SizedBox(height: 3.h),
-                                Text(
-                                  _getStatusText(),
-                                  style: context.typography.title.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: context.colors.background.withValues(
-                                      alpha: 0.8,
-                                    ),
-                                    fontFamily: "Raleway",
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -674,25 +687,42 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                           if (_getPriceText().isNotEmpty)
                             Row(
                               children: [
-                                Text(
-                                  _getPriceText(),
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFFF3E5AB),
+                                Text.rich(
+                                  TextSpan(
+                                    text: _getPriceText(),
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: _isFreemium
+                                          ? context.colors.secondary
+                                          : context.colors.background,
+                                    ),
+                                    children: [
+                                      if (_isFreemium)
+                                        TextSpan(
+                                          text: '/with Ads',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12.sp,
+                                            color: context.colors.secondary
+                                                .withValues(alpha: 0.5),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(width: 3.w),
-                                Text(
-                                  _getBillingInterval(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0x80F3E5AB),
-                                    fontStyle: FontStyle.italic,
-                                    fontFamily: "sfpro",
+                                if (!_isFreemium)
+                                  Text(
+                                    _getBillingInterval(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0x80F3E5AB),
+                                      fontStyle: FontStyle.italic,
+                                      fontFamily: "sfpro",
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                         ],
@@ -750,14 +780,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                     SizedBox(height: 10.h),
 
                     /// 🔹 Single Container (All Sections)
-                    PlanIncludes(
-                      sections: [
-                        PlanSection(
-                          title: _getFeaturesTitle(),
-                          items: _getFeatures(),
-                        ),
-                      ],
-                    ),
+                    PlanIncludes(sections: _getFeatureSections()),
                     SizedBox(height: 16.h),
 
                     /// 🔹 Terms of Use & Privacy Policy

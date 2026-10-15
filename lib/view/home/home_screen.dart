@@ -4,13 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/no_internet_dialog.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
@@ -367,16 +365,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                         SizedBox(width: 8.w),
                         GestureDetector(
-                          onTap: () {
-                            if (!context
-                                .read<ConnectivityProvider>()
-                                .isConnected) {
-                              MyDialogBox.show(
-                                context,
-                                child: const NoInternetDialog(),
-                              );
-                              return;
-                            }
+                          onTap: () async {
+                            if (!await NoInternetDialog.guard(context)) return;
+                            if (!context.mounted) return;
                             Navigator.pushNamed(
                               context,
                               RoutesName.notificationScreen,

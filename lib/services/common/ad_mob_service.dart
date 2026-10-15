@@ -112,6 +112,7 @@ class AdMobService {
   static bool _isInterstitialAdReady = false;
   static DateTime? _lastInterstitialShownAt;
   static int _interstitialShownCount = 0;
+  static VoidCallback? _onInterstitialClosed;
 
   /// Max interstitials shown per app session (per your requirement: 1–2).
   static const int maxInterstitialsPerSession = 2;
@@ -139,12 +140,14 @@ class AdMobService {
               ad.dispose();
               _interstitialAd = null;
               _isInterstitialAdReady = false;
+              _notifyInterstitialClosed();
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
               debugPrint('❌ Interstitial ad failed to show: $error');
               ad.dispose();
               _interstitialAd = null;
               _isInterstitialAdReady = false;
+              _notifyInterstitialClosed();
             },
           );
         },
@@ -156,8 +159,17 @@ class AdMobService {
     );
   }
 
+  static void _notifyInterstitialClosed() {
+    final callback = _onInterstitialClosed;
+    _onInterstitialClosed = null;
+    callback?.call();
+  }
+
   /// Shows the interstitial ad if ready, respecting session cap and cooldown.
-  static Future<bool> showInterstitialAd() async {
+  ///
+  /// [onClosed] runs once the ad is dismissed (or fails to show). It is only
+  /// called when this returns true.
+  static Future<bool> showInterstitialAd({VoidCallback? onClosed}) async {
     if (!await shouldShowAds()) return false;
 
     if (_interstitialShownCount >= maxInterstitialsPerSession) {
@@ -175,6 +187,7 @@ class AdMobService {
     }
 
     if (_isInterstitialAdReady && _interstitialAd != null) {
+      _onInterstitialClosed = onClosed;
       _interstitialAd!.show();
       _lastInterstitialShownAt = DateTime.now();
       _interstitialShownCount++;

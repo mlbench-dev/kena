@@ -5,10 +5,7 @@ import 'package:kena_emotional_journey/services/payment/subscription_cache_servi
 import 'package:provider/provider.dart';
 
 /// Single source of truth for "is this user on Freemium?".
-///
-/// Reads the plan from [SubscriptionCacheService] and re-reads it whenever
-/// the cache changes (backend sync, choosing Freemium, upgrade, logout), so
-/// every screen watching this provider updates without a restart.
+
 class SubscriptionProvider extends ChangeNotifier {
   SubscriptionProvider() {
     _cache.changes.addListener(refresh);
@@ -57,21 +54,15 @@ class SubscriptionProvider extends ChangeNotifier {
 }
 
 extension PremiumGate on BuildContext {
-  /// True when the user is on the Freemium plan. Use inside `build` (it
-  /// listens for changes); use [requirePremium] in tap handlers.
+  /// True when the user is on the Freemium plan.
   bool get isFreemium => watch<SubscriptionProvider>().isFreemium;
 
-  /// Returns true when [feature] is available. Otherwise shows the
-  /// [PremiumDialog] and returns false, so callers can simply `return`.
   bool requirePremium(PremiumFeature feature) {
     if (read<SubscriptionProvider>().canUse(feature)) return true;
     PremiumDialog.show(this);
     return false;
   }
 
-  /// Returns true when the user may add [newNames] to their activities.
-  /// For Freemium users over [FreemiumLimits.maxActivities] it shows the
-  /// [PremiumDialog] and returns false. [existingNames] is only awaited for
   /// Freemium users, so screens can cache it lazily.
   Future<bool> requireActivitySlots({
     required Future<List<String>> Function() existingNames,

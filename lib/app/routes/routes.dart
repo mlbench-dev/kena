@@ -132,7 +132,11 @@ class Routes {
       final args = ModalRoute.of(context)?.settings.arguments;
       final showBackButton =
           args is Map<String, dynamic> && args['showBackButton'] == true;
-      return SubscriptionPlanScreen(showBackButton: showBackButton);
+      final isTrial = args is Map<String, dynamic> && args['isTrial'] == true;
+      return SubscriptionPlanScreen(
+        showBackButton: showBackButton,
+        isTrial: isTrial,
+      );
     },
   };
 

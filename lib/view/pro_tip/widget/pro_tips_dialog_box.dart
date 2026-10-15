@@ -25,37 +25,41 @@ class ProTipsDialogBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 268.h,
-      width: 343.w,
-      padding: EdgeInsets.all(16.w),
-      child: Column(
-        children: [
-          icon,
-          SizedBox(height: 10.h),
-          Text(
-            title,
-            style: context.typography.body.copyWith(
-              color: context.colors.primary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'sfpro',
+    // No fixed height: the dialog grows with the description, and scrolls if
+    // it is ever taller than the screen, so long text never overflows.
+    return SingleChildScrollView(
+      child: Container(
+        width: 343.w,
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            icon,
+            SizedBox(height: 10.h),
+            Text(
+              title,
+              style: context.typography.body.copyWith(
+                color: context.colors.primary,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'sfpro',
+              ),
             ),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            description,
-            textAlign: TextAlign.center,
-            style: context.typography.body.copyWith(
-              color: context.colors.textPrimary,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w400,
-              fontFamily: 'sfpro',
+            SizedBox(height: 10.h),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+              style: context.typography.body.copyWith(
+                color: context.colors.textPrimary,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'sfpro',
+              ),
             ),
-          ),
-          SizedBox(height: 10.h),
-          MyButton(label: buttonLabel, onPressed: onButtonPressed),
-        ],
+            SizedBox(height: 10.h),
+            MyButton(label: buttonLabel, onPressed: onButtonPressed),
+          ],
+        ),
       ),
     );
   }

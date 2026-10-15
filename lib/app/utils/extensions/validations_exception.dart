@@ -35,7 +35,7 @@ extension BioValidatorExtension on String {
 extension PasswordValidatorExtension on String {
   bool passwordValidator() {
     final passwordValid = RegExp(
-      r'^(?=.*[\p{Ll}])(?=.*[\p{Lu}])(?=.*\d)(?=.*[@$!%*?&#]).{8,}$',
+      r'^(?=.*[\p{Ll}])(?=.*[\p{Lu}])(?=.*\d)(?=.*[^a-zA-Z0-9\s]).{8,}$',
       unicode: true,
     ).hasMatch(this);
     return passwordValid;

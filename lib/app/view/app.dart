@@ -38,8 +38,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
       final connectivityProvider = context.read<ConnectivityProvider>();
 
-      final initial = await ConnectivityService.instance.checkConnection();
-      connectivityProvider.updateConnection(initial);
+      await connectivityProvider.refresh();
 
       ConnectivityService.instance.startListening(
         onStatusChanged: (isConnected) {
@@ -58,6 +57,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     debugPrint('🔄 AppLifecycleState -> $state at ${DateTime.now()}');
     if (state == AppLifecycleState.resumed) {
       _appUsageController.onAppResumed();
+      // Status may have gone stale while backgrounded; re-verify.
+      context.read<ConnectivityProvider>().refresh();
     } else if (state == AppLifecycleState.paused) {
       _appUsageController.onAppPaused();
     }
