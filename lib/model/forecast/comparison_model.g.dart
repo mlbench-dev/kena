@@ -36,10 +36,13 @@ ComparisonData _$ComparisonDataFromJson(Map<String, dynamic> json) =>
           ?.map((e) => ActivityToday.fromJson(e as Map<String, dynamic>))
           .toList(),
       activitiesCompleted: json['activitiesCompleted'] as List<dynamic>?,
-      thoughtMonitoring: json['thoughtMonitoring'] == null
+      thoughtMonitoring: ThoughtMonitoring.fromJsonValue(
+        json['thoughtMonitoring'],
+      ),
+      thoughtMonitoringChart: json['thoughtMonitoringChart'] == null
           ? null
-          : ThoughtMonitoring.fromJson(
-              json['thoughtMonitoring'] as Map<String, dynamic>,
+          : ThoughtMonitoringChart.fromJson(
+              json['thoughtMonitoringChart'] as Map<String, dynamic>,
             ),
     );
 
@@ -52,7 +55,10 @@ Map<String, dynamic> _$ComparisonDataToJson(
   'reality': instance.reality?.toJson(),
   'activitiesToday': instance.activitiesToday?.map((e) => e.toJson()).toList(),
   'activitiesCompleted': instance.activitiesCompleted,
-  'thoughtMonitoring': instance.thoughtMonitoring?.toJson(),
+  'thoughtMonitoring': ThoughtMonitoring.toJsonValue(
+    instance.thoughtMonitoring,
+  ),
+  'thoughtMonitoringChart': instance.thoughtMonitoringChart?.toJson(),
 };
 
 Forecast _$ForecastFromJson(Map<String, dynamic> json) => Forecast(
@@ -78,6 +84,8 @@ Reality _$RealityFromJson(Map<String, dynamic> json) => Reality(
   wentAsForecast: json['wentAsForecast'] as bool?,
   compareToForecast: (json['compareToForecast'] as num?)?.toInt(),
   planUseful: json['planUseful'] as bool?,
+  checkInType: json['checkInType'] as String?,
+  checkInAnswers: json['checkInAnswers'] as Map<String, dynamic>?,
   createdAt: json['createdAt'] as String?,
 );
 
@@ -86,6 +94,8 @@ Map<String, dynamic> _$RealityToJson(Reality instance) => <String, dynamic>{
   'wentAsForecast': instance.wentAsForecast,
   'compareToForecast': instance.compareToForecast,
   'planUseful': instance.planUseful,
+  'checkInType': instance.checkInType,
+  'checkInAnswers': instance.checkInAnswers,
   'createdAt': instance.createdAt,
 };
 
@@ -101,19 +111,23 @@ Map<String, dynamic> _$EmotionToJson(Emotion instance) => <String, dynamic>{
   'imageUrl': instance.imageUrl,
 };
 
-ThoughtMonitoring _$ThoughtMonitoringFromJson(Map<String, dynamic> json) =>
-    ThoughtMonitoring(
-      positive: (json['positive'] as num?)?.toInt(),
-      neutral: (json['neutral'] as num?)?.toInt(),
-      negative: (json['negative'] as num?)?.toInt(),
-    );
+ThoughtMonitoringPoint _$ThoughtMonitoringPointFromJson(
+  Map<String, dynamic> json,
+) => ThoughtMonitoringPoint(
+  positive: (json['positive'] as num?)?.toInt(),
+  neutral: (json['neutral'] as num?)?.toInt(),
+  negative: (json['negative'] as num?)?.toInt(),
+  skipped: (json['skipped'] as num?)?.toInt(),
+);
 
-Map<String, dynamic> _$ThoughtMonitoringToJson(ThoughtMonitoring instance) =>
-    <String, dynamic>{
-      'positive': instance.positive,
-      'neutral': instance.neutral,
-      'negative': instance.negative,
-    };
+Map<String, dynamic> _$ThoughtMonitoringPointToJson(
+  ThoughtMonitoringPoint instance,
+) => <String, dynamic>{
+  'positive': instance.positive,
+  'neutral': instance.neutral,
+  'negative': instance.negative,
+  'skipped': instance.skipped,
+};
 
 ActivityToday _$ActivityTodayFromJson(Map<String, dynamic> json) =>
     ActivityToday(

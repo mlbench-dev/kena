@@ -508,10 +508,8 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
 
           // TopActivitiesFlSection(activities: _thoughtMonitoringActivities),
           ThoughtMonitoring(
-            positive: [27.5, 10, 41.5, 27, 27.5],
-            negative: [24, 24, 10, 8, 24],
-            neutral: [23.5, 8.5, 11.5, 6.5, 4],
-            skipped: [25, 21.5, 32, 20.5, 25],
+            chart: _comparisonData?.thoughtMonitoringChart,
+            padding: const EdgeInsets.all(16),
           ),
           Text(
             'Notes',
@@ -573,7 +571,34 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
     );
   }
 
+  static const Map<String, String> _checkInQuestions = {
+    'wentWell': 'What was pleasant, cheerful or went well today?',
+    'heavy': 'What was heavy, unpleasant, draining etc. today?',
+    'selfObservation': 'Any observation on how you treated yourself today',
+    'handover': 'What are you handing-over to tomorrow / another day?',
+    'dayMetaphor': 'What would you like to note about today?',
+  };
+
   Widget _buildCheckinSection(BuildContext context) {
+    final answers = _reality?.checkInAnswers ?? {};
+
+    final checkIns = <CheckInContainer>[];
+    answers.forEach((key, value) {
+      final answer = value?.toString().trim() ?? '';
+      if (answer.isEmpty) return;
+
+      checkIns.add(
+        CheckInContainer(
+          question: _checkInQuestions[key] ?? key,
+          answer: answer,
+        ),
+      );
+    });
+
+    if (checkIns.isEmpty) return const SizedBox.shrink();
+
+    final checkInType = _reality?.checkInType == 'quick' ? 'Quick' : 'Full';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -587,7 +612,7 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
         ),
         SizedBox(height: 10.h),
         Text(
-          'Full',
+          checkInType,
           style: context.typography.headline.copyWith(
             fontSize: 15.sp,
             fontWeight: FontWeight.w500,
@@ -595,11 +620,11 @@ class _EndOfDayComparisonScreenState extends State<EndOfDayComparisonScreen> {
           ),
         ),
         SizedBox(height: 10.h),
-        CheckInContainer(
-          question: 'What was pleasant, cheerful or went well today?',
-          answer:
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-        ),
+        for (final checkIn in checkIns)
+          Padding(
+            padding: EdgeInsets.only(bottom: 10.h),
+            child: checkIn,
+          ),
       ],
     );
   }
@@ -982,12 +1007,14 @@ class CheckInContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         color: context.colors.textSecondary.withValues(alpha: 0.1),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             question,

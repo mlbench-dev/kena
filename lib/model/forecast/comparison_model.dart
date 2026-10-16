@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kena_emotional_journey/model/thought_monitoring/thought_monitoring_chart_model.dart';
 
 part 'comparison_model.g.dart';
 
@@ -27,7 +28,14 @@ class ComparisonData {
   /// Was List<Null> in the old model
   final List<dynamic>? activitiesCompleted;
 
+  @JsonKey(
+    fromJson: ThoughtMonitoring.fromJsonValue,
+    toJson: ThoughtMonitoring.toJsonValue,
+  )
   final ThoughtMonitoring? thoughtMonitoring;
+
+  /// Percentages per time slot for the Thought Monitoring graph.
+  final ThoughtMonitoringChart? thoughtMonitoringChart;
 
   ComparisonData({
     this.day,
@@ -37,6 +45,7 @@ class ComparisonData {
     this.activitiesToday,
     this.activitiesCompleted,
     this.thoughtMonitoring,
+    this.thoughtMonitoringChart,
   });
 
   factory ComparisonData.fromJson(Map<String, dynamic> json) =>
@@ -66,6 +75,13 @@ class Reality {
   final bool? wentAsForecast;
   final int? compareToForecast;
   final bool? planUseful;
+
+  /// "full" or "quick".
+  final String? checkInType;
+
+  /// Answers keyed by question: wentWell, heavy, selfObservation, handover
+  /// (full) or dayMetaphor (quick).
+  final Map<String, dynamic>? checkInAnswers;
   final String? createdAt;
 
   Reality({
@@ -73,6 +89,8 @@ class Reality {
     this.wentAsForecast,
     this.compareToForecast,
     this.planUseful,
+    this.checkInType,
+    this.checkInAnswers,
     this.createdAt,
   });
 
@@ -104,18 +122,59 @@ class Emotion {
   }
 }
 
+/// Thought counts for one point on the Thought Monitoring chart.
 @JsonSerializable()
-class ThoughtMonitoring {
+class ThoughtMonitoringPoint {
   final int? positive;
   final int? neutral;
   final int? negative;
+  final int? skipped;
 
-  ThoughtMonitoring({this.positive, this.neutral, this.negative});
+  ThoughtMonitoringPoint({
+    this.positive,
+    this.neutral,
+    this.negative,
+    this.skipped,
+  });
 
-  factory ThoughtMonitoring.fromJson(Map<String, dynamic> json) =>
-      _$ThoughtMonitoringFromJson(json);
+  int get total =>
+      (positive ?? 0) + (neutral ?? 0) + (negative ?? 0) + (skipped ?? 0);
 
-  Map<String, dynamic> toJson() => _$ThoughtMonitoringToJson(this);
+  factory ThoughtMonitoringPoint.fromJson(Map<String, dynamic> json) =>
+      _$ThoughtMonitoringPointFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ThoughtMonitoringPointToJson(this);
+}
+
+/// `thoughtMonitoring` from the API: either one counts object
+/// (`{positive: 2, neutral: 12, ...}`) or a list of them, one per point.
+class ThoughtMonitoring {
+  final List<ThoughtMonitoringPoint> points;
+
+  ThoughtMonitoring({this.points = const []});
+
+  int get positive => points.fold(0, (sum, p) => sum + (p.positive ?? 0));
+  int get neutral => points.fold(0, (sum, p) => sum + (p.neutral ?? 0));
+  int get negative => points.fold(0, (sum, p) => sum + (p.negative ?? 0));
+  int get skipped => points.fold(0, (sum, p) => sum + (p.skipped ?? 0));
+
+  static ThoughtMonitoring? fromJsonValue(Object? json) {
+    if (json is List) {
+      return ThoughtMonitoring(
+        points: json
+            .whereType<Map<String, dynamic>>()
+            .map(ThoughtMonitoringPoint.fromJson)
+            .toList(),
+      );
+    }
+    if (json is Map<String, dynamic>) {
+      return ThoughtMonitoring(points: [ThoughtMonitoringPoint.fromJson(json)]);
+    }
+    return null;
+  }
+
+  static Object? toJsonValue(ThoughtMonitoring? value) =>
+      value?.points.map((p) => p.toJson()).toList();
 }
 
 @JsonSerializable()

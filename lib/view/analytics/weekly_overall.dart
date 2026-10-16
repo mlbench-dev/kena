@@ -5,13 +5,14 @@ import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart';
+import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart'
+    hide ThoughtMonitoring;
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/provider/weekly_sharing_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:kena_emotional_journey/view/activities/widgets/thought_monitoring_widget.dart';
+import 'package:kena_emotional_journey/view/forecast/widgets/thought_monitoring.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/progress_card.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/top_activities_section.dart';
@@ -145,31 +146,6 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     }).toList();
   }
 
-  List<ThoughtCategory> _getThoughtCategories() {
-    final tm = _data?.thoughtMonitoring;
-    if (tm == null) return [];
-    return [
-      ThoughtCategory(
-        label: "Positive",
-        percentage: (tm.positive ?? 0).toDouble(),
-        color: const Color(0xFF1E5631),
-        icon: Assets.images.batteryCharge.image(),
-      ),
-      ThoughtCategory(
-        label: "Negative",
-        percentage: (tm.negative ?? 0).toDouble(),
-        color: const Color(0xFFD90000),
-        icon: Assets.images.batteryLow.image(),
-      ),
-      ThoughtCategory(
-        label: "Neutral",
-        percentage: (tm.neutral ?? 0).toDouble(),
-        color: const Color(0xFFC8A200),
-        icon: const Icon(Icons.remove, color: Color(0xFFC8A200), size: 28),
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     final sharing = context.watch<WeeklySharingController>();
@@ -197,8 +173,6 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     final coreEmotions = _getCoreEmotions();
     final aspirationalEmotions = _getAspirationalEmotions();
     final topActivities = _getTopActivities();
-    final thoughtCategories = _getThoughtCategories();
-    final thoughtGoal = _data?.thoughtMonitoring?.total ?? 0;
 
     return SingleChildScrollView(
       child: Column(
@@ -292,12 +266,8 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
           SizedBox(height: 16.h),
           TopActivitiesFlSection(activities: topActivities),
           SizedBox(height: 16.h),
-          if (thoughtCategories.isNotEmpty)
-            ThoughtMonitoringWidget(
-              categories: thoughtCategories,
-              goal: thoughtGoal,
-            ),
-          if (thoughtCategories.isNotEmpty) SizedBox(height: 16.h),
+          ThoughtMonitoring(chart: _data?.thoughtMonitoringChart),
+          SizedBox(height: 16.h),
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(16.w),
