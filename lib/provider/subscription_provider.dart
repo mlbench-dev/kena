@@ -44,6 +44,14 @@ class SubscriptionProvider extends ChangeNotifier {
     return all.length <= FreemiumLimits.maxActivities;
   }
 
+  /// True when a Freemium user already has [FreemiumLimits.maxActivities]
+  /// distinct activities, i.e. no new activity can be added.
+  bool hasReachedActivityLimit(Iterable<String> existingNames) {
+    if (canUse(PremiumFeature.unlimitedActivities)) return false;
+    final names = existingNames.map(_normalize).toSet()..remove('');
+    return names.length >= FreemiumLimits.maxActivities;
+  }
+
   static String _normalize(String name) => name.trim().toLowerCase();
 
   @override

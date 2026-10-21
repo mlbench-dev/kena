@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
@@ -31,11 +32,21 @@ class WeeklySharingController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> startSharing(BuildContext context) async {
+  /// The user's local date as `yyyy-MM-dd`. The weekly feed, shared-users and
+  /// stop-sharing calls must all send the same date; without one the server
+  /// falls back to its UTC date, which near midnight differs from local.
+  static String localDate([DateTime? date]) =>
+      DateFormat('yyyy-MM-dd').format(date ?? DateTime.now());
+
+  /// [endDate] should be the same date the weekly feed was loaded with.
+  Future<void> startSharing(BuildContext context, {String? endDate}) async {
     if (!context.requirePremium(PremiumFeature.shareWeeklyForecast)) return;
     final shared = await MyDialogBox.show<bool>(
       context,
-      child: ShareWeeklyDialog(parentContext: context),
+      child: ShareWeeklyDialog(
+        parentContext: context,
+        endDate: endDate ?? localDate(),
+      ),
     );
 
     if (shared == true) {
@@ -44,36 +55,24 @@ class WeeklySharingController extends ChangeNotifier {
     }
   }
 
-  Future<void> stopSharing(BuildContext context) async {
+  /// Stops sharing the weekly forecast for the week ending on [endDate]
+  /// (same date as the feed). No member list is needed for this.
+  Future<void> stopSharing(BuildContext context, {String? endDate}) async {
     if (_isStopping) return;
-
-    final sharedResult = await _service.getSharedMembers(context: context);
-    if (!context.mounted) return;
-
-    final userIds =
-        sharedResult?.data?.map((m) => m.id).whereType<String>().toList() ?? [];
-    if (userIds.isEmpty) {
-      context.flushBarErrorMessage(message: 'No shared members found');
-      return;
-    }
 
     _isStopping = true;
     notifyListeners();
 
-    final today = DateTime.now().toIso8601String().split('T')[0];
-    final success = await _service.stopSharingWeeklyForecast(
-      userIds: userIds,
-      endDate: today,
+    final isStillShared = await _service.stopSharingWeeklyForecast(
+      endDate: endDate ?? localDate(),
       context: context,
     );
 
     _isStopping = false;
-    if (success) {
-      _isShared = false;
-    }
+    if (isStillShared != null) _isShared = isStillShared;
     notifyListeners();
 
-    if (success && context.mounted) {
+    if (isStillShared == false && context.mounted) {
       context.flushBarSuccessMessage(
         message: 'Stopped sharing weekly forecast',
       );

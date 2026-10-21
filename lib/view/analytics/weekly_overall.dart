@@ -362,9 +362,17 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
 // =========================================================
 
 class ShareWeeklyDialog extends StatefulWidget {
-  const ShareWeeklyDialog({super.key, required this.parentContext});
+  const ShareWeeklyDialog({
+    super.key,
+    required this.parentContext,
+    this.endDate,
+  });
 
   final BuildContext parentContext;
+
+  /// Week end date (`yyyy-MM-dd`) to share; should match the weekly feed's
+  /// date. Defaults to the user's local today.
+  final String? endDate;
 
   @override
   State<ShareWeeklyDialog> createState() => _ShareWeeklyDialogState();
@@ -427,10 +435,9 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
 
     setState(() => _isSending = true);
 
-    final today = DateTime.now().toIso8601String().split('T')[0];
     final success = await _service.shareWeeklyForecast(
       memberIds: selectedIds,
-      endDate: today,
+      endDate: widget.endDate ?? WeeklySharingController.localDate(),
       message: 'Here is my forecast for this week!',
       context: widget.parentContext,
     );

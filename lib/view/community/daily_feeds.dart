@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
-import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/daily_feed_model.dart';
 import 'package:kena_emotional_journey/model/emotions/emotions_list.dart';
@@ -409,7 +409,7 @@ class _FeedCardState extends State<FeedCard> {
       children: [
         // ── Author header ─────────────────────────────────────────────────
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _Avatar(url: author?.avatarUrl),
             SizedBox(width: 10.w),
@@ -462,13 +462,13 @@ class _FeedCardState extends State<FeedCard> {
         ],
 
         // ── Reflection card ───────────────────────────────────────────────
-        if (reflection != null) ...[
-          _ReflectionCard(
-            reflection: reflection,
-            forecastEmotions: forecast?.emotions,
-          ),
-          SizedBox(height: 12.h),
-        ],
+        // if (reflection != null) ...[
+        //   _ReflectionCard(
+        //     reflection: reflection,
+        //     forecastEmotions: forecast?.emotions,
+        //   ),
+        //   SizedBox(height: 12.h),
+        // ],
 
         // ── Actions row ───────────────────────────────────────────────────
         Row(
@@ -589,8 +589,8 @@ class _ForecastCard extends StatelessWidget {
           // Emotion chips — only show for emotions WITHOUT images
           if (chipEmotions.isNotEmpty)
             Wrap(
-              spacing: 8.w,
-              runSpacing: 6.h,
+              spacing: 6.w,
+              runSpacing: 5.h,
               alignment: WrapAlignment.start, // 👈 Align chips from start
               children: chipEmotions
                   .map((e) => _FeelingChip(emotionKey: e.key))
@@ -735,179 +735,179 @@ class _ForecastCard extends StatelessWidget {
 // REFLECTION CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _ReflectionCard extends StatelessWidget {
-  final Reflection reflection;
-  final List<Emotion>? forecastEmotions;
+// class _ReflectionCard extends StatelessWidget {
+//   final Reflection reflection;
+//   final List<Emotion>? forecastEmotions;
 
-  const _ReflectionCard({required this.reflection, this.forecastEmotions});
+//   const _ReflectionCard({required this.reflection, this.forecastEmotions});
 
-  @override
-  Widget build(BuildContext context) {
-    final emotions = reflection.emotions ?? [];
-    final imageEmotions = emotions
-        .where((e) => e.imageUrl != null && e.imageUrl!.trim().isNotEmpty)
-        .toList();
+//   @override
+//   Widget build(BuildContext context) {
+//     final emotions = reflection.emotions ?? [];
+//     final imageEmotions = emotions
+//         .where((e) => e.imageUrl != null && e.imageUrl!.trim().isNotEmpty)
+//         .toList();
 
-    final forecastKeys = (forecastEmotions ?? [])
-        .map((e) => e.key?.toLowerCase())
-        .where((k) => k != null)
-        .toSet();
-    final reflectionKeys = emotions
-        .map((e) => e.key?.toLowerCase())
-        .where((k) => k != null)
-        .toSet();
+//     final forecastKeys = (forecastEmotions ?? [])
+//         .map((e) => e.key?.toLowerCase())
+//         .where((k) => k != null)
+//         .toSet();
+//     final reflectionKeys = emotions
+//         .map((e) => e.key?.toLowerCase())
+//         .where((k) => k != null)
+//         .toSet();
 
-    final matched = reflectionKeys
-        .intersection(forecastKeys)
-        .map((k) => EmotionsList.getTitleByKey(k ?? ''))
-        .join(', ');
-    final different = reflectionKeys
-        .difference(forecastKeys)
-        .map((k) => EmotionsList.getTitleByKey(k ?? ''))
-        .join(', ');
-    final chipEmotions = emotions
-        .where((e) => e.imageUrl == null || e.imageUrl!.trim().isEmpty)
-        .toList();
+//     final matched = reflectionKeys
+//         .intersection(forecastKeys)
+//         .map((k) => EmotionsList.getTitleByKey(k ?? ''))
+//         .join(', ');
+//     final different = reflectionKeys
+//         .difference(forecastKeys)
+//         .map((k) => EmotionsList.getTitleByKey(k ?? ''))
+//         .join(', ');
+//     final chipEmotions = emotions
+//         .where((e) => e.imageUrl == null || e.imageUrl!.trim().isEmpty)
+//         .toList();
 
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: context.colors.background,
-        border: Border.all(
-          color: context.colors.textSecondary.withValues(alpha: 0.2),
-        ),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "End of Day",
-            style: context.typography.headline.copyWith(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(height: 10.h),
+//     return Container(
+//       padding: EdgeInsets.all(16.w),
+//       width: double.infinity,
+//       decoration: BoxDecoration(
+//         color: context.colors.background,
+//         border: Border.all(
+//           color: context.colors.textSecondary.withValues(alpha: 0.2),
+//         ),
+//         borderRadius: BorderRadius.circular(12.r),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             "End of Day",
+//             style: context.typography.headline.copyWith(
+//               fontSize: 15.sp,
+//               fontWeight: FontWeight.w600,
+//             ),
+//           ),
+//           SizedBox(height: 10.h),
 
-          if (chipEmotions.isNotEmpty)
-            Wrap(
-              spacing: 8.w,
-              runSpacing: 6.h,
-              alignment: WrapAlignment.start, // 👈 Align chips from start
-              children: chipEmotions
-                  .map((e) => _FeelingChip(emotionKey: e.key))
-                  .toList(),
-            ),
+//           if (chipEmotions.isNotEmpty)
+//             Wrap(
+//               spacing: 8.w,
+//               runSpacing: 6.h,
+//               alignment: WrapAlignment.start, // 👈 Align chips from start
+//               children: chipEmotions
+//                   .map((e) => _FeelingChip(emotionKey: e.key))
+//                   .toList(),
+//             ),
 
-          if (chipEmotions.isNotEmpty) SizedBox(height: 10.h),
+//           if (chipEmotions.isNotEmpty) SizedBox(height: 10.h),
 
-          // Emotion images - show all images (up to 3 in a row)
-          if (imageEmotions.isNotEmpty)
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final maxWidth = constraints.maxWidth;
-                final itemWidth = imageEmotions.length == 1
-                    ? maxWidth
-                    : (maxWidth - (imageEmotions.length - 1) * 8.w) /
-                          imageEmotions.length.clamp(2, 3);
+//           // Emotion images - show all images (up to 3 in a row)
+//           if (imageEmotions.isNotEmpty)
+//             LayoutBuilder(
+//               builder: (context, constraints) {
+//                 final maxWidth = constraints.maxWidth;
+//                 final itemWidth = imageEmotions.length == 1
+//                     ? maxWidth
+//                     : (maxWidth - (imageEmotions.length - 1) * 8.w) /
+//                           imageEmotions.length.clamp(2, 3);
 
-                return Wrap(
-                  spacing: 8.w,
-                  runSpacing: 8.h,
-                  alignment: WrapAlignment
-                      .start, // 👈 Ensures row grid builds from left/start
-                  children: imageEmotions.take(3).map((emotion) {
-                    return _EmotionImageSlot(
-                      emotionKey: emotion.key,
-                      imageUrl: emotion.imageUrl,
-                      width: itemWidth,
-                      height: 140.h,
-                    );
-                  }).toList(),
-                );
-              },
-            ),
+//                 return Wrap(
+//                   spacing: 8.w,
+//                   runSpacing: 8.h,
+//                   alignment: WrapAlignment
+//                       .start, // 👈 Ensures row grid builds from left/start
+//                   children: imageEmotions.take(3).map((emotion) {
+//                     return _EmotionImageSlot(
+//                       emotionKey: emotion.key,
+//                       imageUrl: emotion.imageUrl,
+//                       width: itemWidth,
+//                       height: 140.h,
+//                     );
+//                   }).toList(),
+//                 );
+//               },
+//             ),
 
-          SizedBox(height: 10.h),
+//           SizedBox(height: 10.h),
 
-          // Forecast vs Actual comparison
-          Container(
-            padding: EdgeInsets.all(8.w),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF2F2F4),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Forecast vs Actual:",
-                  style: context.typography.headline.copyWith(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    color: context.colors.textPrimary,
-                    fontFamily: "sfpro",
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                if (matched.isNotEmpty)
-                  Row(
-                    children: [
-                      Text(
-                        "✓",
-                        style: context.typography.headline.copyWith(
-                          fontSize: 11.sp,
-                          color: context.colors.primary,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          " Matched: $matched",
-                          style: context.typography.headline.copyWith(
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.w400,
-                            color: context.colors.textPrimary,
-                            fontFamily: "Raleway",
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                if (matched.isNotEmpty && different.isNotEmpty)
-                  SizedBox(height: 6.h),
-                if (different.isNotEmpty)
-                  Text(
-                    "✗ Different: $different",
-                    style: context.typography.headline.copyWith(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w400,
-                      color: context.colors.textSecondary,
-                      fontFamily: "Raleway",
-                    ),
-                  ),
-                if (matched.isEmpty && different.isEmpty)
-                  Text(
-                    reflection.wentAsForecast == true
-                        ? "✓ Went as forecasted"
-                        : "Day differed from forecast",
-                    style: context.typography.headline.copyWith(
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w400,
-                      color: context.colors.textSecondary,
-                      fontFamily: "Raleway",
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//           // Forecast vs Actual comparison
+//           Container(
+//             padding: EdgeInsets.all(8.w),
+//             width: double.infinity,
+//             decoration: BoxDecoration(
+//               color: const Color(0xFFF2F2F4),
+//               borderRadius: BorderRadius.circular(12.r),
+//             ),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   "Forecast vs Actual:",
+//                   style: context.typography.headline.copyWith(
+//                     fontSize: 11.sp,
+//                     fontWeight: FontWeight.w600,
+//                     color: context.colors.textPrimary,
+//                     fontFamily: "sfpro",
+//                   ),
+//                 ),
+//                 SizedBox(height: 10.h),
+//                 if (matched.isNotEmpty)
+//                   Row(
+//                     children: [
+//                       Text(
+//                         "✓",
+//                         style: context.typography.headline.copyWith(
+//                           fontSize: 11.sp,
+//                           color: context.colors.primary,
+//                         ),
+//                       ),
+//                       Expanded(
+//                         child: Text(
+//                           " Matched: $matched",
+//                           style: context.typography.headline.copyWith(
+//                             fontSize: 11.sp,
+//                             fontWeight: FontWeight.w400,
+//                             color: context.colors.textPrimary,
+//                             fontFamily: "Raleway",
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 if (matched.isNotEmpty && different.isNotEmpty)
+//                   SizedBox(height: 6.h),
+//                 if (different.isNotEmpty)
+//                   Text(
+//                     "✗ Different: $different",
+//                     style: context.typography.headline.copyWith(
+//                       fontSize: 11.sp,
+//                       fontWeight: FontWeight.w400,
+//                       color: context.colors.textSecondary,
+//                       fontFamily: "Raleway",
+//                     ),
+//                   ),
+//                 if (matched.isEmpty && different.isEmpty)
+//                   Text(
+//                     reflection.wentAsForecast == true
+//                         ? "✓ Went as forecasted"
+//                         : "Day differed from forecast",
+//                     style: context.typography.headline.copyWith(
+//                       fontSize: 11.sp,
+//                       fontWeight: FontWeight.w400,
+//                       color: context.colors.textSecondary,
+//                       fontFamily: "Raleway",
+//                     ),
+//                   ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED: EMOTION IMAGE SLOT
@@ -1043,7 +1043,7 @@ class _FeelingChip extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       backgroundColor: const Color(0xFFF2F2F4),
       label: Padding(
-        padding: EdgeInsets.all(4.w),
+        padding: EdgeInsets.all(3.w),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

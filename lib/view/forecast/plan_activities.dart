@@ -346,12 +346,14 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
         ],
       ),
       appBar: AppBar(
-        title: Text(
-          'Expected truth',
-          style: context.typography.title.copyWith(
-            fontSize: 20.sp,
-            fontFamily: 'sfpro',
-            fontWeight: FontWeight.w600,
+        title: Center(
+          child: Text(
+            'Expected truth',
+            style: context.typography.title.copyWith(
+              fontSize: 20.sp,
+              fontFamily: 'sfpro',
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         leading: BackButton(color: context.colors.textPrimary),
@@ -395,10 +397,11 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               ),
               SizedBox(height: 10.h),
               MyTextField(
-                fillColor: context.colors.textSecondary.withValues(alpha: 0.08),
+                fillColor: context.colors.textSecondary.withValues(alpha: 0.07),
                 controller: _planController,
                 hint: 'Write your plan thinking: Truth - Plan - Result',
                 maxLines: 4,
+                borderColor: context.colors.background,
               ),
               SizedBox(height: 20.h),
 
@@ -497,7 +500,9 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
     );
   }
 
-  void _showAddActivitySheet() {
+  /// [onAdded] runs after the activity is added, so an open dialog can
+  /// rebuild and show it straight away.
+  void _showAddActivitySheet({VoidCallback? onAdded}) {
     _customActivityController.clear();
 
     MyBottomSheet.show(
@@ -515,6 +520,7 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
         onSave: (name) async {
           Navigator.pop(context);
           if (!await _withinActivityLimit([name])) return;
+          if (!mounted) return;
           setState(() {
             final existingIndex = _activities.indexWhere(
               (item) => item.title.toLowerCase() == name.toLowerCase(),
@@ -533,6 +539,7 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               );
             }
           });
+          onAdded?.call();
         },
       ),
     );
@@ -763,7 +770,11 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
                   label: 'Add Custom Activity',
                   onPressed: () {
                     // Navigator.pop(dialogContext);
-                    _showAddActivitySheet();
+                    _showAddActivitySheet(
+                      onAdded: () {
+                        if (dialogContext.mounted) setDialogState(() {});
+                      },
+                    );
                   },
                 ),
                 SizedBox(height: 10.h),

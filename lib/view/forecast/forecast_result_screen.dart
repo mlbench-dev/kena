@@ -7,20 +7,20 @@ import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_circle_checkbox.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
-import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/my_text_field.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+// import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/app/utils/tour_controller.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_notes.dart';
-// import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
-import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
@@ -1017,22 +1017,23 @@ class _InviteFriendsDialogState extends State<InviteFriendsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(),
-            SizedBox(height: 10.h),
-            _buildDescription(),
-            SizedBox(height: 10.h),
-            _buildMembersSection(),
-            const Spacer(),
-            _buildSendButton(),
-          ],
-        ),
+    // Sized by its content (no fixed height) so long text, large font
+    // scales or the empty-members state never overflow; scrolls if taller
+    // than the space the dialog is given.
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTitle(),
+          SizedBox(height: 10.h),
+          _buildDescription(),
+          SizedBox(height: 10.h),
+          _buildMembersSection(),
+          SizedBox(height: 16.h),
+          _buildSendButton(),
+        ],
       ),
     );
   }

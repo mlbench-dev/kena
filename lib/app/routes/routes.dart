@@ -171,6 +171,7 @@ class Routes {
       case RoutesName.newPassword:
         final args = _getArgs(settings, requiredKeys: ['email', 'otp']);
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) =>
               ResetPassword(email: args['email'] as String, otp: args['otp']),
         );
@@ -178,6 +179,7 @@ class Routes {
         final email = settings.arguments as String;
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => EmailVerification(email: email),
         );
       // case RoutesName.myCommunity:
@@ -190,6 +192,7 @@ class Routes {
         final communityName = args?['communityName'] as String? ?? '';
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => FeedsScreen(
             communityId: communityId,
             communityName: communityName,
@@ -200,6 +203,7 @@ class Routes {
         final date = args?['date'] as DateTime? ?? DateTime.now();
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => SelectTodayForecast(date: date),
         );
       case RoutesName.coreEmotions:
@@ -207,6 +211,7 @@ class Routes {
         final isFromHome = args?['isFromHome'] as bool? ?? false;
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => CoreEmotions(isFromHome: isFromHome),
         );
       case RoutesName.aspirationalEmotions:
@@ -214,6 +219,7 @@ class Routes {
         final isFromHome = args?['isFromHome'] as bool? ?? false;
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => AspirationalEmotions(isFromHome: isFromHome),
         );
       case RoutesName.chooseActivity:
@@ -223,6 +229,7 @@ class Routes {
         final navigateToSummaryAfterSave =
             args?['navigateToSummaryAfterSave'] as bool? ?? false;
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => ChooseActivity(
             isToday: isToday,
             isFromForecast: isFromForecast,
@@ -233,6 +240,7 @@ class Routes {
         final args = settings.arguments;
         final forecastData = args is ForecastData ? args : null;
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => ForecastResultScreen(forecastData: forecastData),
         );
       default:

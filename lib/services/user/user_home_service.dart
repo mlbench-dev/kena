@@ -1060,11 +1060,18 @@ class UserHomeService {
   ///
   /// getSharedMembers — GET /api/journal/forecast/shared-users
   ///
+  /// Pass `range: 'week'` and the feed's [endDate] to get who the weekly
+  /// forecast is shared with; omit both for the daily forecast.
   Future<CommunityMembers?> getSharedMembers({
     required BuildContext context,
+    String? range,
+    String? endDate,
   }) async {
     try {
-      final response = await _userHomeRepo.getStopSharingMembers();
+      final response = await _userHomeRepo.getStopSharingMembers(
+        range: range,
+        endDate: endDate,
+      );
       debugPrint('Get Shared Members Raw: $response');
 
       // Debug: inspect the actual keys in each user object
@@ -1109,23 +1116,39 @@ class UserHomeService {
   ///
   /// stopSharingWeeklyForecast — POST /api/journal/forecast/stop-sharing-weekly
   ///
-  Future<bool> stopSharingWeeklyForecast({
-    required List<String> userIds,
+  /// Returns the weekly forecast's sharing status after the call (from the
+  /// response's `isWeeklyShared`, `false` if the server omits it), or `null`
+  /// when the request failed.
+  Future<bool?> stopSharingWeeklyForecast({
     String? endDate,
     required BuildContext context,
   }) async {
     try {
       final response = await _userHomeRepo.stopSharingWeeklyForecast(
-        userIds: userIds,
         endDate: endDate,
       );
       debugPrint('Stop Sharing Weekly Forecast Raw: $response');
-      return response['success'] == true;
+      if (response['success'] != true) {
+        if (context.mounted) {
+          ErrorHandler.handle(
+            context,
+            response['message'] ?? 'Failed to stop sharing',
+            serviceName: tag,
+          );
+        }
+        return null;
+      }
+      final data = response['data'];
+      final first = data is List && data.isNotEmpty ? data.first : data;
+      final isWeeklyShared =
+          response['isWeeklyShared'] ??
+          (first is Map ? first['isWeeklyShared'] : null);
+      return isWeeklyShared == true;
     } catch (e) {
       if (context.mounted) {
         ErrorHandler.handle(context, e, serviceName: tag);
       }
-      return false;
+      return null;
     }
   }
 

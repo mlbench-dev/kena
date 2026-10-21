@@ -75,8 +75,39 @@ class NavigationActionsController extends ChangeNotifier {
     }
   }
 
+  // Screens that belong to each drawer section. Tapping a section while
+  // already on one of its screens just closes the drawer instead of pushing
+  // a duplicate copy of the screen.
+  static const _aspireRoutes = {
+    RoutesName.selectedEmotionsScreen,
+    RoutesName.coreEmotions,
+    RoutesName.aspirationalEmotions,
+    RoutesName.emotionsSummary,
+  };
+  static const _forecastRoutes = {
+    RoutesName.startForecastScreen,
+    RoutesName.forecastResultScreen,
+    RoutesName.endDayComparisonScreen,
+  };
+  static const _activitiesRoutes = {RoutesName.activitiesScreen};
+  static const _analyticsRoutes = {RoutesName.analyticsScreen};
+  static const _communityRoutes = {
+    RoutesName.emptyCommunity,
+    RoutesName.myCommunity,
+  };
+
+  /// Returns `true` when the current screen is already one of [routes]. Also
+  /// closes the drawer if it is still open (async drawer items leave it open).
+  bool _isAlreadyOn(BuildContext context, Set<String> routes) {
+    final route = ModalRoute.of(context);
+    if (route == null || !routes.contains(route.settings.name)) return false;
+    if (route.willHandlePopInternally) Navigator.pop(context);
+    return true;
+  }
+
   Future<void> onAspireTap(BuildContext context) async {
     if (_aspireLoading) return;
+    if (_isAlreadyOn(context, _aspireRoutes)) return;
     if (!await _requireConnection(context)) return;
     if (!context.mounted) return;
     _setAspireLoading(true);
@@ -109,6 +140,7 @@ class NavigationActionsController extends ChangeNotifier {
 
   Future<void> onForecastTap(BuildContext context) async {
     if (_forecastLoading) return;
+    if (_isAlreadyOn(context, _forecastRoutes)) return;
     if (!await _requireConnection(context)) return;
     if (!context.mounted) return;
     _setForecastLoading(true);
@@ -203,18 +235,21 @@ class NavigationActionsController extends ChangeNotifier {
   }
 
   Future<void> onActivitiesTap(BuildContext context) async {
+    if (_isAlreadyOn(context, _activitiesRoutes)) return;
     if (!await _requireConnection(context)) return;
     if (!context.mounted) return;
     Navigator.pushNamed(context, RoutesName.activitiesScreen);
   }
 
   Future<void> onAnalyticsTap(BuildContext context) async {
+    if (_isAlreadyOn(context, _analyticsRoutes)) return;
     if (!await _requireConnection(context)) return;
     if (!context.mounted) return;
     Navigator.pushNamed(context, RoutesName.analyticsScreen);
   }
 
   Future<void> onCommunityTap(BuildContext context) async {
+    if (_isAlreadyOn(context, _communityRoutes)) return;
     if (!await _requireConnection(context)) return;
     if (!context.mounted) return;
     if (_sessionController.communityId == null ||
