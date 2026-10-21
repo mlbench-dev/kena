@@ -17,6 +17,7 @@ import 'package:kena_emotional_journey/model/forecast/comparison_model.dart'
     as comparison;
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/image_picker.dart';
 import 'package:kena_emotional_journey/services/common/upload_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -350,6 +351,12 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
           ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
+          ),
         ],
       ),
       appBar: AppBar(
@@ -436,7 +443,7 @@ class _EndDayReflectionScreenState extends State<EndDayReflectionScreen>
               // ── Search ───────────────────────────────────────────────────
               MyTextField(
                 controller: searchController,
-                hint: "Search by emotion name / body sensation",
+                hint: searchHint,
                 borderColor: const Color(0xFFd0d0d0),
                 fillColor: Colors.transparent,
                 hintColor: context.colors.textPrimary,

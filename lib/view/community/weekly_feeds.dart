@@ -57,10 +57,16 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
     }
   }
 
+  /// Local date the feed was loaded for. Sent as the feed's `?date=` and as
+  /// `endDate` when sharing/unsharing, so all three calls agree on the week.
+  String _feedDate = WeeklySharingController.localDate();
+
   Future<void> _loadWeeklyFeed() async {
+    _feedDate = WeeklySharingController.localDate();
     final data = await _service.getWeeklyFeed(
       communityId: widget.communityId,
       scope: widget.scope,
+      date: _feedDate,
       context: context,
     );
 
@@ -147,8 +153,13 @@ class _WeeklyFeedsState extends State<WeeklyFeeds> {
                   child: SharingToggleButton(
                     isShared: sharing.isShared,
                     isBusy: sharing.isStopping,
-                    onStart: () => sharing.startSharing(context),
-                    onStop: () => sharing.stopSharing(context),
+                    onStart: () =>
+                        sharing.startSharing(context, endDate: _feedDate),
+                    onStop: () async {
+                      await sharing.stopSharing(context, endDate: _feedDate);
+                      // Re-sync with the server's view of the week.
+                      if (mounted) await _loadWeeklyFeed();
+                    },
                   ),
                 ),
               if (widget.scope == 'me') SizedBox(height: 16.h),

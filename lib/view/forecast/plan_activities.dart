@@ -14,6 +14,8 @@ import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/analytics/forecast_plan_activities.dart';
 import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:kena_emotional_journey/view/activities/widgets/add_activity_bottom_sheet.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -66,6 +68,21 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
   bool _isSaving = false;
   String? _errorMessage;
   final UserHomeService _service = UserHomeService();
+  // Fetched once, only for Freemium users, to enforce the activity limit.
+  Future<List<String>>? _existingActivityNames;
+
+  /// Freemium limit check: the checked activities plus [extraNames] must fit
+  /// alongside the user's existing Today and Planned activities.
+  Future<bool> _withinActivityLimit(Iterable<String> extraNames) {
+    return context.requireActivitySlots(
+      existingNames: () => _existingActivityNames ??= _service
+          .getAllActivityNames(context: context),
+      newNames: [
+        ..._activities.where((a) => a.isChecked).map((a) => a.title),
+        ...extraNames,
+      ],
+    );
+  }
 
   @override
   void initState() {
@@ -183,6 +200,8 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
       }
       return;
     }
+
+    if (!await _withinActivityLimit(const [])) return;
 
     setState(() {
       _isSaving = true;
@@ -318,15 +337,23 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
           ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
+          ),
         ],
       ),
       appBar: AppBar(
-        title: Text(
-          'Todays plan & activities',
-          style: context.typography.title.copyWith(
-            fontSize: 20.sp,
-            fontFamily: 'sfpro',
-            fontWeight: FontWeight.w600,
+        title: Center(
+          child: Text(
+            'Expected truth',
+            style: context.typography.title.copyWith(
+              fontSize: 20.sp,
+              fontFamily: 'sfpro',
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         leading: BackButton(color: context.colors.textPrimary),
@@ -356,10 +383,11 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20.h),
               Text(
-                'How will you tackle today’s emotional forecast e.g. umbrella for the rain? What small steps bring you closer to your goals e.g. seeds for the garden?',
+                'Meeting X will be frustrating or annoying.',
                 style: context.typography.body.copyWith(
                   fontSize: 14.sp,
                   fontFamily: 'sfpro',
@@ -369,10 +397,11 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               ),
               SizedBox(height: 10.h),
               MyTextField(
-                fillColor: context.colors.textSecondary.withValues(alpha: 0.08),
+                fillColor: context.colors.textSecondary.withValues(alpha: 0.07),
                 controller: _planController,
-                hint: 'Write your plan here and/or curate activities below...',
+                hint: 'Write your plan thinking: Truth - Plan - Result',
                 maxLines: 4,
+                borderColor: context.colors.background,
               ),
               SizedBox(height: 20.h),
 
@@ -471,7 +500,9 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
     );
   }
 
-  void _showAddActivitySheet() {
+  /// [onAdded] runs after the activity is added, so an open dialog can
+  /// rebuild and show it straight away.
+  void _showAddActivitySheet({VoidCallback? onAdded}) {
     _customActivityController.clear();
 
     MyBottomSheet.show(
@@ -488,6 +519,8 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
 
         onSave: (name) async {
           Navigator.pop(context);
+          if (!await _withinActivityLimit([name])) return;
+          if (!mounted) return;
           setState(() {
             final existingIndex = _activities.indexWhere(
               (item) => item.title.toLowerCase() == name.toLowerCase(),
@@ -506,6 +539,7 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
               );
             }
           });
+          onAdded?.call();
         },
       ),
     );
@@ -736,7 +770,11 @@ class _PlanAndActivitiesState extends State<PlanAndActivities> {
                   label: 'Add Custom Activity',
                   onPressed: () {
                     // Navigator.pop(dialogContext);
-                    _showAddActivitySheet();
+                    _showAddActivitySheet(
+                      onAdded: () {
+                        if (dialogContext.mounted) setDialogState(() {});
+                      },
+                    );
                   },
                 ),
                 SizedBox(height: 10.h),

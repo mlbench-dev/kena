@@ -4,6 +4,11 @@ import 'package:kena_emotional_journey/model/emotions/emotion_category.dart';
 import 'package:kena_emotional_journey/model/emotions/search_library.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/app/components/premium_dialog.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
+import 'package:provider/provider.dart';
 
 /// Reusable search logic for emotion selection screens
 /// Use this mixin to add search functionality to emotion selection screens
@@ -62,10 +67,23 @@ mixin EmotionSearchMixin<T extends StatefulWidget> on State<T> {
   static const String _directMatch = 'direct';
   static const String _keywordMatch = 'keyword';
 
+  /// Body sensation / keyword search is Premium-only; name search is free.
+  bool get canSearchBySensation => context
+      .read<SubscriptionProvider>()
+      .canUse(PremiumFeature.bodySensationSearch);
+
+  /// Hint for the search field, matching what the user's plan can search.
+  String get searchHint => canSearchBySensation
+      ? "Search by emotion name / body sensation"
+      : "Search by emotion name";
+
   /// Returns merged, deduplicated search results from:
   ///  1. Direct name matches against sub-emotion titles
   ///  2. Keyword matches from [emotionSearchLibrary] → resolved to sub-emotions
-  List<Map<String, dynamic>> getFilteredSubEmotions() {
+  ///     (only when [includeKeywordMatches] is true)
+  List<Map<String, dynamic>> getFilteredSubEmotions({
+    bool includeKeywordMatches = true,
+  }) {
     if (searchQuery.isEmpty) return [];
 
     final seen = <String>{}; // tracks "categoryTitle|subKey" pairs
@@ -85,6 +103,8 @@ mixin EmotionSearchMixin<T extends StatefulWidget> on State<T> {
         }
       }
     }
+
+    if (!includeKeywordMatches) return results;
 
     // ── 2. Keyword matches from the search library ──────────────────────────
     for (final item in emotionSearchLibrary) {
@@ -138,7 +158,14 @@ mixin EmotionSearchMixin<T extends StatefulWidget> on State<T> {
   Widget buildSearchResults() {
     if (searchQuery.isEmpty) return const SizedBox.shrink();
 
-    final filtered = getFilteredSubEmotions();
+    final canSearchSensation = canSearchBySensation;
+    final filtered = getFilteredSubEmotions(
+      includeKeywordMatches: canSearchSensation,
+    );
+    // Body-sensation matches a Freemium user would have seen with Premium.
+    final lockedMatches = canSearchSensation
+        ? 0
+        : getFilteredSubEmotions().length - filtered.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +247,8 @@ mixin EmotionSearchMixin<T extends StatefulWidget> on State<T> {
             ),
           );
         }).toList(),
-        if (filtered.isEmpty)
+        if (lockedMatches > 0) _buildLockedSensationMatches(lockedMatches),
+        if (filtered.isEmpty && lockedMatches == 0)
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Text(
@@ -231,6 +259,43 @@ mixin EmotionSearchMixin<T extends StatefulWidget> on State<T> {
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildLockedSensationMatches(int count) {
+    return GestureDetector(
+      onTap: () => PremiumDialog.show(context),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF3F5F4),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          children: [
+            const PremiumBadgeIcon(size: 18),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Text(
+                count == 1
+                    ? "1 more match by body sensation"
+                    : "$count more matches by body sensation",
+                style: context.typography.body.copyWith(
+                  color: context.colors.textPrimary,
+                ),
+              ),
+            ),
+            Text(
+              "Premium",
+              style: context.typography.body.copyWith(
+                color: context.colors.primary,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -81,6 +81,8 @@ class NotificationRouteResolver {
         return RoutesName.analyticsScreen;
       case 'daily_pulse_nudge':
         return RoutesName.forecastScreen;
+      case 'subscription_refund':
+        return RoutesName.activeSubscription;
       case 'core_emotions_nudge':
         return RoutesName.coreEmotions;
       case 'aspire_nudge':

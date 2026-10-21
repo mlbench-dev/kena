@@ -55,6 +55,11 @@ Data _$DataFromJson(Map<String, dynamic> json) => Data(
       : ThoughtMonitoring.fromJson(
           json['thoughtMonitoring'] as Map<String, dynamic>,
         ),
+  thoughtMonitoringChart: json['thoughtMonitoringChart'] == null
+      ? null
+      : ThoughtMonitoringChart.fromJson(
+          json['thoughtMonitoringChart'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
@@ -66,6 +71,7 @@ Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
   'coreAndAspirational': instance.coreAndAspirational?.toJson(),
   'topActivities': instance.topActivities?.map((e) => e.toJson()).toList(),
   'thoughtMonitoring': instance.thoughtMonitoring?.toJson(),
+  'thoughtMonitoringChart': instance.thoughtMonitoringChart?.toJson(),
 };
 
 Period _$PeriodFromJson(Map<String, dynamic> json) => Period(
@@ -267,6 +273,7 @@ ThoughtMonitoring _$ThoughtMonitoringFromJson(Map<String, dynamic> json) =>
       neutral: (json['neutral'] as num?)?.toInt(),
       negative: (json['negative'] as num?)?.toInt(),
       total: (json['total'] as num?)?.toInt(),
+      skipped: (json['skipped'] as num?)?.toInt(),
       raw: json['raw'] == null
           ? null
           : Raw.fromJson(json['raw'] as Map<String, dynamic>),
@@ -278,6 +285,7 @@ Map<String, dynamic> _$ThoughtMonitoringToJson(ThoughtMonitoring instance) =>
       'neutral': instance.neutral,
       'negative': instance.negative,
       'total': instance.total,
+      'skipped': instance.skipped,
       'raw': instance.raw?.toJson(),
     };
 
@@ -285,10 +293,12 @@ Raw _$RawFromJson(Map<String, dynamic> json) => Raw(
   positive: (json['positive'] as num?)?.toInt(),
   neutral: (json['neutral'] as num?)?.toInt(),
   negative: (json['negative'] as num?)?.toInt(),
+  skipped: (json['skipped'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$RawToJson(Raw instance) => <String, dynamic>{
   'positive': instance.positive,
   'neutral': instance.neutral,
   'negative': instance.negative,
+  'skipped': instance.skipped,
 };

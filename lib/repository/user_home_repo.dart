@@ -254,9 +254,21 @@ class UserHomeRepository {
     );
   }
 
-  // Get members currently shared with (stop-sharing list)
-  Future<Map<String, dynamic>> getStopSharingMembers() async {
-    return _apiServices.get(url: AppUrl.getStopSharingMembers);
+  // Get members currently shared with (stop-sharing list).
+  // Pass range: 'week' + endDate for the weekly forecast's audience.
+  Future<Map<String, dynamic>> getStopSharingMembers({
+    String? range,
+    String? endDate,
+  }) async {
+    final query = _apiServices.buildQueryString({
+      'range': range,
+      'endDate': endDate,
+    });
+    return _apiServices.get(
+      url: query.isEmpty
+          ? AppUrl.getStopSharingMembers
+          : '${AppUrl.getStopSharingMembers}?$query',
+    );
   }
 
   // Stop sharing forecast with specific or all members
@@ -283,12 +295,12 @@ class UserHomeRepository {
     return _apiServices.post(url: AppUrl.shareWeeklyForecast, data: data);
   }
 
-  // Stop sharing weekly forecast with specific members
+  // Stop sharing the weekly forecast for the week ending on [endDate].
+  // The backend needs no member list for this.
   Future<Map<String, dynamic>> stopSharingWeeklyForecast({
-    required List<String> userIds,
     String? endDate,
   }) async {
-    final Map<String, dynamic> data = {'userIds': userIds, 'endDate': ?endDate};
+    final Map<String, dynamic> data = {'endDate': ?endDate};
     return _apiServices.post(url: AppUrl.stopSharingWeeklyForecast, data: data);
   }
 
@@ -577,6 +589,7 @@ class UserHomeRepository {
   }
 
   //add End of Day Reflection
+  // data may include "checkInType" ("quick" | "full") and "checkInAnswers"
   Future<Map<String, dynamic>> endOfDay({
     required Map<String, dynamic> data, // 👈 generic
   }) async {
@@ -618,6 +631,13 @@ class UserHomeRepository {
     required Map<String, dynamic> data, // 👈 generic
   }) async {
     return _apiServices.post(url: AppUrl.createCommunity, data: data);
+  }
+
+  //Set Reminder
+  Future<Map<String, dynamic>> reminderSet({
+    required Map<String, dynamic> data, // 👈 generic
+  }) async {
+    return _apiServices.post(url: AppUrl.reminderSet, data: data);
   }
 
   //update Activity

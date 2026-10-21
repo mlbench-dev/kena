@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:kena_emotional_journey/app/utils/local_storage.dart';
 
 /// ============================================================
@@ -24,6 +26,11 @@ class SubscriptionCacheService {
       SubscriptionCacheService._internal();
 
   final LocalStorage _localStorage = LocalStorage();
+
+  /// Bumped after every cache write or clear so listeners (e.g.
+  /// SubscriptionProvider) can re-read the plan without each call site
+  /// having to remember to refresh them.
+  final ValueNotifier<int> changes = ValueNotifier<int>(0);
 
   // ─── Storage keys ────────────────────────────────────────
   static const _kIsActive = 'sub_is_active';
@@ -80,6 +87,22 @@ class SubscriptionCacheService {
       return true;
     } catch (e) {
       log('[SubscriptionCache] Error reading cache: $e');
+      return false;
+    }
+  }
+
+  /// Returns true when the cached subscription is a free trial (never
+  /// Freemium). Used to open the plan screen instead of the active
+  /// subscription screen without waiting for the API.
+  Future<bool> isOnTrial() async {
+    try {
+      if (await isFreemiumActive()) return false;
+
+      final cachedSubscription = await getCachedSubscription();
+      return cachedSubscription?['isTrial'] == true ||
+          await _localStorage.readValue(_kIsTrial) == 'true';
+    } catch (e) {
+      log('[SubscriptionCache] Error reading trial flag: $e');
       return false;
     }
   }
@@ -203,6 +226,7 @@ class SubscriptionCacheService {
     } catch (e) {
       log('[SubscriptionCache] Error saving to cache: $e');
     }
+    changes.value++;
   }
 
   // ──────────────────────────────────────────────────────────
@@ -230,6 +254,7 @@ class SubscriptionCacheService {
     } catch (e) {
       log('[SubscriptionCache] Error saving freemium: $e');
     }
+    changes.value++;
   }
 
   // ──────────────────────────────────────────────────────────
@@ -250,5 +275,6 @@ class SubscriptionCacheService {
       _localStorage.clearValue('sub_cache_json'),
     ]);
     log('[SubscriptionCache] Cache cleared');
+    changes.value++;
   }
 }

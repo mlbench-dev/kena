@@ -8,7 +8,6 @@ import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.d
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/validations_exception.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/services/common/notifications_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
 import 'package:kena_emotional_journey/services/user/user_profile_service.dart';
@@ -23,7 +22,6 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _userProfileService = UserProfileService();
-  final _notificationsService = NotificationsService();
   final formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _usernameController = TextEditingController();
@@ -32,8 +30,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   bool isLoading = false;
   bool _hasPaidSubscription = false;
-  bool _notificationsEnabled = true;
-  bool _isUpdatingNotifications = false;
   String? _imageUrl;
 
   // Initial values for change detection
@@ -45,9 +41,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     setDataFromSession();
-    _loadSubscriptionBadgeState();
-    _loadNotificationSettings();
-    // Add listener to rebuild when values change
+    _loadSubscriptionBadgeState(); // Add listener to rebuild when values change
     _emailController.addListener(_onValueChanged);
     _usernameController.addListener(_onValueChanged);
     _aliasController.addListener(_onValueChanged);
@@ -59,32 +53,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         .hasPaidSubscription();
     if (!mounted) return;
     setState(() => _hasPaidSubscription = hasPaidSubscription);
-  }
-
-  Future<void> _loadNotificationSettings() async {
-    final notificationsEnabled = await _notificationsService
-        .getNotificationSettings(context: context);
-    if (!mounted || notificationsEnabled == null) return;
-    setState(() => _notificationsEnabled = notificationsEnabled);
-  }
-
-  Future<void> _onNotificationsToggled(bool value) async {
-    final previousValue = _notificationsEnabled;
-    setState(() {
-      _notificationsEnabled = value;
-      _isUpdatingNotifications = true;
-    });
-
-    final success = await _notificationsService.updateNotificationSettings(
-      context: context,
-      notificationsEnabled: value,
-    );
-
-    if (!mounted) return;
-    setState(() {
-      _isUpdatingNotifications = false;
-      if (!success) _notificationsEnabled = previousValue;
-    });
   }
 
   @override
@@ -299,43 +267,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     //   }
                     //   return null;
                     // },
-                  ),
-                  SizedBox(height: 24.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Notifications",
-                              style: context.typography.title.copyWith(
-                                fontSize: 14.sp,
-                                fontFamily: "sfpro",
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Text(
-                              "Receive alerts and updates from Kena.",
-                              style: context.typography.title.copyWith(
-                                fontSize: 12.sp,
-                                fontFamily: "sfpro",
-                                color: context.colors.textSecondary,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: _notificationsEnabled,
-                        activeThumbColor: context.colors.primary,
-                        onChanged: _isUpdatingNotifications
-                            ? null
-                            : _onNotificationsToggled,
-                      ),
-                    ],
                   ),
                   SizedBox(height: 136.h),
                   MyButton(

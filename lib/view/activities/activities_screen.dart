@@ -5,6 +5,8 @@ import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/my_text_field.dart';
+import 'package:kena_emotional_journey/app/components/premium_dialog.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
@@ -15,6 +17,8 @@ import 'package:kena_emotional_journey/model/activites/planned_activity_model.da
 import 'package:kena_emotional_journey/model/activites/today_activity_model.dart'
     as today;
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/user/activity_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -66,6 +70,12 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
   @override
   Widget build(BuildContext context) {
     final actions = context.watch<NavigationActionsController>();
+    final activityLimitReached =
+        !_isLoading &&
+        context.watch<SubscriptionProvider>().hasReachedActivityLimit([
+          ..._todayActivities.map((a) => a.name ?? ''),
+          ..._plannedActivities.map((a) => a.name ?? ''),
+        ]);
     return MyScaffold(
       endDrawer: MyDrawer(
         items: [
@@ -112,6 +122,12 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             onTap: () {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
+          ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
           ),
         ],
       ),
@@ -215,7 +231,15 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                         ),
                       ),
                       SizedBox(width: 10.w),
-                      if (!isActivitiesEditMode)
+                      if (!isActivitiesEditMode && activityLimitReached)
+                        // Freemium user at the activity limit: show the
+                        // premium badge instead of "+" and upsell right away.
+                        GestureDetector(
+                          onTap: () => PremiumDialog.show(context),
+                          behavior: HitTestBehavior.opaque,
+                          child: const PremiumBadgeIcon(size: 18),
+                        )
+                      else if (!isActivitiesEditMode)
                         GestureDetector(
                           onTap: () async {
                             await Navigator.pushNamed(

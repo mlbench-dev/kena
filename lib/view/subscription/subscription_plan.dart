@@ -15,11 +15,21 @@ import 'package:kena_emotional_journey/services/payment/iap_services.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
 import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
 import 'package:kena_emotional_journey/services/payment/subscription_services.dart';
+import 'package:kena_emotional_journey/view/subscription/plan_features.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SubscriptionPlanScreen extends StatefulWidget {
   final bool showBackButton;
-  const SubscriptionPlanScreen({super.key, this.showBackButton = false});
+
+  /// Shown instead of the active subscription screen while the user is on
+  /// the free trial: adds the trial banner above the plan list.
+  final bool isTrial;
+
+  const SubscriptionPlanScreen({
+    super.key,
+    this.showBackButton = false,
+    this.isTrial = false,
+  });
 
   @override
   State<SubscriptionPlanScreen> createState() => _SubscriptionPlanScreenState();
@@ -93,21 +103,6 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
     }
   }
 
-  String _getCurrencySymbol(String currency) {
-    switch (currency.toUpperCase()) {
-      case 'KES':
-        return 'KES';
-      case 'NGN':
-        return '₦';
-      case 'USD':
-        return '\$';
-      case 'GHS':
-        return 'GH₵';
-      default:
-        return '${currency.toUpperCase()} ';
-    }
-  }
-
   /// Display name for a plan — uses the backend-provided product name
   /// (e.g. "Kena Premium Annual") when available, falling back to a
   /// generic Monthly/Annual label derived from the billing interval.
@@ -121,17 +116,8 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
         : 'Monthly';
   }
 
-  /// Price text for a plan. iOS uses hardcoded StoreKit prices ($9.99/mo,
-  /// $99.99/yr) since Apple pricing is fixed per product, independent of
-  /// the backend-reported currency/amount used on Android.
-  String _getPlanPriceText(int index) {
-    if (Platform.isIOS) {
-      final interval = (availablePlans[index]['interval'] as String?)
-          ?.toLowerCase();
-      return interval == 'year' ? '\$99.99' : '\$9.99';
-    }
-    return '${_getCurrencySymbol(availablePlans[index]['currency'] as String? ?? 'KES')}${availablePlans[index]['unitAmountDecimal'] as String? ?? '0.00'}';
-  }
+  String _getPlanPriceText(int index) =>
+      PaystackSubscriptionService.planPriceText(availablePlans[index]);
 
   String _getPaidFeaturesTitle() {
     if (selectedIndex < 0 || selectedIndex >= availablePlans.length) {
@@ -140,20 +126,26 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
     return '${_getPlanDisplayName(selectedIndex)} includes:';
   }
 
-  List<String> _getFeatures({required bool isFreemium}) {
-    return [
-      isFreemium ? 'With ads' : 'Remove ads - Premium',
-      'Record core & aspirational emotions',
-      'Record Daily pulse',
-      'Comprehensive list of emotions',
-      'Visualisation of emotions',
-      'Journaling & Notes',
-      'Full activities',
-      'Full community features',
-      'Detailed analytics',
-      'Search by body sensations',
-      'Thought monitoring prompts',
-    ];
+  Widget _buildTrialBanner(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE3F0F0),
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Text(
+        'You are on a 7 days free trial',
+        textAlign: TextAlign.center,
+        style: context.typography.body.copyWith(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+          color: context.colors.tertiary,
+          fontFamily: "sfpro",
+        ),
+      ),
+    );
   }
 
   Widget _buildPlanOption({
@@ -280,7 +272,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
               )
             : const SizedBox.shrink(),
         title: Text(
-          "Choose Your Plan",
+          widget.isTrial ? "Subscription Plan" : "Choose Your Plan",
           style: context.typography.headline.copyWith(
             fontSize: 20.sp,
             fontFamily: "Raleway",
@@ -308,6 +300,7 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
+                          if (widget.isTrial) _buildTrialBanner(context),
                           _buildPlanOption(
                             isSelected: selectedIndex == -1,
                             name: 'Freemium',
@@ -357,13 +350,19 @@ class _SubscriptionPlanScreenState extends State<SubscriptionPlanScreen> {
                                 if (selectedIndex == -1)
                                   FeaturesList(
                                     title: "Freemium includes:",
-                                    features: _getFeatures(isFreemium: true),
+                                    features: PlanFeatures.base,
                                   )
-                                else
+                                else ...[
                                   FeaturesList(
                                     title: _getPaidFeaturesTitle(),
-                                    features: _getFeatures(isFreemium: false),
+                                    features: PlanFeatures.base,
                                   ),
+                                  SizedBox(height: 8.h),
+                                  FeaturesList(
+                                    title: PlanFeatures.additionalTitle,
+                                    features: PlanFeatures.additional,
+                                  ),
+                                ],
                               ],
                             ),
                           ),

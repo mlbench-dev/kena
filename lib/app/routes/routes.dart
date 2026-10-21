@@ -39,7 +39,9 @@ import 'package:kena_emotional_journey/view/home/home_screen.dart';
 import 'package:kena_emotional_journey/view/notifications/notifications_screen.dart';
 // import 'package:kena_emotional_journey/view/pro_tip/tip_screen.dart';
 import 'package:kena_emotional_journey/view/profile/edit_profile.dart';
+import 'package:kena_emotional_journey/view/profile/notifications_settings.dart';
 import 'package:kena_emotional_journey/view/profile/profile.dart';
+import 'package:kena_emotional_journey/view/profile/set_time_screen.dart';
 import 'package:kena_emotional_journey/view/splash/splash_screen.dart';
 // KenaSplashScreen replaces the old SplashView (see splash_view.dart).
 import 'package:kena_emotional_journey/view/subscription/active_subscription_screen.dart';
@@ -64,6 +66,8 @@ class Routes {
     RoutesName.myCommunity: (_) => const MyCommunityScreen(),
     RoutesName.planAndActivities: (_) => const PlanAndActivities(),
     RoutesName.frequencyScreen: (_) => const FrequencyScreen(),
+    RoutesName.notificationsSettings: (_) => const NotificationsSettings(),
+    RoutesName.setTime: (_) => const SetTimeScreen(),
     // RoutesName.tipScreen: (_) => const TipScreen(),
     // RoutesName.resetPassword: (_) => const ResetPassword(),
     RoutesName.login: (_) => const LoginScreen(),
@@ -128,7 +132,11 @@ class Routes {
       final args = ModalRoute.of(context)?.settings.arguments;
       final showBackButton =
           args is Map<String, dynamic> && args['showBackButton'] == true;
-      return SubscriptionPlanScreen(showBackButton: showBackButton);
+      final isTrial = args is Map<String, dynamic> && args['isTrial'] == true;
+      return SubscriptionPlanScreen(
+        showBackButton: showBackButton,
+        isTrial: isTrial,
+      );
     },
   };
 
@@ -163,6 +171,7 @@ class Routes {
       case RoutesName.newPassword:
         final args = _getArgs(settings, requiredKeys: ['email', 'otp']);
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) =>
               ResetPassword(email: args['email'] as String, otp: args['otp']),
         );
@@ -170,6 +179,7 @@ class Routes {
         final email = settings.arguments as String;
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => EmailVerification(email: email),
         );
       // case RoutesName.myCommunity:
@@ -182,6 +192,7 @@ class Routes {
         final communityName = args?['communityName'] as String? ?? '';
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => FeedsScreen(
             communityId: communityId,
             communityName: communityName,
@@ -192,6 +203,7 @@ class Routes {
         final date = args?['date'] as DateTime? ?? DateTime.now();
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => SelectTodayForecast(date: date),
         );
       case RoutesName.coreEmotions:
@@ -199,6 +211,7 @@ class Routes {
         final isFromHome = args?['isFromHome'] as bool? ?? false;
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => CoreEmotions(isFromHome: isFromHome),
         );
       case RoutesName.aspirationalEmotions:
@@ -206,6 +219,7 @@ class Routes {
         final isFromHome = args?['isFromHome'] as bool? ?? false;
 
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => AspirationalEmotions(isFromHome: isFromHome),
         );
       case RoutesName.chooseActivity:
@@ -215,6 +229,7 @@ class Routes {
         final navigateToSummaryAfterSave =
             args?['navigateToSummaryAfterSave'] as bool? ?? false;
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => ChooseActivity(
             isToday: isToday,
             isFromForecast: isFromForecast,
@@ -225,6 +240,7 @@ class Routes {
         final args = settings.arguments;
         final forecastData = args is ForecastData ? args : null;
         return MaterialPageRoute(
+          settings: settings,
           builder: (_) => ForecastResultScreen(forecastData: forecastData),
         );
       default:

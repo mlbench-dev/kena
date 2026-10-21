@@ -62,6 +62,8 @@ class AppUrl {
   // Freemium plan selection — notifies backend the user chose the free tier
   static const String subscriptionFreemium =
       '$baseUrl/api/subscription/freemium';
+  // Refund requests — POST to submit, GET for status, DELETE to withdraw
+  static const String subscriptionRefund = '$baseUrl/api/subscription/refund';
 
   static String getVendorDetails(String vendorId) =>
       '$baseUrl/auth/vendor/$vendorId/details';
@@ -104,6 +106,7 @@ class AppUrl {
 
   static const String reviewDate = '$baseUrl/api/emotions/review-date';
   static const String createCommunity = '$baseUrl/api/community/create';
+  static const String reminderSet = '$baseUrl/api/notifications/reminder-times';
   static const String inviteUsername = '$baseUrl/api/community/invite/username';
   static const String inviteEmail = '$baseUrl/api/community/invite/email';
   static const String sendInviteToMembers =
@@ -275,6 +278,8 @@ class AppUrl {
       '$baseUrl/api/notifications/fcm-token/register';
   static const String notificationSettings =
       '$baseUrl/api/notifications/settings';
+  static const String notificationAutoDelete =
+      '$baseUrl/api/notifications/auto-delete';
   // static const String pushNotificationVendor =
   //     '$baseUrl/auth/vendor/push-notification'; //Not implemented on backend
 }

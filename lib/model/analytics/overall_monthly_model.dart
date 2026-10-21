@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:kena_emotional_journey/model/thought_monitoring/thought_monitoring_chart_model.dart';
 
 part 'overall_monthly_model.g.dart';
 
@@ -26,6 +27,7 @@ class Data {
   CoreAndAspirational? coreAndAspirational;
   List<TopActivities>? topActivities;
   ThoughtMonitoring? thoughtMonitoring;
+  ThoughtMonitoringChart? thoughtMonitoringChart;
 
   Data({
     this.period,
@@ -36,6 +38,7 @@ class Data {
     this.coreAndAspirational,
     this.topActivities,
     this.thoughtMonitoring,
+    this.thoughtMonitoringChart,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
@@ -276,6 +279,7 @@ class ThoughtMonitoring {
   int? neutral;
   int? negative;
   int? total;
+  int? skipped;
   Raw? raw;
 
   ThoughtMonitoring({
@@ -283,6 +287,7 @@ class ThoughtMonitoring {
     this.neutral,
     this.negative,
     this.total,
+    this.skipped,
     this.raw,
   });
 
@@ -297,8 +302,9 @@ class Raw {
   int? positive;
   int? neutral;
   int? negative;
+  int? skipped;
 
-  Raw({this.positive, this.neutral, this.negative});
+  Raw({this.positive, this.neutral, this.negative, this.skipped});
 
   factory Raw.fromJson(Map<String, dynamic> json) => _$RawFromJson(json);
 

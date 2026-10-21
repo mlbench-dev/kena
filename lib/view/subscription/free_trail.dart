@@ -36,7 +36,7 @@ class FreeTrailScreen extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 40.h),
+                SizedBox(height: 20.h),
 
                 // Celebration Icon
                 Container(
@@ -65,7 +65,7 @@ class FreeTrailScreen extends StatelessWidget {
                   "Enjoy free access — for now",
                   textAlign: TextAlign.center,
                   style: context.typography.headline.copyWith(
-                    fontSize: 20.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     fontFamily: "sfpro",
                   ),
@@ -78,13 +78,13 @@ class FreeTrailScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: context.typography.body.copyWith(
                     color: context.colors.textSecondary,
-                    fontSize: 14.sp,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
                     fontFamily: "sfpro",
                   ),
                 ),
 
-                SizedBox(height: 30.h),
+                SizedBox(height: 26.h),
 
                 // Features Header
                 Align(
@@ -92,7 +92,7 @@ class FreeTrailScreen extends StatelessWidget {
                   child: Text(
                     "Features Available",
                     style: context.typography.title.copyWith(
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
                       fontFamily: "sfpro",
                     ),
@@ -160,7 +160,7 @@ class FreeTrailScreen extends StatelessWidget {
                         style: context.typography.title.copyWith(
                           color: context.colors.tertiary,
                           fontWeight: FontWeight.w600,
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           fontFamily: "sfpro",
                         ),
                       ),
@@ -169,7 +169,7 @@ class FreeTrailScreen extends StatelessWidget {
                         "No charge today",
                         style: context.typography.body.copyWith(
                           color: context.colors.textSecondary,
-                          fontSize: 14.sp,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: "sfpro",
                         ),
@@ -178,7 +178,7 @@ class FreeTrailScreen extends StatelessWidget {
                         "Cancel anytime",
                         style: context.typography.body.copyWith(
                           color: context.colors.textPrimary,
-                          fontSize: 13.sp,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
                           fontFamily: "sfpro",
                         ),
@@ -204,7 +204,7 @@ class FreeTrailScreen extends StatelessWidget {
                   "You won't be charged until your trial ends.",
                   style: context.typography.body.copyWith(
                     color: Colors.grey,
-                    fontSize: 13.sp,
+                    fontSize: 12.sp,
                   ),
                 ),
 
@@ -221,7 +221,7 @@ class FreeTrailScreen extends StatelessWidget {
                       child: Text(
                         'Terms of Use',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                           color: context.colors.primary,
                           decoration: TextDecoration.underline,
@@ -232,7 +232,7 @@ class FreeTrailScreen extends StatelessWidget {
                     Text(
                       'and',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 11.sp,
                         color: context.colors.textSecondary,
                       ),
                     ),
@@ -245,7 +245,7 @@ class FreeTrailScreen extends StatelessWidget {
                       child: Text(
                         'Privacy Policy',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                           color: context.colors.primary,
                           decoration: TextDecoration.underline,
@@ -352,7 +352,7 @@ class FeatureName extends StatelessWidget {
         Text(
           title,
           style: context.typography.title.copyWith(
-            fontSize: 14.sp,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w400,
             color: context.colors.textSecondary.withValues(alpha: 0.9),
             fontFamily: "sfpro",

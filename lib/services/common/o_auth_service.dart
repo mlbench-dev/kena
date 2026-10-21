@@ -12,7 +12,7 @@ import 'package:kena_emotional_journey/repository/user_auth_repo.dart';
 import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/push_notifications_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
-import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
+import 'package:kena_emotional_journey/view/pro_tip/pro_tip_manager.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class OAuthService {
@@ -341,28 +341,19 @@ class OAuthService {
 
       if (!context.mounted) return;
 
-      // Check if user has subscription after OAuth login
-      try {
-        final subscriptionStatus = await PaystackSubscriptionService()
-            .getCurrentSubscriptionStatus();
-        final hasSubscription =
-            subscriptionStatus != null &&
-            (subscriptionStatus['isEntitled'] == true ||
-                subscriptionStatus['isActive'] == true ||
-                subscriptionStatus['isTrial'] == true);
+      // A brand-new account (first Google/Apple sign-in) gets the free trial
+      // screen, same as email signup; returning users go straight home.
+      final isNewUser =
+          response['isNewUser'] == true || userData['isNewUser'] == true;
 
-        if (hasSubscription) {
-          debugPrint('[$tag] User has subscription, going to home');
-          AuthService.goToUserHome(context);
-        } else {
-          debugPrint(
-            '[$tag] User has no subscription, going to subscription plan',
-          );
-          AuthService.goToSubscriptionPlan(context);
-        }
-      } catch (e) {
-        debugPrint('[$tag] Error checking subscription after OAuth: $e');
-        // Don't show subscription screen on API errors — go home.
+      if (isNewUser) {
+        debugPrint('[$tag] New OAuth user, going to free trial');
+        // Start the pro tip journey only for new signups (see verifyOtp).
+        await ProTipManager.markFirstLoginIfNeeded();
+        if (!context.mounted) return;
+        AuthService.goToFreeTrail(context);
+      } else {
+        debugPrint('[$tag] Returning OAuth user, going to home');
         AuthService.goToUserHome(context);
       }
     } catch (e) {

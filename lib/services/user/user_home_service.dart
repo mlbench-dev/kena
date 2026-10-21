@@ -329,6 +329,8 @@ class UserHomeService {
     required bool planUseful,
     required String planFeedback,
     required int compareToForecast,
+    String? checkInType, // "quick" or "full"
+    Map<String, String>? checkInAnswers,
   }) async {
     try {
       final now = DateTime.now();
@@ -341,6 +343,8 @@ class UserHomeService {
         "wentAsForecast": wentAsForecast,
         "planUseful": planUseful,
         "compareToForecast": compareToForecast,
+        "checkInType": ?checkInType,
+        "checkInAnswers": ?checkInAnswers,
       };
 
       await _userHomeRepo.endOfDay(data: data);
@@ -1056,11 +1060,18 @@ class UserHomeService {
   ///
   /// getSharedMembers — GET /api/journal/forecast/shared-users
   ///
+  /// Pass `range: 'week'` and the feed's [endDate] to get who the weekly
+  /// forecast is shared with; omit both for the daily forecast.
   Future<CommunityMembers?> getSharedMembers({
     required BuildContext context,
+    String? range,
+    String? endDate,
   }) async {
     try {
-      final response = await _userHomeRepo.getStopSharingMembers();
+      final response = await _userHomeRepo.getStopSharingMembers(
+        range: range,
+        endDate: endDate,
+      );
       debugPrint('Get Shared Members Raw: $response');
 
       // Debug: inspect the actual keys in each user object
@@ -1105,23 +1116,39 @@ class UserHomeService {
   ///
   /// stopSharingWeeklyForecast — POST /api/journal/forecast/stop-sharing-weekly
   ///
-  Future<bool> stopSharingWeeklyForecast({
-    required List<String> userIds,
+  /// Returns the weekly forecast's sharing status after the call (from the
+  /// response's `isWeeklyShared`, `false` if the server omits it), or `null`
+  /// when the request failed.
+  Future<bool?> stopSharingWeeklyForecast({
     String? endDate,
     required BuildContext context,
   }) async {
     try {
       final response = await _userHomeRepo.stopSharingWeeklyForecast(
-        userIds: userIds,
         endDate: endDate,
       );
       debugPrint('Stop Sharing Weekly Forecast Raw: $response');
-      return response['success'] == true;
+      if (response['success'] != true) {
+        if (context.mounted) {
+          ErrorHandler.handle(
+            context,
+            response['message'] ?? 'Failed to stop sharing',
+            serviceName: tag,
+          );
+        }
+        return null;
+      }
+      final data = response['data'];
+      final first = data is List && data.isNotEmpty ? data.first : data;
+      final isWeeklyShared =
+          response['isWeeklyShared'] ??
+          (first is Map ? first['isWeeklyShared'] : null);
+      return isWeeklyShared == true;
     } catch (e) {
       if (context.mounted) {
         ErrorHandler.handle(context, e, serviceName: tag);
       }
-      return false;
+      return null;
     }
   }
 
@@ -1661,6 +1688,25 @@ class UserHomeService {
   //   }
   // }
 
+  /// Names of all the user's current activities, Today and Planned combined.
+  /// Used to enforce the Freemium activity limit.
+  Future<List<String>> getAllActivityNames({BuildContext? context}) async {
+    final results = await Future.wait([
+      getTodayActivities(context: context),
+      getPlannedActivities(context: context),
+    ]);
+    final today = results[0] as TodayActivityModel?;
+    final planned = results[1] as PlannedActivityModel?;
+    return [
+      for (final day in today?.data ?? const <TodayActivityData>[])
+        for (final activity in day.activities ?? const [])
+          if (activity.name != null) activity.name!,
+      for (final day in planned?.data ?? const <PlannedActivityData>[])
+        for (final activity in day.activities ?? const [])
+          if (activity.name != null) activity.name!,
+    ];
+  }
+
   // Get Today Activities
   Future<TodayActivityModel?> getTodayActivities({
     BuildContext? context,
@@ -2001,6 +2047,38 @@ class UserHomeService {
       return null;
     }
   }
+
+  // Set Reminder for forecast and End Day
+  Future<String?> setReminderForecastEndDay({
+    required BuildContext context,
+    required String dailyPulseTime,
+    required String eodTime,
+  }) async {
+    try {
+      final data = {"dailyPulseTime": dailyPulseTime, "eodTime": eodTime};
+
+      final response = await _userHomeRepo.reminderSet(data: data);
+
+      if (response['success'] == true) {
+        return response['message']?.toString();
+      } else {
+        if (context.mounted) {
+          ErrorHandler.handle(
+            context,
+            response['message'] ?? 'Unknown error',
+            serviceName: tag,
+          );
+        }
+        return null;
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ErrorHandler.handle(context, e, serviceName: tag);
+      }
+      return null;
+    }
+  }
+
   //   //go to vendor search
 
   //   // Search Vendors Service

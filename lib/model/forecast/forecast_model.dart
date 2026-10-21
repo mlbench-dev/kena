@@ -57,20 +57,23 @@ class Emotion {
   final num? intensity;
   final String? imageUrl;
   final String? title;
+  final int? count;
 
-  Emotion({this.key, this.intensity, this.imageUrl, this.title});
+  Emotion({this.key, this.intensity, this.imageUrl, this.title, this.count});
 
   Emotion copyWith({
     String? key,
     num? intensity,
     String? imageUrl,
     String? title,
+    int? count,
   }) {
     return Emotion(
       key: key ?? this.key,
       intensity: intensity ?? this.intensity,
       imageUrl: imageUrl ?? this.imageUrl,
       title: title ?? this.title,
+      count: count ?? this.count,
     );
   }
 

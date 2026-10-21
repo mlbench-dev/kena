@@ -2,15 +2,14 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/no_internet_dialog.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
@@ -221,246 +220,253 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final actions = context.watch<NavigationActionsController>();
-    return ListenableBuilder(
-      listenable: _sessionController,
-      builder: (context, _) {
-        final user = _sessionController.user;
-        return MyScaffold(
-          isSafeArea: false,
-          // NOTE: if MyScaffold doesn't expose a bottomNavigationBar param,
-          // see the note below the code for how to add it / an alternative.
-          // bottomNavigationBar: MyNavBar(
-          //   items: [
-          //     NavBarButtonItem(
-          //       key: _aspireKey,
-          //       icon: Assets.icons.aspire.svg(),
-          //       label: 'Aspire',
-          //       isLoading: actions.aspireLoading,
-          //       isDisabled: actions.isAnyLoading && !actions.aspireLoading,
-          //       onTap: () => actions.onAspireTap(context),
-          //     ),
-          //     NavBarButtonItem(
-          //       key: _forecastKey,
-          //       icon: Assets.icons.dailyPuls.svg(),
-          //       label: 'Daily Pulse',
-          //       isLoading: actions.forecastLoading,
-          //       isDisabled: actions.isAnyLoading && !actions.forecastLoading,
-          //       onTap: () => actions.onForecastTap(context),
-          //     ),
-          //     NavBarButtonItem(
-          //       key: _activitiesKey,
-          //       icon: Assets.icons.activity.svg(),
-          //       label: 'Activities',
-          //       isDisabled: actions.isAnyLoading,
-          //       onTap: () => actions.onActivitiesTap(context),
-          //     ),
-          //     NavBarButtonItem(
-          //       key: _analyticsKey,
-          //       icon: Assets.icons.analytic.svg(),
-          //       label: 'Analytics',
-          //       isDisabled: actions.isAnyLoading,
-          //       onTap: () => actions.onAnalyticsTap(context),
-          //     ),
-          //     NavBarButtonItem(
-          //       key: _communityKey,
-          //       icon: Assets.icons.circle.svg(),
-          //       label: 'Circle',
-          //       isDisabled: actions.isAnyLoading,
-          //       onTap: () => actions.onCommunityTap(context),
-          //     ),
-          //   ],
-          // ),
-          body: Stack(
-            children: [
-              Positioned(left: 0, top: 0, child: Assets.icons.vectors.svg()),
-              Positioned(
-                left: 98,
-                top: 50,
-                child: Animate(
-                  onPlay: (c) => c.repeat(reverse: true),
-                  effects: [
-                    MoveEffect(
-                      begin: Offset.zero,
-                      end: const Offset(0, 10),
-                      duration: 4.seconds,
-                      curve: Curves.easeInOut,
-                    ),
-                  ],
-                  child: Assets.icons.ellipse.svg(),
+    // Home is the root of the signed-in experience: back exits the app
+    // instead of returning to whatever screens were pushed before it.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        SystemNavigator.pop();
+      },
+      child: ListenableBuilder(
+        listenable: _sessionController,
+        builder: (context, _) {
+          final user = _sessionController.user;
+          return MyScaffold(
+            isSafeArea: false,
+            // NOTE: if MyScaffold doesn't expose a bottomNavigationBar param,
+            // see the note below the code for how to add it / an alternative.
+            // bottomNavigationBar: MyNavBar(
+            //   items: [
+            //     NavBarButtonItem(
+            //       key: _aspireKey,
+            //       icon: Assets.icons.aspire.svg(),
+            //       label: 'Aspire',
+            //       isLoading: actions.aspireLoading,
+            //       isDisabled: actions.isAnyLoading && !actions.aspireLoading,
+            //       onTap: () => actions.onAspireTap(context),
+            //     ),
+            //     NavBarButtonItem(
+            //       key: _forecastKey,
+            //       icon: Assets.icons.dailyPuls.svg(),
+            //       label: 'Daily Pulse',
+            //       isLoading: actions.forecastLoading,
+            //       isDisabled: actions.isAnyLoading && !actions.forecastLoading,
+            //       onTap: () => actions.onForecastTap(context),
+            //     ),
+            //     NavBarButtonItem(
+            //       key: _activitiesKey,
+            //       icon: Assets.icons.activity.svg(),
+            //       label: 'Activities',
+            //       isDisabled: actions.isAnyLoading,
+            //       onTap: () => actions.onActivitiesTap(context),
+            //     ),
+            //     NavBarButtonItem(
+            //       key: _analyticsKey,
+            //       icon: Assets.icons.analytic.svg(),
+            //       label: 'Analytics',
+            //       isDisabled: actions.isAnyLoading,
+            //       onTap: () => actions.onAnalyticsTap(context),
+            //     ),
+            //     NavBarButtonItem(
+            //       key: _communityKey,
+            //       icon: Assets.icons.circle.svg(),
+            //       label: 'Circle',
+            //       isDisabled: actions.isAnyLoading,
+            //       onTap: () => actions.onCommunityTap(context),
+            //     ),
+            //   ],
+            // ),
+            body: Stack(
+              children: [
+                Positioned(left: 0, top: 0, child: Assets.icons.vectors.svg()),
+                Positioned(
+                  left: 98,
+                  top: 50,
+                  child: Animate(
+                    onPlay: (c) => c.repeat(reverse: true),
+                    effects: [
+                      MoveEffect(
+                        begin: Offset.zero,
+                        end: const Offset(0, 10),
+                        duration: 4.seconds,
+                        curve: Curves.easeInOut,
+                      ),
+                    ],
+                    child: Assets.icons.ellipse.svg(),
+                  ),
                 ),
-              ),
-              Positioned(
-                left: 30,
-                right: 30,
-                top: 150,
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () =>
-                              Navigator.pushNamed(context, RoutesName.profile),
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              CircleAvatar(
-                                radius: 24.r,
-                                child: CircleAvatar(
-                                  backgroundColor: context.colors.background,
-                                  radius: 22.r,
-                                  backgroundImage:
-                                      (user?.avatarUrl != null &&
-                                          user!.avatarUrl!.isNotEmpty)
-                                      ? CachedNetworkImageProvider(
-                                          user.avatarUrl!,
-                                        )
-                                      : null,
-                                  child:
-                                      (user?.avatarUrl == null ||
-                                          user!.avatarUrl!.isEmpty)
-                                      ? Icon(
-                                          Icons.person,
-                                          color: Colors.grey,
-                                          size: 24.r,
-                                        )
-                                      : null,
-                                ),
-                              ),
-                              if (_hasPaidSubscription)
-                                Positioned(
-                                  top: -5.r,
-                                  right: -7.r,
-                                  width: 24.r,
-                                  height: 24.r,
-                                  child: Assets.icons.premium.svg(),
-                                ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 10.w),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                // "${getGreeting()}, ${user?.username}",
-                                "Hey, ${user?.username}",
-                                style: context.typography.headline.copyWith(
-                                  color: context.colors.textPrimary,
-                                  fontSize: 18.sp,
-                                ),
-                              ),
-                              Text(
-                                "Your emotional journey continues.",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: context.typography.label.copyWith(
-                                  fontSize: 10.5.sp,
-                                  color: context.colors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 8.w),
-                        GestureDetector(
-                          onTap: () {
-                            if (!context
-                                .read<ConnectivityProvider>()
-                                .isConnected) {
-                              MyDialogBox.show(
-                                context,
-                                child: const NoInternetDialog(),
-                              );
-                              return;
-                            }
-                            Navigator.pushNamed(
+                Positioned(
+                  left: 30,
+                  right: 30,
+                  top: 150,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pushNamed(
                               context,
-                              RoutesName.notificationScreen,
-                            ).then((_) => _fetchUnreadCount());
-                          },
-                          child: Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
+                              RoutesName.profile,
+                            ),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                CircleAvatar(
+                                  radius: 24.r,
+                                  child: CircleAvatar(
+                                    backgroundColor: context.colors.background,
+                                    radius: 22.r,
+                                    backgroundImage:
+                                        (user?.avatarUrl != null &&
+                                            user!.avatarUrl!.isNotEmpty)
+                                        ? CachedNetworkImageProvider(
+                                            user.avatarUrl!,
+                                          )
+                                        : null,
+                                    child:
+                                        (user?.avatarUrl == null ||
+                                            user!.avatarUrl!.isEmpty)
+                                        ? Icon(
+                                            Icons.person,
+                                            color: Colors.grey,
+                                            size: 24.r,
+                                          )
+                                        : null,
+                                  ),
+                                ),
+                                if (_hasPaidSubscription)
+                                  Positioned(
+                                    top: -5.r,
+                                    right: -7.r,
+                                    width: 24.r,
+                                    height: 24.r,
+                                    child: Assets.icons.premium.svg(),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  // "${getGreeting()}, ${user?.username}",
+                                  "Hey, ${user?.username}",
+                                  style: context.typography.headline.copyWith(
+                                    color: context.colors.textPrimary,
+                                    fontSize: 18.sp,
+                                  ),
+                                ),
+                                Text(
+                                  "Your emotional journey continues.",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: context.typography.label.copyWith(
+                                    fontSize: 10.5.sp,
                                     color: context.colors.textSecondary,
                                   ),
                                 ),
-                                padding: EdgeInsets.all(6.w),
-                                child: Assets.icons.notificationNobg.svg(
-                                  height: 30.h,
-                                  width: 30.h,
-                                ),
-                              ),
-                              Consumer<UserHomeProvider>(
-                                builder: (context, homeProvider, _) {
-                                  final unreadCount =
-                                      homeProvider.unreadNotificationCount;
-                                  if (unreadCount <= 0)
-                                    return const SizedBox.shrink();
-                                  return Positioned(
-                                    right: -2,
-                                    top: -2,
-                                    child: Container(
-                                      padding: EdgeInsets.all(4.r),
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      constraints: BoxConstraints(
-                                        minWidth: 16.r,
-                                        minHeight: 16.r,
-                                      ),
-                                      child: Text(
-                                        unreadCount > 9 ? '9+' : '$unreadCount',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 10.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 225.h,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Builder(
-                  builder: (context) {
-                    final sections = _homeSections(actions, context);
-                    return ListView.builder(
-                      padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      itemCount: sections.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: EdgeInsets.only(bottom: 15.h),
-                        child: sections[index],
+                          SizedBox(width: 8.w),
+                          GestureDetector(
+                            onTap: () async {
+                              if (!await NoInternetDialog.guard(context))
+                                return;
+                              if (!context.mounted) return;
+                              Navigator.pushNamed(
+                                context,
+                                RoutesName.notificationScreen,
+                              ).then((_) => _fetchUnreadCount());
+                            },
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: context.colors.textSecondary,
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.all(6.w),
+                                  child: Assets.icons.notificationNobg.svg(
+                                    height: 30.h,
+                                    width: 30.h,
+                                  ),
+                                ),
+                                Consumer<UserHomeProvider>(
+                                  builder: (context, homeProvider, _) {
+                                    final unreadCount =
+                                        homeProvider.unreadNotificationCount;
+                                    if (unreadCount <= 0)
+                                      return const SizedBox.shrink();
+                                    return Positioned(
+                                      right: -2,
+                                      top: -2,
+                                      child: Container(
+                                        padding: EdgeInsets.all(4.r),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        constraints: BoxConstraints(
+                                          minWidth: 16.r,
+                                          minHeight: 16.r,
+                                        ),
+                                        child: Text(
+                                          unreadCount > 9
+                                              ? '9+'
+                                              : '$unreadCount',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 10.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+                Positioned(
+                  top: 225.h,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Builder(
+                    builder: (context) {
+                      final sections = _homeSections(actions, context);
+                      return ListView.builder(
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        itemCount: sections.length,
+                        itemBuilder: (context, index) => Padding(
+                          padding: EdgeInsets.only(bottom: 15.h),
+                          child: sections[index],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
   // Padding(

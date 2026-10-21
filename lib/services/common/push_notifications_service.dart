@@ -24,6 +24,7 @@ class PushNotificationsService {
   static bool _isInitializing = false;
   static StreamSubscription<RemoteMessage>? _onMessageSub;
   static StreamSubscription<RemoteMessage>? _onMessageOpenedAppSub;
+  static bool _initialMessageHandled = false;
 
   /// Emits when a foreground FCM message arrives.
   /// Listen to this to trigger API refresh of unread count.
@@ -122,21 +123,6 @@ class PushNotificationsService {
         _foregroundMessageController.add(null);
       });
 
-      await FirebaseMessaging.instance.getInitialMessage().then((message) {
-        if (message != null) {
-          debugPrint(
-            '📩 Notification caused app launch: ${message.notification?.body}',
-          );
-          _handleNotificationNavigation(message);
-        }
-      });
-
-      _onMessageOpenedAppSub ??= FirebaseMessaging.onMessageOpenedApp.listen((
-        RemoteMessage message,
-      ) {
-        debugPrint('📩 Notification clicked: ${message.notification?.body}');
-        _handleNotificationNavigation(message);
-      });
     } catch (e) {
       debugPrint('❌ FCM Initialization Error: $e');
     } finally {
@@ -226,6 +212,33 @@ class PushNotificationsService {
     }
   }
 
+  /// Handles notification taps. Kept separate from [initialize] so a tap that
+  /// launched the app is never lost if permission/APNS/token setup returns
+  /// early or fails. Call once the home screen has been pushed.
+  static Future<void> setupInteractedMessage() async {
+    _onMessageOpenedAppSub ??= FirebaseMessaging.onMessageOpenedApp.listen((
+      RemoteMessage message,
+    ) {
+      debugPrint('📩 Notification clicked: ${message.notification?.body}');
+      _handleNotificationNavigation(message);
+    });
+
+    if (_initialMessageHandled) return;
+    _initialMessageHandled = true;
+
+    try {
+      final message = await FirebaseMessaging.instance.getInitialMessage();
+      if (message != null) {
+        debugPrint(
+          '📩 Notification caused app launch: ${message.notification?.body}',
+        );
+        _handleNotificationNavigation(message);
+      }
+    } catch (e) {
+      debugPrint('❌ getInitialMessage failed: $e');
+    }
+  }
+
   Future<void> initFCM({
     required BuildContext context,
     double? userLat,
@@ -246,11 +259,12 @@ class PushNotificationsService {
     return !iosInfo.isPhysicalDevice;
   }
 
-  void _handleNotificationNavigation(RemoteMessage message) {
+  static void _handleNotificationNavigation(RemoteMessage message) {
+    final session = SessionController();
     final type = message.data['type'] as String?;
     final entryOwnerId = message.data['entryOwnerId'] as String?;
     final communityId =
-        (message.data['communityId'] as String?) ?? _session.communityId;
+        (message.data['communityId'] as String?) ?? session.communityId;
 
     // Defer navigation to after the current frame to avoid _debugLocked
     SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -273,7 +287,7 @@ class PushNotificationsService {
 
       final route = NotificationRouteResolver.routeForType(
         type,
-        communityId: _session.communityId,
+        communityId: session.communityId,
       );
       App.navigatorKey.currentState?.pushNamed(route);
     });

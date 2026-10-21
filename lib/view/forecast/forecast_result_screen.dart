@@ -10,17 +10,21 @@ import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/components/my_drawer.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/components/my_text_field.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
+// import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
+import 'package:kena_emotional_journey/app/utils/premium_features.dart';
 import 'package:kena_emotional_journey/app/utils/tour_controller.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_notes.dart';
-import 'package:kena_emotional_journey/model/tour_section/tour_content.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
+import 'package:kena_emotional_journey/services/common/auth_service.dart';
 import 'package:kena_emotional_journey/services/common/image_picker.dart';
 import 'package:kena_emotional_journey/services/common/upload_service.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
@@ -75,9 +79,9 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   void initState() {
     super.initState();
     _forecastNotesFuture = _fetchForecastNotes();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startOnboardingTour();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _startOnboardingTour();
+    // });
     _load();
     AdMobService.loadInterstitialAd();
     // Delay to allow ad to load before showing
@@ -95,14 +99,14 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
     super.dispose();
   }
 
-  void _startOnboardingTour() {
-    if (!mounted) return;
-    _tourHandle = TourController.start(
-      context: context,
-      sectionKey: TourSections.onboarding,
-      targetKeys: [shareForecast],
-    );
-  }
+  // void _startOnboardingTour() {
+  //   if (!mounted) return;
+  //   _tourHandle = TourController.start(
+  //     context: context,
+  //     sectionKey: TourSections.onboarding,
+  //     targetKeys: [shareForecast],
+  //   );
+  // }
 
   // =========================================================
   // DATA FETCHING
@@ -176,6 +180,7 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
   // =========================================================
 
   Future<void> _onShareWithFriendsTap() async {
+    if (!context.requirePremium(PremiumFeature.shareDailyForecast)) return;
     await MyDialogBox.show(
       context,
       child: InviteFriendsDialog(parentContext: context),
@@ -416,6 +421,12 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
             onTap: () {
               Navigator.pushNamed(context, RoutesName.notificationScreen);
             },
+          ),
+          DrawerMenuItem(
+            icon: const Icon(Icons.logout, color: Colors.black),
+            label: 'Logout',
+            isDisabled: actions.isAnyLoading,
+            onTap: () => AuthService.logout(context),
           ),
         ],
       ),
@@ -883,6 +894,7 @@ class _ForecastResultScreenState extends State<ForecastResultScreen> {
       padding: EdgeInsets.all(2.w),
       child: MyButton(
         label: 'Share with Circle',
+        icon: context.isFreemium ? const PremiumBadgeIcon(size: 22) : null,
         backgroundColor: context.colors.background,
         textColor: context.colors.primary,
         borderColor: context.colors.primary,
@@ -1005,22 +1017,23 @@ class _InviteFriendsDialogState extends State<InviteFriendsDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 280.h,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(),
-            SizedBox(height: 10.h),
-            _buildDescription(),
-            SizedBox(height: 10.h),
-            _buildMembersSection(),
-            const Spacer(),
-            _buildSendButton(),
-          ],
-        ),
+    // Sized by its content (no fixed height) so long text, large font
+    // scales or the empty-members state never overflow; scrolls if taller
+    // than the space the dialog is given.
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTitle(),
+          SizedBox(height: 10.h),
+          _buildDescription(),
+          SizedBox(height: 10.h),
+          _buildMembersSection(),
+          SizedBox(height: 16.h),
+          _buildSendButton(),
+        ],
       ),
     );
   }

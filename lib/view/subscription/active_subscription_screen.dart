@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
+import 'package:kena_emotional_journey/app/components/my_bottom_sheet.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
+import 'package:kena_emotional_journey/app/components/my_text_field.dart';
 import 'package:kena_emotional_journey/app/components/ui_helper.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/app_constants.dart';
@@ -13,10 +15,28 @@ import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.
 import 'package:kena_emotional_journey/app/utils/legal_links.dart';
 import 'package:kena_emotional_journey/model/subscription/subscription_model.dart';
 import 'package:kena_emotional_journey/services/payment/paystack_subscription_service.dart';
+import 'package:kena_emotional_journey/services/payment/subscription_cache_service.dart';
+import 'package:kena_emotional_journey/view/subscription/plan_features.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ActiveSubscriptionScreen extends StatefulWidget {
   const ActiveSubscriptionScreen({super.key});
+
+  /// Opens the user's subscription page. Trial users go straight to the plan
+  /// screen (decided from the cached status), so this screen never flashes.
+  static Future<void> open(NavigatorState navigator) async {
+    final isOnTrial = await SubscriptionCacheService().isOnTrial();
+    if (!navigator.mounted) return;
+
+    if (isOnTrial) {
+      navigator.pushNamed(
+        RoutesName.subscriptionPlan,
+        arguments: {'showBackButton': true, 'isTrial': true},
+      );
+    } else {
+      navigator.pushNamed(RoutesName.activeSubscription);
+    }
+  }
 
   @override
   State<ActiveSubscriptionScreen> createState() =>
@@ -40,6 +60,9 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
   bool _isFreemium = false;
   String? _pendingSubscriptionType;
   String? _pendingChangeEffectiveDate;
+  bool _canRequestRefund = false;
+  Map<String, dynamic>? _refund;
+  bool _isWithdrawingRefund = false;
 
   @override
   void initState() {
@@ -68,30 +91,19 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
               ? subscription['data'][0]
               : subscription;
 
-          setState(() {
-            _hasSubscription = data['hasSubscription'] == true;
-            _isActive = data['isActive'] == true;
-            _isTrial = data['isTrial'] == true;
-            _cancelAtPeriodEnd = data['cancelAtPeriodEnd'] == true;
-            _willRenew = data['willRenew'] == true;
-            _status = data['status']?.toString();
-            _daysRemaining = data['daysRemaining'] as int?;
-            _currentPeriodEnd = data['currentPeriodEnd']?.toString();
-            _subscriptionType = data['subscriptionType']?.toString();
-            _isFreemium =
-                _status?.toLowerCase() == 'freemium' ||
-                _subscriptionType?.toLowerCase() == 'freemium';
-            _pendingSubscriptionType = data['pendingSubscriptionType']
-                ?.toString();
-            _pendingChangeEffectiveDate = data['pendingChangeEffectiveDate']
-                ?.toString();
+          setState(() => _applySubscriptionData(data));
 
-            // Parse price from API
-            final priceJson = data['price'];
-            if (priceJson != null) {
-              _price = Price.fromJson(priceJson as Map<String, dynamic>);
-            }
-          });
+          // Fallback when the cached status was stale (or the screen was
+          // opened from a notification): trial users manage their plan from
+          // the plan screen instead.
+          if (_isTrial && !_isFreemium) {
+            Navigator.pushReplacementNamed(
+              context,
+              RoutesName.subscriptionPlan,
+              arguments: {'showBackButton': true, 'isTrial': true},
+            );
+            return;
+          }
         }
       } else {
         debugPrint('⚠️ No subscription data returned');
@@ -101,6 +113,8 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
             _isFreemium = false;
             _pendingSubscriptionType = null;
             _pendingChangeEffectiveDate = null;
+            _canRequestRefund = false;
+            _refund = null;
           });
         }
       }
@@ -118,6 +132,211 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
         });
       }
     }
+  }
+
+  /// Copies a `/subscription/me` (or `/subscription/refund`) payload into
+  /// state. Call inside setState.
+  void _applySubscriptionData(Map<String, dynamic> data) {
+    _hasSubscription = data['hasSubscription'] == true;
+    _isActive = data['isActive'] == true;
+    _isTrial = data['isTrial'] == true;
+    _cancelAtPeriodEnd = data['cancelAtPeriodEnd'] == true;
+    _willRenew = data['willRenew'] == true;
+    _status = data['status']?.toString();
+    _daysRemaining = data['daysRemaining'] as int?;
+    _currentPeriodEnd = data['currentPeriodEnd']?.toString();
+    _subscriptionType = data['subscriptionType']?.toString();
+    _isFreemium =
+        _status?.toLowerCase() == 'freemium' ||
+        _subscriptionType?.toLowerCase() == 'freemium';
+    _pendingSubscriptionType = data['pendingSubscriptionType']?.toString();
+    _pendingChangeEffectiveDate = data['pendingChangeEffectiveDate']
+        ?.toString();
+    _canRequestRefund = data['canRequestRefund'] == true;
+    _refund = data['refund'] is Map<String, dynamic>
+        ? data['refund'] as Map<String, dynamic>
+        : null;
+
+    // Parse price from API
+    final priceJson = data['price'];
+    _price = priceJson is Map<String, dynamic>
+        ? Price.fromJson(priceJson)
+        : null;
+  }
+
+  /// Monthly or annual paid plan (never freemium).
+  bool get _isPaidPlan {
+    if (_isFreemium) return false;
+    final subType = _subscriptionType?.toLowerCase();
+    final interval = _price?.interval?.toLowerCase();
+    return subType == 'monthly' ||
+        subType == 'annual' ||
+        interval == 'month' ||
+        interval == 'year';
+  }
+
+  bool get _showRefundButton => _isPaidPlan && _canRequestRefund;
+
+  String? get _refundStatus => _refund?['status']?.toString();
+
+  /// Opens the refund request sheet and applies the updated subscription
+  /// when the request is submitted.
+  Future<void> _handleRequestRefund() async {
+    final updated = await MyBottomSheet.show<Map<String, dynamic>>(
+      context,
+      backgroundColor: context.colors.background,
+      child: _RefundRequestSheet(service: _paystackService),
+    );
+    if (!mounted || updated == null) return;
+
+    setState(() => _applySubscriptionData(updated));
+    context.flushBarSuccessMessage(message: 'Refund request submitted');
+  }
+
+  /// Withdraws a refund request that is still pending review.
+  Future<void> _handleWithdrawRefund() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Cancel refund request?'),
+        content: const Text(
+          'Your refund request will be withdrawn and your subscription will continue as normal.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Keep Request'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Cancel Request'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isWithdrawingRefund = true);
+    final result = await _paystackService.withdrawRefund();
+    if (!mounted) return;
+    setState(() => _isWithdrawingRefund = false);
+
+    if (result.isSuccess) {
+      setState(() => _applySubscriptionData(result.subscription!));
+      context.flushBarSuccessMessage(message: 'Refund request cancelled');
+    } else {
+      context.flushBarErrorMessage(message: result.errorMessage!);
+      // State may have moved on (e.g. already reviewed) — resync.
+      await _fetchSubscriptionData();
+    }
+  }
+
+  /// User-facing text for the current refund status, or null when there is
+  /// nothing to show (no request, or it was withdrawn).
+  String? _getRefundStatusText() {
+    switch (_refundStatus) {
+      case 'pending_review':
+        return 'Your refund request is being reviewed.';
+      case 'processing':
+        return 'Refund approved. Your money is on its way (5–10 business days).';
+      case 'refunded':
+        return 'Refund completed on ${_formatDate(_refund?['refundedAt']?.toString())}.';
+      case 'rejected':
+        final note = _refund?['adminNote']?.toString();
+        return note != null && note.isNotEmpty
+            ? 'Your refund request was declined: $note'
+            : 'Your refund request was declined.';
+      case 'failed':
+        return 'There was a problem with your refund. Our team is looking into it.';
+      default:
+        return null;
+    }
+  }
+
+  Widget _buildRefundStatusCard() {
+    final text = _getRefundStatusText();
+    if (text == null) return const SizedBox.shrink();
+
+    final (
+      Color bg,
+      Color border,
+      Color fg,
+      IconData icon,
+    ) = switch (_refundStatus) {
+      'pending_review' => (
+        const Color(0xFFFFF9E6),
+        const Color(0xFFE6D5A8),
+        const Color(0xFFB8860B),
+        Icons.hourglass_top,
+      ),
+      'processing' || 'refunded' => (
+        const Color(0xFFEAF7EE),
+        const Color(0xFFB5DEC2),
+        const Color(0xFF2E7D4F),
+        Icons.check_circle_outline,
+      ),
+      _ => (
+        const Color(0xFFFDECEA),
+        const Color(0xFFF2C2BC),
+        const Color(0xFFC0392B),
+        Icons.error_outline,
+      ),
+    };
+
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: 10.h),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(8.r),
+        border: Border.all(color: border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: fg, size: 20.sp),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: Text(
+                  text,
+                  style: context.typography.body.copyWith(
+                    fontSize: 12,
+                    color: fg,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (_refundStatus == 'pending_review')
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: _isWithdrawingRefund ? null : _handleWithdrawRefund,
+                child: _isWithdrawingRefund
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: LoadingWidget(size: 2),
+                      )
+                    : Text(
+                        'Cancel request',
+                        style: context.typography.body.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: fg,
+                          decoration: TextDecoration.underline,
+                          decorationColor: fg,
+                        ),
+                      ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   /// Format date string from ISO format to display format
@@ -154,19 +373,14 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
 
   String _getFeaturesTitle() => '${_getPlanName()} includes:';
 
-  List<String> _getFeatures() {
+  List<PlanSection> _getFeatureSections() {
     return [
-      _isFreemium ? 'With ads' : 'Remove ads - Premium',
-      'Record core & aspirational emotions',
-      'Record Daily pulse',
-      'Comprehensive list of emotions',
-      'Visualisation of emotions',
-      'Journaling & Notes',
-      'Full activities',
-      'Full community features',
-      'Detailed analytics',
-      'Search by body sensations',
-      'Thought monitoring prompts',
+      PlanSection(title: _getFeaturesTitle(), items: PlanFeatures.base),
+      if (!_isFreemium)
+        PlanSection(
+          title: PlanFeatures.additionalTitle,
+          items: PlanFeatures.additional,
+        ),
     ];
   }
 
@@ -184,15 +398,17 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
   /// charged to be visible on the subscription screen, not hidden until
   /// the trial ends.
   String _getPriceText() {
+    if (_isFreemium) return 'Free';
+
     // iOS uses hardcoded StoreKit prices ($9.99/mo, $99.99/yr) since Apple
     // pricing is fixed per product, independent of the backend-reported
     // currency/amount used on Android.
     if (Platform.isIOS) {
       final interval = _price?.interval?.toLowerCase();
       final subType = _subscriptionType?.toLowerCase();
-      if (interval == null && subType == null) return '';
-      final isAnnual = interval == 'year' || subType == 'annual';
-      return isAnnual ? '\$99.99' : '\$9.99';
+      if (interval == 'year' || subType == 'annual') return '\$99.99';
+      if (interval == 'month' || subType == 'monthly') return '\$9.99';
+      return '';
     }
 
     // Use actual price from API
@@ -377,7 +593,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
   /// Handle change plan - navigate to subscription plan screen
   /// and refresh data when returning.
   Future<void> _handleChangePlan() async {
-    final result = await Navigator.pushNamed(
+    await Navigator.pushNamed(
       context,
       RoutesName.subscriptionPlan,
       arguments: {'showBackButton': true},
@@ -405,12 +621,21 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
             fontFamily: "sfpro",
           ),
         ),
-        // actions: [
-        // IconButton(
-        //   icon: Icon(Icons.refresh, color: context.colors.primary),
-        //   onPressed: _isLoading ? null : _fetchSubscriptionData,
-        // ),
-        // ],
+        actions: [
+          if (!_isLoading && _showRefundButton)
+            TextButton(
+              onPressed: _handleRequestRefund,
+              child: Text(
+                'Refund',
+                style: context.typography.body.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.tertiary,
+                  fontFamily: "sfpro",
+                ),
+              ),
+            ),
+        ],
       ),
       body: _isLoading
           ? Center(
@@ -432,7 +657,7 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                         vertical: 8.h,
                       ),
                       width: double.infinity,
-                      height: 77,
+                      constraints: const BoxConstraints(minHeight: 77),
                       decoration: BoxDecoration(
                         color: context.colors.tertiary,
                         borderRadius: BorderRadius.circular(10.r),
@@ -442,8 +667,8 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                         children: [
                           Expanded(
                             child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   _getPlanName(),
@@ -451,18 +676,6 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                                     fontSize: 19,
                                     fontWeight: FontWeight.w700,
                                     color: context.colors.background,
-                                    fontFamily: "Raleway",
-                                  ),
-                                ),
-                                SizedBox(height: 3.h),
-                                Text(
-                                  _getStatusText(),
-                                  style: context.typography.title.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: context.colors.background.withValues(
-                                      alpha: 0.8,
-                                    ),
                                     fontFamily: "Raleway",
                                   ),
                                 ),
@@ -474,25 +687,42 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                           if (_getPriceText().isNotEmpty)
                             Row(
                               children: [
-                                Text(
-                                  _getPriceText(),
-                                  style: const TextStyle(
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFFF3E5AB),
+                                Text.rich(
+                                  TextSpan(
+                                    text: _getPriceText(),
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: _isFreemium
+                                          ? context.colors.secondary
+                                          : context.colors.background,
+                                    ),
+                                    children: [
+                                      if (_isFreemium)
+                                        TextSpan(
+                                          text: '/with Ads',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 12.sp,
+                                            color: context.colors.secondary
+                                                .withValues(alpha: 0.5),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(width: 3.w),
-                                Text(
-                                  _getBillingInterval(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xfff3e5ab80),
-                                    fontStyle: FontStyle.italic,
-                                    fontFamily: "sfpro",
+                                if (!_isFreemium)
+                                  Text(
+                                    _getBillingInterval(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0x80F3E5AB),
+                                      fontStyle: FontStyle.italic,
+                                      fontFamily: "sfpro",
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                         ],
@@ -544,17 +774,13 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                       ),
                     ],
 
+                    /// 🔹 Refund status
+                    _buildRefundStatusCard(),
+
                     SizedBox(height: 10.h),
 
                     /// 🔹 Single Container (All Sections)
-                    PlanIncludes(
-                      sections: [
-                        PlanSection(
-                          title: _getFeaturesTitle(),
-                          items: _getFeatures(),
-                        ),
-                      ],
-                    ),
+                    PlanIncludes(sections: _getFeatureSections()),
                     SizedBox(height: 16.h),
 
                     /// 🔹 Terms of Use & Privacy Policy
@@ -675,6 +901,133 @@ class _ActiveSubscriptionScreenState extends State<ActiveSubscriptionScreen> {
                 ),
               ),
             ),
+    );
+  }
+}
+
+/// Bottom sheet collecting the refund reason. Pops with the updated
+/// subscription map when the request is submitted.
+class _RefundRequestSheet extends StatefulWidget {
+  const _RefundRequestSheet({required this.service});
+
+  final PaystackSubscriptionService service;
+
+  @override
+  State<_RefundRequestSheet> createState() => _RefundRequestSheetState();
+}
+
+class _RefundRequestSheetState extends State<_RefundRequestSheet> {
+  final _formKey = GlobalKey<FormState>();
+  final _reasonController = TextEditingController();
+  bool _isSubmitting = false;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
+
+    final result = await widget.service.requestRefund(
+      reason: _reasonController.text.trim(),
+    );
+    if (!mounted) return;
+
+    if (result.isSuccess) {
+      Navigator.of(context).pop(result.subscription);
+      return;
+    }
+
+    // A request is already open — show its status on the subscription screen.
+    if (result.code == 'refund_already_requested') {
+      final status = await widget.service.getRefundStatus();
+      if (!mounted) return;
+      if (status.isSuccess) {
+        Navigator.of(context).pop(status.subscription);
+        return;
+      }
+    }
+
+    setState(() {
+      _isSubmitting = false;
+      _errorMessage = result.errorMessage;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 16.h),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Request a refund',
+              style: context.typography.title.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: context.colors.textPrimary,
+                fontFamily: "sfpro",
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              'Our team will review your request. If approved, your subscription will end and the payment will be refunded.',
+              style: context.typography.body.copyWith(
+                fontSize: 13,
+                color: context.colors.textSecondary,
+                fontFamily: "sfpro",
+              ),
+            ),
+            SizedBox(height: 16.h),
+            MyTextField(
+              controller: _reasonController,
+              borderColor: context.colors.textSecondary.withValues(alpha: 0.02),
+              fillColor: context.colors.textSecondary.withValues(alpha: 0.04),
+              enabled: !_isSubmitting,
+              maxLines: 4,
+              maxLength: 500,
+              textCapitalization: TextCapitalization.sentences,
+              hint: 'Why would you like a refund?',
+              borderRadius: 16.r,
+              validator: (value) {
+                final reason = value?.trim() ?? '';
+                if (reason.length < 3) {
+                  return 'Please enter at least 3 characters';
+                }
+                return null;
+              },
+            ),
+            if (_errorMessage != null) ...[
+              SizedBox(height: 4.h),
+              Text(
+                _errorMessage!,
+                style: context.typography.body.copyWith(
+                  fontSize: 13,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+            SizedBox(height: 16.h),
+            MyButton(
+              label: 'Submit',
+              isLoading: _isSubmitting,
+              onPressed: _isSubmitting ? null : _submit,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

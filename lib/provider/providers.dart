@@ -4,6 +4,7 @@ import 'package:kena_emotional_journey/provider/auth/locale_provider.dart';
 import 'package:kena_emotional_journey/provider/connectivity_provider.dart';
 import 'package:kena_emotional_journey/provider/user_home_provider.dart';
 import 'package:kena_emotional_journey/provider/navigation_actions_provider.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/provider/weekly_sharing_provider.dart';
 
 // final List<VendorModel> initialVendors = [
@@ -173,6 +174,7 @@ final providers = <SingleChildWidget>[
   ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
   ChangeNotifierProvider(create: (_) => NavigationActionsController()),
   ChangeNotifierProvider(create: (_) => WeeklySharingController()),
+  ChangeNotifierProvider(create: (_) => SubscriptionProvider(), lazy: false),
   // ChangeNotifierProvider(
   //   create: (_) => UserHomeProvider(vendors: initialVendors),
   // ),

@@ -151,4 +151,26 @@ final List<EmotionSearchItem> emotionSearchLibrary = [
       'fatigue',
     ],
   ),
+  EmotionSearchItem(
+    mainEmotion: 'apathetic',
+    keywords: [
+      'indifferent',
+      'detached',
+      'listless',
+      'heavy limbs',
+      'restlessness',
+      'low energy',
+    ],
+  ),
+  EmotionSearchItem(
+    mainEmotion: 'bashful',
+    keywords: [
+      'shy',
+      'timid',
+      'self-conscious',
+      'face flushing',
+      'stomach pit',
+      'slumped posture',
+    ],
+  ),
 ];

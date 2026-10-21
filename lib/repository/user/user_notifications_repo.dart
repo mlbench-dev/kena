@@ -53,6 +53,42 @@ class UserNotificationsRepository {
     );
   }
 
+  //getAutoDeleteSetting
+  Future<Map<String, dynamic>> getAutoDelete() async {
+    return api.get(url: AppUrl.notificationAutoDelete);
+  }
+
+  //updateAutoDeleteSetting
+  Future<Map<String, dynamic>> updateAutoDelete({
+    required bool autoDeleteNotifications,
+  }) async {
+    return api.post(
+      url: AppUrl.notificationAutoDelete,
+      data: {'autoDeleteNotifications': autoDeleteNotifications},
+    );
+  }
+
+  //getReminderTimes
+  Future<Map<String, dynamic>> getReminderTimes() async {
+    return api.get(url: AppUrl.reminderSet);
+  }
+
+  //updateReminderTimes (times are 12h "h:mm AM")
+  Future<Map<String, dynamic>> updateReminderTimes({
+    required String dailyPulseTime,
+    required String eodTime,
+    required int timezoneOffsetMinutes,
+  }) async {
+    return api.put(
+      url: AppUrl.reminderSet,
+      data: {
+        'dailyPulseTime': dailyPulseTime,
+        'eodTime': eodTime,
+        'timezoneOffsetMinutes': timezoneOffsetMinutes,
+      },
+    );
+  }
+
   //sendNotification
   Future<Map<String, dynamic>> sendNotification({
     required String receiverId, //to which receiver notification is sent

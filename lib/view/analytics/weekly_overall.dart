@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
+import 'package:kena_emotional_journey/app/components/premium_lock.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/flush_bar_extension.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
-import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart';
+import 'package:kena_emotional_journey/model/analytics/overall_weekly_model.dart'
+    hide ThoughtMonitoring;
 import 'package:kena_emotional_journey/model/community/community_members_model.dart';
 import 'package:kena_emotional_journey/model/forecast/forecast_model.dart';
+import 'package:kena_emotional_journey/provider/subscription_provider.dart';
 import 'package:kena_emotional_journey/provider/weekly_sharing_provider.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
-import 'package:kena_emotional_journey/view/activities/widgets/thought_monitoring_widget.dart';
+import 'package:kena_emotional_journey/view/forecast/widgets/thought_monitoring.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/deviation_chart.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/progress_card.dart';
 import 'package:kena_emotional_journey/view/analytics/widgets/top_activities_section.dart';
@@ -83,7 +86,8 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
         key: f.key,
         title: f.name,
         imageUrl: f.imageUrl,
-        intensity: f.count,
+        intensity: f.intensity,
+        count: f.count,
       );
     }).toList();
   }
@@ -96,7 +100,8 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
         key: a.key,
         title: a.name,
         imageUrl: a.imageUrl,
-        intensity: a.count,
+        intensity: a.intensity,
+        count: a.count,
       );
     }).toList();
   }
@@ -141,31 +146,6 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     }).toList();
   }
 
-  List<ThoughtCategory> _getThoughtCategories() {
-    final tm = _data?.thoughtMonitoring;
-    if (tm == null) return [];
-    return [
-      ThoughtCategory(
-        label: "Positive",
-        percentage: (tm.positive ?? 0).toDouble(),
-        color: const Color(0xFF1E5631),
-        icon: Assets.images.batteryCharge.image(),
-      ),
-      ThoughtCategory(
-        label: "Negative",
-        percentage: (tm.negative ?? 0).toDouble(),
-        color: const Color(0xFFD90000),
-        icon: Assets.images.batteryLow.image(),
-      ),
-      ThoughtCategory(
-        label: "Neutral",
-        percentage: (tm.neutral ?? 0).toDouble(),
-        color: const Color(0xFFC8A200),
-        icon: const Icon(Icons.remove, color: Color(0xFFC8A200), size: 28),
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     final sharing = context.watch<WeeklySharingController>();
@@ -193,8 +173,6 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     final coreEmotions = _getCoreEmotions();
     final aspirationalEmotions = _getAspirationalEmotions();
     final topActivities = _getTopActivities();
-    final thoughtCategories = _getThoughtCategories();
-    final thoughtGoal = _data?.thoughtMonitoring?.total ?? 0;
 
     return SingleChildScrollView(
       child: Column(
@@ -236,12 +214,14 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
             context,
             title: 'Top 3 Forecast Emotions',
             emotions: forecastEmotions,
+            showCount: true,
           ),
           SizedBox(height: 16.h),
           _buildEmotionsSection(
             context,
             title: 'Top 3 Actual Emotions',
             emotions: actualEmotions,
+            showCount: true,
           ),
           SizedBox(height: 16.h),
           Row(
@@ -286,12 +266,8 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
           SizedBox(height: 16.h),
           TopActivitiesFlSection(activities: topActivities),
           SizedBox(height: 16.h),
-          if (thoughtCategories.isNotEmpty)
-            ThoughtMonitoringWidget(
-              categories: thoughtCategories,
-              goal: thoughtGoal,
-            ),
-          if (thoughtCategories.isNotEmpty) SizedBox(height: 16.h),
+          ThoughtMonitoring(chart: _data?.thoughtMonitoringChart),
+          SizedBox(height: 16.h),
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(16.w),
@@ -338,6 +314,9 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
                       )
                     : MyButton(
                         label: "Share with Circle",
+                        icon: context.isFreemium
+                            ? const PremiumBadgeIcon(size: 22)
+                            : null,
                         backgroundColor: context.colors.primary,
                         textColor: context.colors.background,
                         onPressed: () => sharing.startSharing(context),
@@ -355,6 +334,7 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
     required String title,
     required List<Emotion> emotions,
     bool showForecastActualRange = false,
+    bool showCount = false,
   }) {
     final emotionsToShow = emotions.take(3).toList();
 
@@ -370,6 +350,7 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
           showImage: true,
           showDenominator: false,
           showForecastActualRange: showForecastActualRange,
+          showCount: showCount,
         );
       }).toList(),
     );
@@ -381,9 +362,17 @@ class _WeeklyOverallState extends State<WeeklyOverall> {
 // =========================================================
 
 class ShareWeeklyDialog extends StatefulWidget {
-  const ShareWeeklyDialog({super.key, required this.parentContext});
+  const ShareWeeklyDialog({
+    super.key,
+    required this.parentContext,
+    this.endDate,
+  });
 
   final BuildContext parentContext;
+
+  /// Week end date (`yyyy-MM-dd`) to share; should match the weekly feed's
+  /// date. Defaults to the user's local today.
+  final String? endDate;
 
   @override
   State<ShareWeeklyDialog> createState() => _ShareWeeklyDialogState();
@@ -446,10 +435,9 @@ class _ShareWeeklyDialogState extends State<ShareWeeklyDialog> {
 
     setState(() => _isSending = true);
 
-    final today = DateTime.now().toIso8601String().split('T')[0];
     final success = await _service.shareWeeklyForecast(
       memberIds: selectedIds,
-      endDate: today,
+      endDate: widget.endDate ?? WeeklySharingController.localDate(),
       message: 'Here is my forecast for this week!',
       context: widget.parentContext,
     );

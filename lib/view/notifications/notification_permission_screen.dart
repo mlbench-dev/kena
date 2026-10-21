@@ -72,16 +72,17 @@ class _NotificationPermissionScreenState
         ),
         body: Center(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 32.w),
+            padding: EdgeInsets.symmetric(horizontal: 30.w),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Image(
+                Image(
                   image: NetworkImage(
                     'https://cdn-icons-png.flaticon.com/512/7822/7822662.png',
                   ),
                   width: 120,
                   height: 120,
+                  color: context.colors.tertiary,
                 ),
                 SizedBox(height: 24.h),
                 Text(
@@ -89,7 +90,7 @@ class _NotificationPermissionScreenState
                   style: TextStyle(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: context.colors.tertiary,
                   ),
                 ),
                 SizedBox(height: 12.h),
@@ -98,7 +99,7 @@ class _NotificationPermissionScreenState
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: Colors.black54,
+                    color: context.colors.textSecondary,
                     height: 1.6,
                   ),
                 ),
@@ -110,6 +111,7 @@ class _NotificationPermissionScreenState
                     );
                   },
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: context.colors.tertiary,
                     padding: EdgeInsets.symmetric(
                       horizontal: 32.w,
                       vertical: 16.h,
