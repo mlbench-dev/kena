@@ -182,7 +182,8 @@ class ExternalLinks {
 
 class KeyConstants {
   // static const String googleApiKey = 'AIzaSyAMj6W5geB39FBWm2qlzfDlL4_hw2L0rSY';
-  static const String googleApiKey = 'AIzaSyCU4fOhX4k3jJquH8cJMA5AvIahe_LFVG4';
+  // Unused (maps feature removed) — keep keys out of the app bundle.
+  // static const String googleApiKey = 'AIzaSyCU4fOhX4k3jJquH8cJMA5AvIahe_LFVG4';
 }
 
 class TypeAndCategoryConstants {

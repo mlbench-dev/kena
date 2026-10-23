@@ -20,8 +20,8 @@ class AdMobService {
     if (_initialized) return;
     await MobileAds.instance.initialize();
 
-    // Ad unit IDs are live/production, so any device not listed here gets
-    // real ads (real impressions/clicks on your own test runs risk an
+    // Production release builds use live ad unit IDs, so any device not listed
+    // here gets real ads (real impressions/clicks on your own test runs risk an
     // invalid-traffic flag on the AdMob account). To add a device: run the
     // app on it once, then copy the ID from the console line Google prints,
     // e.g. "To get test ads on this device, set: ... testDeviceIdentifiers
@@ -41,7 +41,10 @@ class AdMobService {
     );
 
     _initialized = true;
-    log('[AdMobService] Initialized (${testDeviceIds.length} test device(s))');
+    log(
+      '[AdMobService] Initialized (${testDeviceIds.length} test device(s), '
+      'testAds: $_useTestAds)',
+    );
   }
 
   static Future<bool> shouldShowAds() async {
@@ -59,17 +62,46 @@ class AdMobService {
   // 🔑 AD UNIT IDS (Kena production — from .env)
   // ─────────────────────────────────────────────
 
+  static const String _flavor = String.fromEnvironment(
+    'FLAVOR',
+    defaultValue: 'production',
+  );
+
+  /// Live ad units are only requested from release builds of the production
+  /// flavor. Debug/profile builds and dev/staging flavors always get Google's
+  /// test units so our own testing never generates invalid traffic.
+  static bool get _useTestAds => !kReleaseMode || _flavor != 'production';
+
+  // Google sample ad units: https://developers.google.com/admob/flutter/test-ads
+  static const String _testAndroidBanner =
+      'ca-app-pub-3940256099942544/6300978111';
+  static const String _testIosBanner = 'ca-app-pub-3940256099942544/2934735716';
+  static const String _testAndroidInterstitial =
+      'ca-app-pub-3940256099942544/1033173712';
+  static const String _testIosInterstitial =
+      'ca-app-pub-3940256099942544/4411468910';
+
+  static String _resolveUnitId(String envKey, String testId) {
+    if (_useTestAds) return testId;
+    final id = dotenv.env[envKey]?.trim();
+    if (id == null || id.isEmpty) {
+      // Missing config must never crash the app; fall back to a test unit.
+      log('[AdMobService] $envKey missing in .env — using test ad unit');
+      return testId;
+    }
+    return id;
+  }
+
   static String get bannerAdUnitId => Platform.isAndroid
-      // TEST ID: ca-app-pub-3940256099942544/6300978111
-      ? dotenv.env['ANDROID_ADMOB_BANNER_UNIT_ID']!
-      // TEST ID: ca-app-pub-3940256099942544/2435281174
-      : dotenv.env['IOS_ADMOB_BANNER_UNIT_ID']!;
+      ? _resolveUnitId('ANDROID_ADMOB_BANNER_UNIT_ID', _testAndroidBanner)
+      : _resolveUnitId('IOS_ADMOB_BANNER_UNIT_ID', _testIosBanner);
 
   static String get interstitialAdUnitId => Platform.isAndroid
-      // TEST ID: ca-app-pub-3940256099942544/1033173712
-      ? dotenv.env['ANDROID_ADMOB_INTERSTITIAL_UNIT_ID']!
-      // TEST ID: ca-app-pub-3940256099942544/4411468910
-      : dotenv.env['IOS_ADMOB_INTERSTITIAL_UNIT_ID']!;
+      ? _resolveUnitId(
+          'ANDROID_ADMOB_INTERSTITIAL_UNIT_ID',
+          _testAndroidInterstitial,
+        )
+      : _resolveUnitId('IOS_ADMOB_INTERSTITIAL_UNIT_ID', _testIosInterstitial);
 
   // ─────────────────────────────────────────────
   // 📐 BANNER AD

@@ -359,7 +359,8 @@ class _CommentInputBar extends StatelessWidget {
         left: 16.w,
         right: 12.w,
         top: 10.h,
-        bottom: MediaQuery.of(context).padding.bottom + 14.h,
+        // MyBottomSheet already pads for the keyboard and the system inset.
+        bottom: 14.h,
       ),
       decoration: BoxDecoration(
         color: Colors.white,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
@@ -104,6 +105,8 @@ class _SetTimeScreenState extends State<SetTimeScreen> {
                     onChanged: (time) => setState(() => _eodTime = time),
                   ),
                   const Spacer(),
+                  const BannerAdWidget(),
+                  SizedBox(height: 10),
                   MyButton(
                     label: _hasSavedTimes ? "Update Time" : "Save",
                     isLoading: _isSaving,

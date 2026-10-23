@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
 import 'package:kena_emotional_journey/services/common/notifications_service.dart';
@@ -115,6 +116,8 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
               "Auto Delete After one day",
               onChanged: _isUpdatingAutoDelete ? null : _onAutoDeleteToggled,
             ),
+            Spacer(),
+            const BannerAdWidget(),
           ],
         ),
       ),

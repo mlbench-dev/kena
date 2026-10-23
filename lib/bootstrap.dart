@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kena_emotional_journey/app/utils/local_storage.dart';
 import 'package:kena_emotional_journey/provider/providers.dart';
 import 'package:kena_emotional_journey/services/common/ad_mob_service.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
+  // debugPrint still writes to logcat / the iOS console in release builds,
+  // and the app logs tokens, URLs and API payloads. Silence it in release.
+  if (kReleaseMode) {
+    debugPrint = (String? message, {int? wrapWidth}) {};
+  }
   // Marks a true cold start (main() re-run). If this prints every time you
   // background the app and reopen it, iOS is killing the process rather
   // than just suspending it — see the didChangeAppLifecycleState logging
@@ -93,6 +99,14 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   }
 
   // Add cross-flavor configuration here
+  try {
+    await LocalStorage().clearIfFreshInstall().timeout(
+      const Duration(seconds: 10),
+    );
+  } catch (e, st) {
+    log('Fresh-install storage check failed/timed out: $e', stackTrace: st);
+  }
+
   try {
     await SessionController().init().timeout(const Duration(seconds: 10));
   } catch (e, st) {
