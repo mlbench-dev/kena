@@ -152,17 +152,18 @@ class _InviteFriendsDialogState extends State<InviteFriendsDialog> {
               controller: _emailController,
               hint: "Enter email address",
               icon: Icons.send,
-              onIconTap: () {
-                if (_emailController.text.isNotEmpty) {
-                  _userHomeService.inviteEmail(
+              onIconTap: () async {
+                final email = _emailController.text.trim();
+                if (email.isNotEmpty) {
+                  // Service shows the success / per-recipient error flushbar.
+                  final result = await _userHomeService.inviteEmails(
                     context: context,
-                    email: _emailController.text,
+                    emails: [email],
                     communityId: widget.communityId,
                   );
 
-                  if (mounted) {
+                  if (mounted && (result?.totalSent ?? 0) > 0) {
                     _emailController.clear();
-                    context.flushBarSuccessMessage(message: "Invitation sent");
                   }
                 }
               },

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:kena_emotional_journey/services/common/session_manager/session_controller.dart';
 import 'package:kena_emotional_journey/services/user/user_home_service.dart';
 
@@ -50,7 +51,7 @@ class AppUsageController {
     if (diff <= idleThreshold) {
       _sendHeartbeat();
     } else {
-      print("⏸ User idle → heartbeat skipped");
+      debugPrint("⏸ User idle → heartbeat skipped");
     }
   }
 
@@ -58,7 +59,7 @@ class AppUsageController {
   Future<void> _sendHeartbeat() async {
     // ✅ Guard: skip heartbeat if user is not logged in (token is null)
     if (!_sessionController.isLoggedIn) {
-      print("⏭ Heartbeat skipped → user not logged in (token is null)");
+      debugPrint("⏭ Heartbeat skipped → user not logged in (token is null)");
       return;
     }
 
@@ -70,9 +71,9 @@ class AppUsageController {
         platform: Platform.isIOS ? "ios" : "android",
       );
 
-      print("🔥 Heartbeat sent");
+      debugPrint("🔥 Heartbeat sent");
     } catch (e) {
-      print("❌ Heartbeat error: $e");
+      debugPrint("❌ Heartbeat error: $e");
     }
   }
 

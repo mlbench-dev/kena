@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/loading_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_dialog.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
@@ -305,6 +306,15 @@ class DailyFeedsScreenState extends State<DailyFeedsScreen> {
                 ),
               );
             }, childCount: _feeds.length),
+          ),
+
+        // Banner ad below the posts (hidden for subscribed users).
+        if (!_isLoading && _error == null && _feeds.isNotEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(top: 8.h),
+              child: const BannerAdWidget(),
+            ),
           ),
 
         SliverToBoxAdapter(child: SizedBox(height: 24.h)),

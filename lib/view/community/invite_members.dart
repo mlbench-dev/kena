@@ -6,6 +6,7 @@ import 'package:kena_emotional_journey/app/components/my_form_text_field.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
 import 'package:kena_emotional_journey/app/routes/routes_name.dart';
 import 'package:kena_emotional_journey/app/utils/extensions/context_extensions.dart';
+import 'package:kena_emotional_journey/app/utils/extensions/validations_exception.dart';
 import 'package:kena_emotional_journey/generated/assets/assets.gen.dart';
 import 'package:kena_emotional_journey/model/community/user_community.dart';
 import 'package:kena_emotional_journey/model/user/users_model.dart';
@@ -38,6 +39,8 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
   bool isLoading = true;
   bool _isSendingInvite = false;
 
+  bool get _isEmailType => selectedType == "Email";
+
   @override
   void initState() {
     super.initState();
@@ -48,6 +51,57 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
         isButtonEnabled = _inviteController.text.trim().isNotEmpty;
       });
     });
+  }
+
+  /// All usernames / emails typed in the field (comma or space separated),
+  /// trimmed and de-duplicated.
+  List<String> get _recipients {
+    final seen = <String>{};
+    return _inviteController.text
+        .split(RegExp(r'[,;\s]+'))
+        .map((e) => e.trim().replaceFirst(RegExp(r'^@'), ''))
+        .where((e) => e.isNotEmpty && seen.add(e.toLowerCase()))
+        .toList();
+  }
+
+  Future<void> _sendInvites() async {
+    final recipients = _recipients;
+    if (recipients.isEmpty) return;
+
+    setState(() => _isSendingInvite = true);
+    try {
+      final result = _isEmailType
+          ? await _userHomeService.inviteEmails(
+              context: context,
+              emails: recipients,
+              communityId: widget.communityId,
+            )
+          : await _userHomeService.inviteUsernames(
+              context: context,
+              usernames: recipients,
+              communityId: widget.communityId,
+            );
+
+      if (!mounted || result == null) return;
+
+      // Leave only the failed entries in the field so the user can fix them.
+      final failed = (result.failed ?? [])
+          .map((f) => (f.email ?? f.username ?? '').toLowerCase())
+          .toSet();
+      _inviteController.text = recipients
+          .where((r) => failed.contains(r.toLowerCase()))
+          .join(', ');
+    } finally {
+      if (mounted) {
+        setState(() => _isSendingInvite = false);
+      }
+    }
+  }
+
+  /// Name used in the invite preview.
+  String get _previewName {
+    final names = _recipients;
+    return names.length == 1 ? names.first : (names.isEmpty ? '' : 'there');
   }
 
   @override
@@ -236,14 +290,15 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                 SizedBox(height: 35.h),
                 AnimatedToggle(
                   onChanged: (value) {
-                    setState(() {
-                      selectedType = value;
-                    });
+                    if (value == selectedType) return;
+                    setState(() => selectedType = value);
+                    // Usernames and emails go to different endpoints.
+                    _inviteController.clear();
                   },
                 ),
                 SizedBox(height: 15.h),
                 Text(
-                  selectedType == "Username" ? "Username" : "Email",
+                  selectedType == "Username" ? "Usernames" : "Emails",
                   style: context.typography.body.copyWith(
                     color: context.colors.textPrimary,
                     fontSize: 14.sp,
@@ -256,15 +311,37 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                   textColor: context.colors.textPrimary,
                   controller: _inviteController,
                   hint: selectedType == "Username"
-                      ? "Enter username"
-                      : "Enter email to invite",
+                      ? "e.g. ali, sara, john"
+                      : "e.g. ali@mail.com, sara@mail.com",
                   fillColor: Color(0xFFf5f5f7),
+                  readOnly: _isSendingInvite,
+                  keyboardType: _isEmailType
+                      ? TextInputType.emailAddress
+                      : TextInputType.text,
+                  textInputAction: TextInputAction.done,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    final entries = _recipients;
+                    if (entries.isEmpty) {
                       return '$selectedType is required.';
+                    }
+                    if (_isEmailType) {
+                      final invalid = entries
+                          .where((e) => !e.emailValidator())
+                          .toList();
+                      if (invalid.isNotEmpty) {
+                        return 'Invalid email: ${invalid.join(', ')}';
+                      }
                     }
                     return null;
                   },
+                ),
+                SizedBox(height: 5.h),
+                Text(
+                  "Separate multiple entries with commas",
+                  style: context.typography.body.copyWith(
+                    color: context.colors.textSecondary,
+                    fontSize: 12.sp,
+                  ),
                 ),
                 SizedBox(height: 15.h),
                 Container(
@@ -288,7 +365,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                       ),
                       SizedBox(height: 15.h),
                       Text(
-                        "Hi ${_inviteController.text}, I've been using Kena to stay on top of my wellness and reflect on my days and would love for you to be part of my support circle. You'll be able to see my daily assessments and leave encouraging comments. No pressure at all! Thank you ❤️ ${_inviteController.text}",
+                        "Hi $_previewName, I've been using Kena to stay on top of my wellness and reflect on my days and would love for you to be part of my support circle. You'll be able to see my daily assessments and leave encouraging comments. No pressure at all! Thank you ❤️ $_previewName",
                         style: context.typography.headline.copyWith(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w400,
@@ -302,31 +379,14 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                 ),
                 SizedBox(height: 15.h),
                 MyButton(
-                  label: "Send Invite",
+                  label: _recipients.length > 1
+                      ? "Send ${_recipients.length} Invites"
+                      : "Send Invite",
                   isLoading: _isSendingInvite,
                   onPressed: isButtonEnabled && !_isSendingInvite
                       ? () async {
                           if (_formKey.currentState!.validate()) {
-                            setState(() => _isSendingInvite = true);
-                            try {
-                              if (selectedType == "Username") {
-                                await _userHomeService.inviteUsername(
-                                  context: context,
-                                  username: _inviteController.text,
-                                  communityId: widget.communityId,
-                                );
-                              } else {
-                                await _userHomeService.inviteEmail(
-                                  context: context,
-                                  email: _inviteController.text,
-                                  communityId: widget.communityId,
-                                );
-                              }
-                            } finally {
-                              if (mounted) {
-                                setState(() => _isSendingInvite = false);
-                              }
-                            }
+                            await _sendInvites();
                           }
                         }
                       : null,

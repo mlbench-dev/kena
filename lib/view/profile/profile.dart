@@ -251,6 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 4.h),
                 const BannerAdWidget(),
                 SizedBox(height: 10.h),
                 MyButton(

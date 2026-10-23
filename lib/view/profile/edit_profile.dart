@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:kena_emotional_journey/app/components/banner_ads_widget.dart';
 import 'package:kena_emotional_journey/app/components/my_button.dart';
 import 'package:kena_emotional_journey/app/components/my_form_text_field.dart';
 import 'package:kena_emotional_journey/app/components/my_scaffold.dart';
@@ -268,7 +269,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     //   return null;
                     // },
                   ),
-                  SizedBox(height: 136.h),
+                  SizedBox(height: 100.h),
+                  const BannerAdWidget(),
+                  SizedBox(height: 10.h),
                   MyButton(
                     isLoading: isLoading,
                     label: "Update",

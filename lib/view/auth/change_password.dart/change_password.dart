@@ -46,153 +46,154 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 36.h),
-                Text(
-                  'Old Password',
-                  style: context.typography.title.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+      body: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 36.h),
+              Text(
+                'Old Password',
+                style: context.typography.title.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
                 ),
-                SizedBox(height: 10.h),
-                MyFormTextField(
-                  textColor: context.colors.textPrimary,
-                  hint: 'Enter password',
-                  obscureText: hideOldPassword,
-                  readOnly: isLoading,
-                  controller: oldPasswordController,
-                  // textCapitalization: TextCapitalization.none,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required.';
-                    }
-                    return null;
+              ),
+              SizedBox(height: 10.h),
+              MyFormTextField(
+                textColor: context.colors.textPrimary,
+                hint: 'Enter password',
+                obscureText: hideOldPassword,
+                readOnly: isLoading,
+                controller: oldPasswordController,
+                // textCapitalization: TextCapitalization.none,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required.';
+                  }
+                  return null;
+                },
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      hideOldPassword = !hideOldPassword;
+                    });
                   },
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        hideOldPassword = !hideOldPassword;
-                      });
-                    },
-                    child: Icon(
-                      hideOldPassword ? Icons.visibility_off : Icons.visibility,
-                      color: context.colors.tertiary,
-                    ),
+                  child: Icon(
+                    hideOldPassword ? Icons.visibility_off : Icons.visibility,
+                    color: context.colors.tertiary,
                   ),
                 ),
-                SizedBox(height: 24.h),
-                Text(
-                  'New Password',
-                  style: context.typography.title.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ),
+              SizedBox(height: 24.h),
+              Text(
+                'New Password',
+                style: context.typography.title.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
                 ),
-                SizedBox(height: 10.h),
-                MyFormTextField(
-                  textColor: context.colors.textPrimary,
-                  obscureText: hidePassword,
-                  hint: 'Enter password',
-                  readOnly: isLoading,
-                  controller: newPasswordController,
-                  // textCapitalization: TextCapitalization.none,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password is required.';
-                    } else if (!value.passwordValidator()) {
-                      return 'Password must contain 8 characters and at least one uppercase letter, one number, and one special character.';
-                    }
-                    return null;
+              ),
+              SizedBox(height: 10.h),
+              MyFormTextField(
+                textColor: context.colors.textPrimary,
+                obscureText: hidePassword,
+                hint: 'Enter password',
+                readOnly: isLoading,
+                controller: newPasswordController,
+                // textCapitalization: TextCapitalization.none,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required.';
+                  } else if (!value.passwordValidator()) {
+                    return 'Password must contain 8 characters and at least one uppercase letter, one number, and one special character.';
+                  }
+                  return null;
+                },
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      hidePassword = !hidePassword;
+                    });
                   },
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        hidePassword = !hidePassword;
-                      });
-                    },
-                    child: Icon(
-                      hidePassword ? Icons.visibility_off : Icons.visibility,
-                      color: context.colors.tertiary,
-                    ),
+                  child: Icon(
+                    hidePassword ? Icons.visibility_off : Icons.visibility,
+                    color: context.colors.tertiary,
                   ),
                 ),
-                SizedBox(height: 24.h),
-                Text(
-                  'Retype New Password',
-                  style: context.typography.title.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
+              ),
+              SizedBox(height: 24.h),
+              Text(
+                'Retype New Password',
+                style: context.typography.title.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
                 ),
-                SizedBox(height: 10.h),
-                MyFormTextField(
-                  textColor: context.colors.textPrimary,
-                  hint: 'Enter password',
-                  obscureText: hideConfirmPassword,
-                  readOnly: isLoading,
-                  controller: confirmPasswordController,
-                  // textCapitalization: TextCapitalization.none,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Confirm Password is required.';
-                    } else if (value != newPasswordController.text) {
-                      return 'Confirm Password does not match Password.';
-                    }
-                    return null;
+              ),
+              SizedBox(height: 10.h),
+              MyFormTextField(
+                textColor: context.colors.textPrimary,
+                hint: 'Enter password',
+                obscureText: hideConfirmPassword,
+                readOnly: isLoading,
+                controller: confirmPasswordController,
+                // textCapitalization: TextCapitalization.none,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Confirm Password is required.';
+                  } else if (value != newPasswordController.text) {
+                    return 'Confirm Password does not match Password.';
+                  }
+                  return null;
+                },
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      hideConfirmPassword = !hideConfirmPassword;
+                    });
                   },
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        hideConfirmPassword = !hideConfirmPassword;
-                      });
-                    },
-                    child: Icon(
-                      hideConfirmPassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      color: context.colors.tertiary,
-                    ),
+                  child: Icon(
+                    hideConfirmPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: context.colors.tertiary,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
 
       // SafeArea keeps the button above the system navigation bar
       // (the app draws edge-to-edge).
-      bottomNavigationBar: SafeArea(
-        minimum: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
-        child: MyButton(
-          label: 'Submit',
-          isLoading: isLoading,
-          onPressed: () async {
-            if (isLoading) return;
-            if (!formKey.currentState!.validate()) return;
-            if (mounted) {
-              setState(() => isLoading = true);
-            }
-            await _authService.changePassword(
-              context: context,
-              oldPassword: oldPasswordController.text,
-              newPassword: newPasswordController.text,
-              onSuccess: () => Navigator.pop(context),
-            );
-            if (mounted) {
-              setState(() => isLoading = false);
-            }
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: SafeArea(
+          minimum: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
+          child: MyButton(
+            label: 'Submit',
+            isLoading: isLoading,
+            onPressed: () async {
+              if (isLoading) return;
+              if (!formKey.currentState!.validate()) return;
+              if (mounted) {
+                setState(() => isLoading = true);
+              }
+              await _authService.changePassword(
+                context: context,
+                oldPassword: oldPasswordController.text,
+                newPassword: newPasswordController.text,
+                onSuccess: () => Navigator.pop(context),
+              );
+              if (mounted) {
+                setState(() => isLoading = false);
+              }
 
-            debugPrint('Submit button pressed');
-          },
+              debugPrint('Submit button pressed');
+            },
+          ),
         ),
       ),
     );

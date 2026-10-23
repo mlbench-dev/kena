@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:kena_emotional_journey/app/utils/enums.dart';
 import 'package:kena_emotional_journey/app/utils/local_storage.dart';
 import 'package:kena_emotional_journey/model/user/users_model.dart';
@@ -251,24 +252,18 @@ class SessionController extends ChangeNotifier {
     _user = null;
     _activities = [];
 
-    // Clear all storage values using the enum
-    await _localStorage.clearValue(StorageKey.accessToken.value);
-    await _localStorage.clearValue(StorageKey.communityId.value);
-    await _localStorage.clearValue(StorageKey.refreshToken.value);
-    await _localStorage.clearValue(StorageKey.userType.value);
-    await _localStorage.clearValue(StorageKey.vendor.value);
-    await _localStorage.clearValue(StorageKey.user.value);
-    await _localStorage.clearValue(StorageKey.activities.value);
+    // Wipe ALL secure storage, not just the StorageKey values: other services
+    // keep per-user data there too (sub_is_entitled, sub_is_freemium, answered
+    // check-ins), and leaving those behind leaks the previous user's
+    // entitlement to the next account that logs in on this device.
+    await _localStorage.clearAll();
 
-    // Clear subscription cache
-    await _localStorage.clearValue(StorageKey.subIsActive.value);
-    await _localStorage.clearValue(StorageKey.subIsTrial.value);
-    await _localStorage.clearValue(StorageKey.subHasSubscription.value);
-    await _localStorage.clearValue(StorageKey.subStatus.value);
-    await _localStorage.clearValue(StorageKey.subPlan.value);
-    await _localStorage.clearValue(StorageKey.subExpiryDate.value);
-    await _localStorage.clearValue(StorageKey.subLastSyncedAt.value);
-    await _localStorage.clearValue(StorageKey.subCacheJson.value);
+    // Cached network images (profile photos, community posts) are user data.
+    try {
+      await DefaultCacheManager().emptyCache();
+    } catch (e) {
+      log('Image cache clear failed: $e');
+    }
 
     // ✅ Reset init state so session can be reloaded on next init() call
     _resetInitState();

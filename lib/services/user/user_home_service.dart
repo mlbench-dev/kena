@@ -25,6 +25,7 @@ import 'package:kena_emotional_journey/model/community/community_members_model.d
 import 'package:kena_emotional_journey/model/community/daily_feed_model.dart';
 import 'package:kena_emotional_journey/model/community/feed_model.dart';
 import 'package:kena_emotional_journey/model/community/invitations_model.dart';
+import 'package:kena_emotional_journey/model/community/bulk_invite_model.dart';
 import 'package:kena_emotional_journey/model/community/invite_link_model.dart';
 import 'package:kena_emotional_journey/model/community/user_community.dart';
 import 'package:kena_emotional_journey/model/community/weekly_feed_model.dart'
@@ -2156,73 +2157,90 @@ class UserHomeService {
     }
   }
 
-  //invite Username
-  Future<bool> inviteUsername({
+  //invite Usernames (bulk)
+  Future<BulkInviteData?> inviteUsernames({
     required BuildContext context,
-    required String username,
+    required List<String> usernames,
     required String communityId,
-  }) async {
-    try {
-      final data = {"username": username, "communityId": communityId};
-
-      final response = await _userHomeRepo.inviteUsername(data: data);
-
-      if (response['success'] == true) {
-        if (context.mounted) {
-          context.flushBarSuccessMessage(message: "Invite sent successfully");
-        }
-        // Optionally, you can parse the returned activities here
-        return true;
-      } else {
-        if (context.mounted) {
-          ErrorHandler.handle(
-            context,
-            response['message'] ?? 'Unknown error',
-            serviceName: tag,
-          );
-        }
-        return false;
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ErrorHandler.handle(context, e, serviceName: tag);
-      }
-      return false;
-    }
+    String? message,
+  }) {
+    return _sendBulkInvite(
+      context: context,
+      data: {
+        "usernames": usernames,
+        "communityId": communityId,
+        if (message != null && message.trim().isNotEmpty) "message": message,
+      },
+      request: _userHomeRepo.inviteUsername,
+    );
   }
 
-  //invite Email
-  Future<bool> inviteEmail({
+  //invite Emails (bulk)
+  Future<BulkInviteData?> inviteEmails({
     required BuildContext context,
-    required String email,
+    required List<String> emails,
     required String communityId,
+    String? message,
+  }) {
+    return _sendBulkInvite(
+      context: context,
+      data: {
+        "emails": emails,
+        "communityId": communityId,
+        if (message != null && message.trim().isNotEmpty) "message": message,
+      },
+      request: _userHomeRepo.inviteEmail,
+    );
+  }
+
+  /// Shared handler for the bulk invite endpoints. Shows a success flushbar
+  /// when every invite went out, otherwise an error flushbar listing each
+  /// failed recipient. Returns the per-recipient result, or null on error.
+  Future<BulkInviteData?> _sendBulkInvite({
+    required BuildContext context,
+    required Map<String, dynamic> data,
+    required Future<Map<String, dynamic>> Function({
+      required Map<String, dynamic> data,
+    })
+    request,
   }) async {
     try {
-      final data = {"email": email, "communityId": communityId};
+      final response = await request(data: data);
+      final model = BulkInviteModel.fromJson(response);
+      final result = model.data?.isNotEmpty == true ? model.data!.first : null;
 
-      final response = await _userHomeRepo.inviteEmail(data: data);
-
-      if (response['success'] == true) {
-        if (context.mounted) {
-          context.flushBarSuccessMessage(message: "Invite sent successfully");
-        }
-        // Optionally, you can parse the returned activities here
-        return true;
-      } else {
+      if (model.success != true || result == null) {
         if (context.mounted) {
           ErrorHandler.handle(
             context,
-            response['message'] ?? 'Unknown error',
+            model.message ?? 'Unknown error',
             serviceName: tag,
           );
         }
-        return false;
+        return result;
       }
+
+      final failed = result.failed ?? [];
+      if (context.mounted) {
+        if (failed.isEmpty) {
+          context.flushBarSuccessMessage(
+            message: model.message ?? "Invites sent successfully",
+          );
+        } else {
+          final reasons = failed
+              .map((f) => '• ${f.message ?? f.username ?? f.email ?? 'Failed'}')
+              .join('\n');
+          context.flushBarErrorMessage(
+            message: '${model.message ?? 'Some invites failed'}\n$reasons',
+          );
+        }
+      }
+      return result;
     } catch (e) {
       if (context.mounted) {
         ErrorHandler.handle(context, e, serviceName: tag);
       }
-      return false;
+      return null;
     }
   }
 }

@@ -63,7 +63,7 @@ class UserProfileService {
 
     /// Avoid unnecessary API call
     if (data.isEmpty) {
-      print("No changes detected");
+      debugPrint("No changes detected");
       return;
     }
 
